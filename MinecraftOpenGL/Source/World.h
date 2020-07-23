@@ -3,6 +3,8 @@
 #include <map>
 #include <glm/vec3.hpp>
 
+#include "Utils.h"
+
 class Chunk;
 
 namespace World
@@ -12,6 +14,9 @@ namespace World
 	std::map<int, Chunk*>& GetChunks();
 
 	Chunk* GetChunkFromIndex(int index);
+	Chunk* GetChunkAtPosition(glm::vec3 position);
+
+	bool ChunkExistsAtPosition(glm::vec3 position);
 
 	void Render();
 

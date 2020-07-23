@@ -56,36 +56,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	cameraFront = glm::normalize(direction);
 }
 
-int main()
-{
-	GLFWwindow* window;
-
-	/* Initialize the library */
-	if (!glfwInit())
-		return -1;
-
-	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(1920, 1080, "Hello World", NULL, NULL);
-	if (!window)
-	{
-		glfwTerminate();
-		return -1;
-	}
-
-	/* Make the window's context current */
-	glfwMakeContextCurrent(window);
-
-	if (glewInit() != GLEW_OK)
-		std::cout << "Error initializing GLEW\n";
-
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-	glfwSetCursorPosCallback(window, mouse_callback);
-
-	// Print the OpenGL version
-	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
-
-	const glm::vec4 colors[36] = {
+const glm::vec4 colors[36] = {
 		glm::vec4(0.583f,  0.771f,  0.014f, 1.0f),
 		glm::vec4(0.609f,  0.115f,  0.436f, 1.0f),
 		glm::vec4(0.327f,  0.483f,  0.844f, 1.0f),
@@ -122,39 +93,104 @@ int main()
 		glm::vec4(0.673f,  0.211f,  0.457f, 1.0f),
 		glm::vec4(0.820f,  0.883f,  0.371f, 1.0f),
 		glm::vec4(0.982f,  0.099f,  0.879f, 1.0f),
-	};
+};
 
-	const int chunkCount = 24;
-
-	// 1160mb
-	auto start = std::chrono::high_resolution_clock::now();
-
-	for (int x = 0; x < chunkCount / 2; x++)
+void CreateChunks(int count)
+{
+	float o = 1;// 1.0625;
+	for (int x = 0; x < count; x++)
 	{
-		for (int z = 0; z < chunkCount / 2; z++)
+		for (int z = 0; z < count; z++)
 		{
-			Chunk* chunk = World::CreateChunk(glm::vec3(Chunk::Width * x, 0, Chunk::Depth * z));
+			Chunk* chunk = World::CreateChunk(glm::vec3(x * o, 0, z  *o));
 
-			std::cout << "Chunk position: " << Chunk::Width * x << ", " << 0 << ", " << Chunk::Depth * z << "\n";
+			//std::cout << x << "," << z << "\n"; 
+		}
+	}
+
+	for (int x = 0; x < count; x++)
+	{
+		for (int z = 0; z < count; z++)
+		{
+			Chunk* chunk = World::GetChunkAtPosition(glm::vec3(x*o, 0, z*o));
 
 			// Fill the chunk with blocks
 			chunk->Fill(colors);
 
 			// Create the block mesh
 			chunk->UpdateMesh();
-
-			std::cout << chunk->GetIndex() << "\n";
 		}
 	}
+
+}
+
+int main()
+{
+	GLFWwindow* window;
+
+	/* Initialize the library */
+	if (!glfwInit())
+		return -1;
+
+	/* Create a windowed mode window and its OpenGL context */
+	window = glfwCreateWindow(1920, 1080, "Hello World", NULL, NULL);
+	if (!window)
+	{
+		glfwTerminate();
+		return -1;
+	}
+
+	/* Make the window's context current */
+	glfwMakeContextCurrent(window);
+
+	if (glewInit() != GLEW_OK)
+		std::cout << "Error initializing GLEW\n";
+
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+	glfwSetCursorPosCallback(window, mouse_callback);
+
+	// Print the OpenGL version
+	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
+
+	// 1160mb
+	auto start = std::chrono::high_resolution_clock::now();
+
+	CreateChunks(16);
+
+	int a = Utils::ChunkPositionToIndex(glm::vec3(-1, 0, 1));
+	int b = Utils::ChunkPositionToIndex(glm::vec3(7, 0, 0));
+
+	/*for (int i = 0; i < 8; i++) {
+		Chunk* chunk = World::GetChunkAtPosition(glm::vec3(i, 0, 0));
+
+		int index = Utils::ChunkPositionToIndex(glm::vec3(-1, 0, i));
+
+		std::map<int, Chunk*>& chunks = World::GetChunks();
+
+		std::vector<Chunk*> chunksVector;
+
+		for (auto const& entry : chunks)
+		{
+			Chunk* c = entry.second;
+			chunksVector.push_back(entry.second);
+		}
+
+	//	int index = Utils::ChunkPositionToIndex(glm::vec3(1, 0, 0));
+
+		//Chunk* chunk = World::GetChunkFromIndex(index);
+
+		std::cout << "chunk p; " << chunk->GetIndex()*//*chunk->m_Blocks[0][0][0].ChunkExistsAtRelativePosition(glm::vec3(1, 0, 0))*//* << "\n";
+	}*/
 
 	auto stop = std::chrono::high_resolution_clock::now();
 
 	auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
-	std::cout << "Seconds: " << duration.count() << std::endl;
+	//std::cout << "Seconds: " << duration.count() << std::endl;
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
-	glfwSwapInterval(0);
+	//glfwSwapInterval(0);
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -183,7 +219,7 @@ int main()
 		// If a second has passed.
 		if (currentTime - previousTime >= 1.0)
 		{
-			std::cout << frameCount << std::endl;
+			//std::cout << cameraPos.x << ", " << cameraPos.y << ", " << cameraPos.z << std::endl;
 
 			frameCount = 0;
 			previousTime = currentTime;

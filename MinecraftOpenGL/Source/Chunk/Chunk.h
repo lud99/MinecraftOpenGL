@@ -27,6 +27,7 @@ public:
 	ChunkBlock* GetBlockAt(glm::vec3 position);
 
 	glm::vec3 GetPosition();
+	glm::vec3 GetWorldPosition();
 	void SetPosition(glm::vec3 position);
 
 	int GetIndex();

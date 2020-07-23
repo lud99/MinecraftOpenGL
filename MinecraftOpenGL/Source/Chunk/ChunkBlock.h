@@ -1,17 +1,18 @@
 #pragma once
 
-#include "../Mesh.h"
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
 class Chunk;
 
-class ChunkBlock : public Mesh
+class ChunkBlock
 {
 public:
 	ChunkBlock();
 
-	void AddBlockFace(const float* face, glm::vec3 position, const glm::vec4* colors);
-	void AddBlockFaces(glm::vec3 localPosition, const glm::vec4* colors);
-	void AddAllBlockFaces(glm::vec3 position, const glm::vec4* colors);
+	void AddBlockFace(const float* face, const glm::vec4* colors);
+	void AddBlockFaces(const glm::vec4* colors);
+	void AddAllBlockFaces(const glm::vec4* colors);
 
 	Chunk* GetChunk();
 
@@ -22,6 +23,9 @@ public:
 	void SetWorldPosition(glm::vec3 position);
 
 	~ChunkBlock();
+
+public:
+	bool ChunkExistsAtRelativePosition(glm::vec3 offset);
 
 public:
 	bool m_Hidden = false;

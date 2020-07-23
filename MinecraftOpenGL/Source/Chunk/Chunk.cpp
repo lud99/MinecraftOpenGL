@@ -19,15 +19,20 @@ Chunk::Chunk(glm::vec3 position)
 	// Fill the array with blocks
 	m_Blocks = new ChunkBlock**[Chunk::Width];
 
-	for (int i = 0; i < Chunk::Width; i++)
+	// Create the blocks on the x axis
+	for (int x = 0; x < Chunk::Width; x++)
 	{
-		m_Blocks[i] = new ChunkBlock*[Chunk::Height];
+		m_Blocks[x] = new ChunkBlock*[Chunk::Height]; // Blocks on x reference an array of y blocks 
 
-		for (int j = 0; j < Chunk::Height; j++)
+		for (int y = 0; y < Chunk::Height; y++)
 		{
-			m_Blocks[i][j] = new ChunkBlock[Chunk::Depth];
-			for (int k = 0; k < Chunk::Depth; k++)
-				m_Blocks[i][j][k].m_ChunkIndex = m_Index;
+			m_Blocks[x][y] = new ChunkBlock[Chunk::Depth]; // Blocks on xy reference array of z blocks
+
+			for (int z = 0; z < Chunk::Depth; z++) // All blocks are already created. Iterate through each block to set some variables
+			{
+				m_Blocks[x][y][z].m_ChunkIndex = m_Index;
+				m_Blocks[x][y][z].SetLocalPosition(glm::vec3(x, y, z));
+			}
 		}
 	}
 }
@@ -40,13 +45,12 @@ void Chunk::Fill(const glm::vec4* colors)
 		{
 			for (int z = 0; z < Width; z++)
 			{
-				//std::cout << x << "; " << y << "; " << z << "\n";
 				glm::vec3 position(x, y, z); 
 
 				ChunkBlock* block = GetBlockAt(position);
 
 				// Add all the faces on the cube
-				block->AddBlockFaces(position, colors);
+				block->AddBlockFaces(colors);
 			}
 		}
 	}
@@ -83,6 +87,12 @@ ChunkBlock* Chunk::GetBlockAt(glm::vec3 position)
 }
 
 glm::vec3 Chunk::GetPosition() { return m_Position; }
+
+glm::vec3 Chunk::GetWorldPosition()
+{
+	return m_Position * glm::vec3(Chunk::Width, 1, Chunk::Depth);
+}
+
 void Chunk::SetPosition(glm::vec3 position) { m_Position = position; }
 
 int Chunk::GetIndex() { return m_Index; }
