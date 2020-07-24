@@ -149,6 +149,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\Chunk\ChunkBlock.cpp" />
+    <ClCompile Include="Source\FastNoise\FastNoise.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\Chunk\Chunk.cpp" />
     <ClCompile Include="Source\Shaders\Shader.cpp" />
@@ -159,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Chunk\ChunkBlock.h" />
+    <ClInclude Include="Source\FastNoise\FastNoise.h" />
     <ClInclude Include="Source\Mesh.h" />
     <ClInclude Include="Source\Chunk\Chunk.h" />
     <ClInclude Include="Source\Shaders\Shader.h" />

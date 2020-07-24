@@ -56,55 +56,13 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	cameraFront = glm::normalize(direction);
 }
 
-const glm::vec4 colors[36] = {
-		glm::vec4(0.583f,  0.771f,  0.014f, 1.0f),
-		glm::vec4(0.609f,  0.115f,  0.436f, 1.0f),
-		glm::vec4(0.327f,  0.483f,  0.844f, 1.0f),
-		glm::vec4(0.822f,  0.569f,  0.201f, 1.0f),
-		glm::vec4(0.435f,  0.602f,  0.223f, 1.0f),
-		glm::vec4(0.310f,  0.747f,  0.185f, 1.0f),
-		glm::vec4(0.597f,  0.770f,  0.761f, 1.0f),
-		glm::vec4(0.559f,  0.436f,  0.730f, 1.0f),
-		glm::vec4(0.359f,  0.583f,  0.152f, 1.0f),
-		glm::vec4(0.483f,  0.596f,  0.789f, 1.0f),
-		glm::vec4(0.559f,  0.861f,  0.639f, 1.0f),
-		glm::vec4(0.195f,  0.548f,  0.859f, 1.0f),
-		glm::vec4(0.014f,  0.184f,  0.576f, 1.0f),
-		glm::vec4(0.771f,  0.328f,  0.970f, 1.0f),
-		glm::vec4(0.406f,  0.615f,  0.116f, 1.0f),
-		glm::vec4(0.676f,  0.977f,  0.133f, 1.0f),
-		glm::vec4(0.971f,  0.572f,  0.833f, 1.0f),
-		glm::vec4(0.140f,  0.616f,  0.489f, 1.0f),
-		glm::vec4(0.997f,  0.513f,  0.064f, 1.0f),
-		glm::vec4(0.945f,  0.719f,  0.592f, 1.0f),
-		glm::vec4(0.543f,  0.021f,  0.978f, 1.0f),
-		glm::vec4(0.279f,  0.317f,  0.505f, 1.0f),
-		glm::vec4(0.167f,  0.620f,  0.077f, 1.0f),
-		glm::vec4(0.347f,  0.857f,  0.137f, 1.0f),
-		glm::vec4(0.055f,  0.953f,  0.042f, 1.0f),
-		glm::vec4(0.714f,  0.505f,  0.345f, 1.0f),
-		glm::vec4(0.783f,  0.290f,  0.734f, 1.0f),
-		glm::vec4(0.722f,  0.645f,  0.174f, 1.0f),
-		glm::vec4(0.302f,  0.455f,  0.848f, 1.0f),
-		glm::vec4(0.225f,  0.587f,  0.040f, 1.0f),
-		glm::vec4(0.517f,  0.713f,  0.338f, 1.0f),
-		glm::vec4(0.053f,  0.959f,  0.120f, 1.0f),
-		glm::vec4(0.393f,  0.621f,  0.362f, 1.0f),
-		glm::vec4(0.673f,  0.211f,  0.457f, 1.0f),
-		glm::vec4(0.820f,  0.883f,  0.371f, 1.0f),
-		glm::vec4(0.982f,  0.099f,  0.879f, 1.0f),
-};
-
-void CreateChunks(int count)
+void CreateChunks(int count, float offset = 1)
 {
-	float o = 1;// 1.0625;
 	for (int x = 0; x < count; x++)
 	{
 		for (int z = 0; z < count; z++)
 		{
-			Chunk* chunk = World::CreateChunk(glm::vec3(x * o, 0, z  *o));
-
-			//std::cout << x << "," << z << "\n"; 
+			Chunk* chunk = World::CreateChunk(glm::vec3(x * offset, 0, z * offset));
 		}
 	}
 
@@ -112,10 +70,10 @@ void CreateChunks(int count)
 	{
 		for (int z = 0; z < count; z++)
 		{
-			Chunk* chunk = World::GetChunkAtPosition(glm::vec3(x*o, 0, z*o));
+			Chunk* chunk = World::GetChunkAtPosition(glm::vec3(x * offset, 0, z * offset));
 
 			// Fill the chunk with blocks
-			chunk->Fill(colors);
+			chunk->GenerateTerrain();
 
 			// Create the block mesh
 			chunk->UpdateMesh();
@@ -156,32 +114,7 @@ int main()
 	// 1160mb
 	auto start = std::chrono::high_resolution_clock::now();
 
-	CreateChunks(16);
-
-	int a = Utils::ChunkPositionToIndex(glm::vec3(-1, 0, 1));
-	int b = Utils::ChunkPositionToIndex(glm::vec3(7, 0, 0));
-
-	/*for (int i = 0; i < 8; i++) {
-		Chunk* chunk = World::GetChunkAtPosition(glm::vec3(i, 0, 0));
-
-		int index = Utils::ChunkPositionToIndex(glm::vec3(-1, 0, i));
-
-		std::map<int, Chunk*>& chunks = World::GetChunks();
-
-		std::vector<Chunk*> chunksVector;
-
-		for (auto const& entry : chunks)
-		{
-			Chunk* c = entry.second;
-			chunksVector.push_back(entry.second);
-		}
-
-	//	int index = Utils::ChunkPositionToIndex(glm::vec3(1, 0, 0));
-
-		//Chunk* chunk = World::GetChunkFromIndex(index);
-
-		std::cout << "chunk p; " << chunk->GetIndex()*//*chunk->m_Blocks[0][0][0].ChunkExistsAtRelativePosition(glm::vec3(1, 0, 0))*//* << "\n";
-	}*/
+	CreateChunks(4);
 
 	auto stop = std::chrono::high_resolution_clock::now();
 
@@ -205,7 +138,22 @@ int main()
 
 	double previousTime = glfwGetTime();
 	int frameCount = 0;
+	/*
+	for (auto const& entry : World::GetChunks())
+	{
+		for (int x = 0; x < 16; x++)
+		{
+			for (int y = 0; y < 16; y++)
+			{
+				for (int z = 0; z < 16; z++)
+				{
+					//chunk->GetBlockAt(glm::vec3(0, 0, 0))->t = 6;
 
+					std::cout << entry.second->GetBlockAt(glm::vec3(x, y, z))->m_Enabled;
+				}
+			}
+		}
+	}*/
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{

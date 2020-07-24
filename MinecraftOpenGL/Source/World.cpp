@@ -21,7 +21,11 @@ std::map<int, Chunk*>& World::GetChunks()
 
 Chunk* World::GetChunkFromIndex(int index)
 {
-	return m_Chunks[index];
+	// Check if it exists
+	if (ChunkExistsAtIndex(index))
+		return m_Chunks.at(index);
+	
+	return nullptr;
 }
 
 Chunk* World::GetChunkAtPosition(glm::vec3 position)
@@ -31,32 +35,22 @@ Chunk* World::GetChunkAtPosition(glm::vec3 position)
 	return GetChunkFromIndex(index);
 }
 
+bool World::ChunkExistsAtIndex(int index)
+{
+	return m_Chunks.count(index) > 0;
+}
+
 bool World::ChunkExistsAtPosition(glm::vec3 position)
 {
 	int index = Utils::ChunkPositionToIndex(position);
 
-	bool b = m_Chunks.count(index) > 0;
-
-	if (b)
-	{
-		Chunk* chunk = GetChunkFromIndex(index);
-		glm::vec3 p = chunk->GetPosition();
-
-		int a = 2;
-	}
-
-	return b;
-
-	/*
-	-1, 0, 0 = -1
-	*/
+	return m_Chunks.count(index) > 0;
 }
 
 void World::Render()
 {
 	for (auto const& entry : m_Chunks)
 	{
-		Chunk* c = entry.second;
 		entry.second->Render();
 	}
 		

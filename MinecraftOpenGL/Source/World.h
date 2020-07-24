@@ -16,6 +16,7 @@ namespace World
 	Chunk* GetChunkFromIndex(int index);
 	Chunk* GetChunkAtPosition(glm::vec3 position);
 
+	bool ChunkExistsAtIndex(int index);
 	bool ChunkExistsAtPosition(glm::vec3 position);
 
 	void Render();

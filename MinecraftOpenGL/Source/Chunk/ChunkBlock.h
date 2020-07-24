@@ -5,6 +5,18 @@
 
 class Chunk;
 
+struct AdjacentChunks
+{
+	AdjacentChunks();
+
+	Chunk* Left = nullptr;
+	Chunk* Right = nullptr;
+	Chunk* Top = nullptr;
+	Chunk* Bottom = nullptr;
+	Chunk* Back = nullptr;
+	Chunk* Front = nullptr;
+};
+
 class ChunkBlock
 {
 public:
@@ -22,16 +34,39 @@ public:
 	void SetLocalPosition(glm::vec3 position);
 	void SetWorldPosition(glm::vec3 position);
 
+	void SetEnabled(bool flag);
+	bool GetEnabled();
+
 	~ChunkBlock();
 
-public:
+private:
+	enum ChunkBorderEdges {
+		None = -1,
+		Left,
+		Right,
+		Bottom,
+		Top,
+		Back,
+		Front
+	};
+
+	Chunk* GetChunkAtRelativePosition(glm::vec3 offset);
+	ChunkBlock* GetBlockAtRelativePosition(glm::vec3 offset);
+
 	bool ChunkExistsAtRelativePosition(glm::vec3 offset);
+	bool BlockExistsAtRelativePosition(glm::vec3 offset);
+
+	bool ShouldAddBlockFace(ChunkBorderEdges direction, Chunk* adjacentChunk, glm::vec3 offset);
+
+	AdjacentChunks GetAdjacentChunks();
 
 public:
-	bool m_Hidden = false;
+	int t = -1;
 
 	unsigned int m_ChunkIndex = 0;
 
 private:
 	glm::vec3 m_LocalPosition;
+
+	bool m_Enabled = false;
 };
