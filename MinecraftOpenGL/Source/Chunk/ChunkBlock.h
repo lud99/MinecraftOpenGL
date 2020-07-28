@@ -3,6 +3,10 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
+#include "../Textures/Texture2D.h"
+#include "../Textures/TextureList.h"
+#include "../Blocks/BlockTypes.h"
+
 class Chunk;
 
 struct AdjacentChunks
@@ -22,7 +26,7 @@ class ChunkBlock
 public:
 	ChunkBlock();
 
-	void AddBlockFace(const float* face, const glm::vec4* colors);
+	void AddBlockFace(BlockFace& face);
 	void AddBlockFaces(const glm::vec4* colors);
 	void AddAllBlockFaces(const glm::vec4* colors);
 
@@ -42,12 +46,12 @@ public:
 private:
 	enum ChunkBorderEdges {
 		None = -1,
-		Left,
-		Right,
-		Bottom,
-		Top,
-		Back,
-		Front
+		Left = 0,
+		Right = 1,
+		Bottom = 2,
+		Top = 3,
+		Back = 4,
+		Front = 5
 	};
 
 	Chunk* GetChunkAtRelativePosition(glm::vec3 offset);
@@ -61,9 +65,9 @@ private:
 	AdjacentChunks GetAdjacentChunks();
 
 public:
-	int t = -1;
-
 	unsigned int m_ChunkIndex = 0;
+
+	Block* m_BlockType;
 
 private:
 	glm::vec3 m_LocalPosition;

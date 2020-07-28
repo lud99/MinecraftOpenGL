@@ -80,7 +80,7 @@ public:
 
 public:
 	static const int Width = 16;
-	static const int Height = 256;
+	static const int Height = 16;
 	static const int Depth = 16;
 
 	static const int BlockCount = Width * Height * Depth;

@@ -7,12 +7,12 @@
 #include "../World.h"
 #include "../Mesh.h"
 #include "../Utils.h"
+#include "../Textures/TextureList.h"
 
 AdjacentChunks::AdjacentChunks() { }
 
 ChunkBlock::ChunkBlock()
 {
-
 }
 
 bool ChunkBlock::ShouldAddBlockFace(ChunkBorderEdges direction, Chunk* adjacentChunk, glm::vec3 offset)
@@ -33,6 +33,16 @@ bool ChunkBlock::ShouldAddBlockFace(ChunkBorderEdges direction, Chunk* adjacentC
 		break;
 	case Right:
 		if (m_LocalPosition.x + 1 >= Chunk::Width)
+			isAtChunkBorder = true;
+
+		break;
+	case Bottom:
+		if (m_LocalPosition.y - 1 < 0)
+			isAtChunkBorder = true;
+
+		break;
+	case Top:
+		if (m_LocalPosition.y + 1 >= Chunk::Height)
 			isAtChunkBorder = true;
 
 		break;
@@ -57,6 +67,9 @@ bool ChunkBlock::ShouldAddBlockFace(ChunkBorderEdges direction, Chunk* adjacentC
 
 	if (isAtChunkBorder)
 	{
+		// Because chunks don't stack vertically, nothing can occlude the top or bottom blocks
+		if (direction == Bottom || direction == Top) return true;
+
 		//std::cout << m_Enabled;
 		return true;// if (!adjacentChunk && m_Enabled) return true;
 		return false;
@@ -79,27 +92,31 @@ bool ChunkBlock::ShouldAddBlockFace(ChunkBorderEdges direction, Chunk* adjacentC
 	return false;
 }
 
-void ChunkBlock::AddBlockFace(const float* face, const glm::vec4* colors)
+void ChunkBlock::AddBlockFace(BlockFace& face)
 {
-	for (int i = 0; i < 18; i += 3)
+	Chunk* chunk = GetChunk();
+
+	for (int i = 0; i < 4; i ++)
 	{
-		// Convert the vertex's position to a vec3
-		glm::vec3 vertexPosition(face[i + 0], face[i + 1], face[i + 2]);
-		
-		GetChunk()->m_Vertices.push_back(Vertex(vertexPosition + GetWorldPosition(), colors[i / 3]));
+		BlockTexture& texture = World::Textures[face.textureId];
+
+		chunk->m_Vertices.push_back(Vertex(face.positions[i] + GetWorldPosition(), colors[i / 3], texture.textureCoordinates[i]));
 	}
+
+	for (int i = 0; i < 6; i++)
+		chunk->m_Indices.push_back(CubeFaces::Indices[i] + chunk->m_Vertices.size() - 4);
 }
 
 void ChunkBlock::AddAllBlockFaces(const glm::vec4* colors)
 {
 	if (!m_Enabled) return;
 
-	AddBlockFace(CubeFaces::Bottom, &colors[0 * 0]);
-	AddBlockFace(CubeFaces::Top, &colors[6 * 1]);
-	AddBlockFace(CubeFaces::Left, &colors[6 * 2]);
-	AddBlockFace(CubeFaces::Right, &colors[6 * 3]);
-	AddBlockFace(CubeFaces::Front, &colors[6 * 4]);
-	AddBlockFace(CubeFaces::Back, &colors[6 * 5]);
+	AddBlockFace(m_BlockType->faces[Left]);
+	AddBlockFace(m_BlockType->faces[Right]);
+	AddBlockFace(m_BlockType->faces[Top]);
+	AddBlockFace(m_BlockType->faces[Bottom]);
+	AddBlockFace(m_BlockType->faces[Back]);
+	AddBlockFace(m_BlockType->faces[Front]);
 }
 
 void ChunkBlock::AddBlockFaces(const glm::vec4* colors)
@@ -110,21 +127,21 @@ void ChunkBlock::AddBlockFaces(const glm::vec4* colors)
 
 	// Check for chunks on the x axis
 	if (ShouldAddBlockFace(Left, adjacentChunks.Left, glm::vec3(-1, 0, 0)))
-		AddBlockFace(CubeFaces::Left, &colors[6 * 2]);
+		AddBlockFace(m_BlockType->faces[Left]);
 	if (ShouldAddBlockFace(Right, adjacentChunks.Right, glm::vec3(1, 0, 0)))
-		AddBlockFace(CubeFaces::Right, &colors[6 * 3]);
+		AddBlockFace(m_BlockType->faces[Right]);
 
 	// Check for chunks on the y axis
 	if (ShouldAddBlockFace(Top, adjacentChunks.Top, glm::vec3(0, 1, 0)))
-		AddBlockFace(CubeFaces::Top, &colors[6 * 1]);
+		AddBlockFace(m_BlockType->faces[Top]);
 	if (ShouldAddBlockFace(Bottom, adjacentChunks.Bottom, glm::vec3(0, -1, 0)))
-		AddBlockFace(CubeFaces::Bottom, &colors[6 * 0]);
+		AddBlockFace(m_BlockType->faces[Bottom]);
 
 	// Check for chunks on the z axis
 	if (ShouldAddBlockFace(Back, adjacentChunks.Back, glm::vec3(0, 0, -1)))
-		AddBlockFace(CubeFaces::Back, &colors[6 * 4]);
+		AddBlockFace(m_BlockType->faces[Back]);
 	if (ShouldAddBlockFace(Front, adjacentChunks.Front, glm::vec3(0, 0, 1)))
-		AddBlockFace(CubeFaces::Front, &colors[6 * 5]);
+		AddBlockFace(m_BlockType->faces[Front]);
 }
 
 Chunk* ChunkBlock::GetChunk()

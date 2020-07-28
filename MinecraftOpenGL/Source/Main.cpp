@@ -1,3 +1,5 @@
+#define STB_IMAGE_IMPLEMENTATION
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -13,6 +15,7 @@
 #include "Chunk/Chunk.h"
 #include "Chunk/ChunkBlock.h"
 #include "World.h"
+#include "Textures/TextureList.h"
 
 float lastX = 400, lastY = 300;
 float yaw = 0, pitch = 0;
@@ -79,8 +82,8 @@ void CreateChunks(int count, float offset = 1)
 			chunk->UpdateMesh();
 		}
 	}
-
 }
+
 
 int main()
 {
@@ -105,25 +108,25 @@ int main()
 		std::cout << "Error initializing GLEW\n";
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
 	glfwSetCursorPosCallback(window, mouse_callback);
+	//glfwSwapInterval(0);
 
 	// Print the OpenGL version
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
-	// 1160mb
 	auto start = std::chrono::high_resolution_clock::now();
+
+	World::Init();
 
 	CreateChunks(4);
 
 	auto stop = std::chrono::high_resolution_clock::now();
 
 	auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
-	//std::cout << "Seconds: " << duration.count() << std::endl;
+	std::cout << "Seconds: " << duration.count() << std::endl;
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
-	//glfwSwapInterval(0);
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -138,22 +141,7 @@ int main()
 
 	double previousTime = glfwGetTime();
 	int frameCount = 0;
-	/*
-	for (auto const& entry : World::GetChunks())
-	{
-		for (int x = 0; x < 16; x++)
-		{
-			for (int y = 0; y < 16; y++)
-			{
-				for (int z = 0; z < 16; z++)
-				{
-					//chunk->GetBlockAt(glm::vec3(0, 0, 0))->t = 6;
 
-					std::cout << entry.second->GetBlockAt(glm::vec3(x, y, z))->m_Enabled;
-				}
-			}
-		}
-	}*/
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
@@ -204,7 +192,11 @@ int main()
 		shader.SetUniform("u_ProjectionMatrix", projection);
 		shader.SetUniform("u_ViewMatrix", view);
 
+		//glUniform1i(glGetUniformLocation(shader.m_id, "tex"), 0);
+
+		//glEnable(GL_TEXTURE_2D);
 		World::Render();
+		//glDisable(GL_TEXTURE_2D);
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);

@@ -16,7 +16,7 @@ public:
 
 	~Shader();
 
-private:
+public:
 	unsigned int m_id;
 };
 

@@ -5,77 +5,63 @@
 #include <glm/vec3.hpp>
 
 #include "Vertex.h"
+#include "Textures/Texture2D.h"
+
+enum Faces {
+	Left = 0,
+	Right = 1,
+	Bottom = 2,
+	Top = 3,
+	Back = 4,
+	Front = 5
+};
 
 namespace CubeFaces {
-	const static float Top[18] = {
-		 0.5f,  0.5f,  0.5f,
-		 0.5f,  0.5f, -0.5f,
-		-0.5f,  0.5f, -0.5f,
-
-		 0.5f,  0.5f,  0.5f,
-		-0.5f,  0.5f, -0.5f,
-		-0.5f,  0.5f,  0.5f,
+	const static glm::vec3 Top[4] = {
+		glm::vec3(-0.5f,  0.5f,  0.5f),
+		glm::vec3( 0.5f,  0.5f,  0.5f),
+		glm::vec3( 0.5f,  0.5f, -0.5f),
+		glm::vec3(-0.5f,  0.5f, -0.5f),
 	};
 
-	const static float Bottom[] = {
-		 0.5f, -0.5f, 0.5f,
-		-0.5f, -0.5f, 0.5f,
-		-0.5f, -0.5f,-0.5f,
-
-		 0.5f, -0.5f,  0.5f,
-		-0.5f, -0.5f, -0.5f,
-		 0.5f, -0.5f, -0.5f,
+	const static glm::vec3 Bottom[4] = {
+		glm::vec3(-0.5f, -0.5f,  0.5f),
+		glm::vec3( 0.5f, -0.5f,  0.5f),
+		glm::vec3( 0.5f, -0.5f, -0.5f),
+		glm::vec3(-0.5f, -0.5f, -0.5f),
 	};
 
-	const static float Left[18] = {
-		-0.5f, -0.5f, -0.5f,
-		-0.5f, -0.5f,  0.5f,
-		-0.5f,  0.5f,  0.5f,
-
-		-0.5f, -0.5f, -0.5f,
-		-0.5f,  0.5f,  0.5f,
-		-0.5f,  0.5f, -0.5f,
+	const static glm::vec3 Left[4] = {
+		glm::vec3(-0.5f, -0.5f, -0.5f),
+		glm::vec3(-0.5f, -0.5f,  0.5f),
+		glm::vec3(-0.5f,  0.5f,  0.5f),
+		glm::vec3(-0.5f,  0.5f, -0.5f),
 	};
 
-	const static float Right[18] = {
-		0.5f, -0.5f, -0.5f,
-		0.5f,  0.5f,  0.5f,
-		0.5f, -0.5f,  0.5f,
-
-		0.5f,  0.5f,  0.5f,
-		0.5f, -0.5f, -0.5f,
-		0.5f,  0.5f, -0.5f,
+	const static glm::vec3 Right[4] = {
+		glm::vec3( 0.5f, -0.5f, -0.5f),
+		glm::vec3( 0.5f, -0.5f,  0.5f),
+		glm::vec3( 0.5f,  0.5f,  0.5f),
+		glm::vec3( 0.5f,  0.5f, -0.5f),
 	};
 
-	const static float Front[18] = {
-		 0.5f,  0.5f,  0.5f,
-		-0.5f,  0.5f,  0.5f,
-		 0.5f, -0.5f,  0.5f,
-		 
-		-0.5f,  0.5f, 0.5f,
-		-0.5f, -0.5f, 0.5f,
-		 0.5f, -0.5f, 0.5f,
+	const static glm::vec3 Front[4] = {
+		glm::vec3(-0.5f, -0.5f,  0.5f),
+		glm::vec3( 0.5f, -0.5f,  0.5f),
+		glm::vec3( 0.5f,  0.5f,  0.5f),
+		glm::vec3(-0.5f,  0.5f,  0.5f),
 	};
 
-	const static float Back[18] = {
-		-0.5f, -0.5f, -0.5f,
-		 0.5f, -0.5f, -0.5f,
-		 0.5f,  0.5f, -0.5f,
-
-		 0.5f,  0.5f, -0.5f,
-		-0.5f,  0.5f, -0.5f,
-		-0.5f, -0.5f, -0.5f,
+	const static glm::vec3 Back[4] = {
+		glm::vec3(-0.5f, -0.5f, -0.5f),
+		glm::vec3( 0.5f, -0.5f, -0.5f),
+		glm::vec3( 0.5f,  0.5f, -0.5f),
+		glm::vec3(-0.5f,  0.5f, -0.5f),
 	};
 
-	const static float _Back[12] = {
-		-0.5f, -0.5f, -0.5f,
-		 0.5f, -0.5f, -0.5f,
+	const glm::vec3* GetFace(int id);
 
-		 0.5f,  0.5f, -0.5f,
-		-0.5f,  0.5f, -0.5f,
-	};
-
-	const static unsigned int BackIndices[6] = {
+	const static unsigned int Indices[6] = {
 		0, 1, 2,
 		2, 3, 0
 	};
@@ -90,7 +76,6 @@ public:
 	void CreateVao();
 
 	void UpdateVertices(const std::vector<Vertex>&);
-	void UpdateVertices(const std::vector<Vertex>&, const unsigned int indices[]);
 	void SetVertexAttributes();
 
 	void BindVao();
@@ -109,9 +94,15 @@ public:
 
 public:
 	std::vector<Vertex> m_Vertices;
+	std::vector<unsigned int> m_Indices;
+
+	int m_TextureIndex = -1;
+
+	Texture2D* m_Texture;
 
 protected:
 	unsigned int m_Vao;
 	unsigned int m_Vbo;
 	unsigned int m_Ibo;
+	unsigned int m_Ebo;
 };

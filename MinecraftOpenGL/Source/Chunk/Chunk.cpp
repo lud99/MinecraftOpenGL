@@ -4,17 +4,20 @@
 
 #include <iostream>
 
-#include "../FastNoise/FastNoise.h"
-
+#include "../Noise/FastNoise.h"
 #include "ChunkBlock.h"
 #include "../Utils.h"
+#include "../BLocks/BlockTypes.h"
+#include "../World.h"
 
 Chunk::Chunk(glm::vec3 position)
 {
 	// Generate vertex array object
 	CreateVao();
-
+	
 	SetPosition(position);
+
+	m_Texture = World::Textures.Atlas;
 
 	m_Index = Utils::ChunkPositionToIndex(position);
 
@@ -35,6 +38,7 @@ Chunk::Chunk(glm::vec3 position)
 				m_Blocks[x][y][z].m_ChunkIndex = m_Index;
 				m_Blocks[x][y][z].SetEnabled(false);
 				m_Blocks[x][y][z].SetLocalPosition(glm::vec3(x, y, z));
+				m_Blocks[x][y][z].m_BlockType = &BlockTypes::Blocks[BlockIds::Dirt];
 			}
 		}
 	}
@@ -75,6 +79,8 @@ void Chunk::CreateSphere(const glm::vec4* colors)
 	}
 }
 
+
+
 void Chunk::GenerateTerrain()
 {
 	FastNoise myNoise; // Create a FastNoise object
@@ -90,13 +96,19 @@ void Chunk::GenerateTerrain()
 
 
 				glm::vec3 worldPosition = block->GetWorldPosition();
-				float height = (int)((myNoise.GetNoise(worldPosition.x, worldPosition.z) + 1) / 2 * 16);
+				int height = (int)((myNoise.GetNoise(worldPosition.x, worldPosition.z) + 1) / 2 * 16);
 
-				if (y == height) 
+				if (y < height) 
 				{
 					block->SetEnabled(true);
+					block->m_BlockType = &BlockTypes::Blocks[BlockIds::Dirt];
 				} 
-				else if (y < height || y > height) 
+				else if (y == height)
+				{
+					block->SetEnabled(true);
+					block->m_BlockType = &BlockTypes::Blocks[BlockIds::Grass];
+				}
+				else if (y > height) 
 				{
 					block->SetEnabled(false);
 				}

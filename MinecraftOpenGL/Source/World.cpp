@@ -1,9 +1,18 @@
 #include "World.h"
 
+#include <iostream>
+
+#include <glm/vec3.hpp>
+
 #include "Chunk/Chunk.h"
 #include "Utils.h"
-#include <iostream>
-#include <glm/vec3.hpp>
+#include "Blocks/BlockTypes.h"
+
+void World::Init()
+{
+	Textures.Load();
+	BlockTypes::CreateBlocks();
+}
 
 Chunk* World::CreateChunk(glm::vec3 position)
 {
@@ -56,4 +65,5 @@ void World::Render()
 		
 }
 
+TextureList World::Textures;
 unsigned int World::m_ChunkCount = 0;

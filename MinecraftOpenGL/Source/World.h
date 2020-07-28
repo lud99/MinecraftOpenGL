@@ -4,6 +4,7 @@
 #include <glm/vec3.hpp>
 
 #include "Utils.h"
+#include "Textures/TextureList.h"
 
 class Chunk;
 
@@ -19,9 +20,13 @@ namespace World
 	bool ChunkExistsAtIndex(int index);
 	bool ChunkExistsAtPosition(glm::vec3 position);
 
+	void Init();
+
 	void Render();
 
 	extern unsigned int m_ChunkCount;
+
+	extern TextureList Textures;
 
 	namespace {
 		std::map<int, Chunk*> m_Chunks;

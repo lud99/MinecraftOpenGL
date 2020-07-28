@@ -4,6 +4,21 @@
 
 #include <GL/glew.h>
 
+const glm::vec3* CubeFaces::GetFace(int id)
+{
+	switch (id)
+	{
+	case Faces::Left: return Left;
+	case Faces::Right: return Right;
+	case Faces::Bottom: return Bottom;
+	case Faces::Top: return Top;
+	case Faces::Back: return Back;
+	case Faces::Front: return Front;
+	}
+
+	return nullptr;
+}
+
 Mesh::Mesh()
 {
 }
@@ -35,40 +50,16 @@ void Mesh::UpdateVertices(const std::vector<Vertex>& vertices)
 	if (m_Vbo == 0)
 		glGenBuffers(1, &m_Vbo);
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_Vbo);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
-
-	SetVertexAttributes();
-
-	UnbindBuffer();
-	UnbindVao();
-}
-
-void Mesh::UpdateVertices(const std::vector<Vertex>& vertices, const unsigned int indices[])
-{
-	// Don't update the vertices if there are none
-	if (vertices.empty())
-		return;
-
-	m_Vertices = vertices;
-
-	BindVao();
-
-	// Generate a vertex buffer if none has been created before
-	if (m_Vbo == 0)
-		glGenBuffers(1, &m_Vbo);
+	// Generate element array object if none has been created before
+	if (m_Ebo == 0)
+		glGenBuffers(1, &m_Ebo);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_Vbo);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(unsigned int), &m_Indices[0], GL_STATIC_DRAW);
 
 	SetVertexAttributes();
-
-	// Generate a index buffer if none has been created before
-	if (m_Ibo == 0)
-		glGenBuffers(1, &m_Ibo);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	UnbindBuffer();
 	UnbindVao();
@@ -83,6 +74,10 @@ void Mesh::SetVertexAttributes()
 	// Color
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 4 /* r, g, b, a */, GL_FLOAT, GL_FALSE, sizeof(Vertex) /* Number of total bytes */, (const void*)offsetof(Vertex, color));
+
+	// Texture coordinates
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2 /* x, y */, GL_FLOAT, GL_FALSE, sizeof(Vertex) /* Number of total bytes */, (const void*)offsetof(Vertex, textureCoordinates));
 }
 
 void Mesh::BindVao() { glBindVertexArray(m_Vao); }
@@ -96,12 +91,11 @@ void Mesh::UnbindBuffer() { glBindBuffer(GL_ARRAY_BUFFER, 0); }
 void Mesh::Render()
 {
 	BindVao();
-	//BindBuffer(m_Ibo);
+	m_Texture->Bind();
 
-	//glDrawElements(GL_TRIANGLES, m_Vertices.size(), GL_UNSIGNED_INT, nullptr);
-	glDrawArrays(GL_TRIANGLES, 0, m_Vertices.size());
+	glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
 
-	//UnbindBuffer();
+	m_Texture->Unbind();
 	UnbindVao();
 }
 
