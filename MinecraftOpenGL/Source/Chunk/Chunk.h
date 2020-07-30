@@ -51,12 +51,14 @@
 class ChunkBlock;
 class ChunkMesh;
 
-class Chunk : public Mesh
+class Chunk
 {
 public:
 	Chunk(glm::ivec2 position);
 
 	void UpdateMesh();
+
+	void Render();
 
 	void Fill(const glm::vec4* colors);
 	void CreateSphere(const glm::vec4* colors);
@@ -69,7 +71,7 @@ public:
 	ChunkBlock* GetBlockAt(glm::ivec3 position);
 	ChunkBlock* GetBlockAt(glm::vec3 position);
 
-	bool BlockExistsAt(glm::vec3 localPosition);
+	bool BlockExistsAt(glm::vec3 localPosition, bool includeTransparentBlocks = false);
 
 	glm::ivec2& GetPosition();
 	glm::ivec2 GetWorldPosition();
@@ -89,6 +91,9 @@ public:
 	bool m_HasGenerated = false;
 
 	ChunkBlock*** m_Blocks;
+
+	Mesh m_OpaqueMesh;
+	Mesh m_WaterMesh;
 
 private:
 	glm::ivec2 m_Position = glm::ivec2(0, 0);

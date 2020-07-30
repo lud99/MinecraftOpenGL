@@ -10,15 +10,18 @@
 #include "../Utils.h"
 #include "../BLocks/BlockTypes.h"
 #include "../World.h"
+#include "../Mesh.h"
 
 Chunk::Chunk(glm::ivec2 position)
 {
 	// Generate vertex array object
-	CreateVao();
+	m_OpaqueMesh.CreateVao();
+	m_WaterMesh.CreateVao();
 	
 	SetPosition(position);
 
-	m_Texture = World::Textures.Atlas;
+	m_OpaqueMesh.m_Texture = World::Textures.Atlas;
+	m_WaterMesh.m_Texture = World::Textures.Atlas;
 
 	m_Index = Utils::ChunkPositionToIndex(position);
 
@@ -193,7 +196,14 @@ void Chunk::UpdateMesh()
 		}
 	}
 
-	UpdateVertices(m_Vertices);
+	m_OpaqueMesh.Update();
+	m_WaterMesh.Update();
+}
+
+void Chunk::Render()
+{
+	m_OpaqueMesh.Render();
+	m_WaterMesh.Render();
 }
 
 void Chunk::SetBlockAt(glm::ivec3 position, ChunkBlock* newBlock)
@@ -221,17 +231,20 @@ ChunkBlock* Chunk::GetBlockAt(glm::vec3 position)
 	return GetBlockAt((glm::ivec3)position);
 }
 
-bool Chunk::BlockExistsAt(glm::vec3 localPosition)
+bool Chunk::BlockExistsAt(glm::vec3 localPosition, bool includeTransparentBlocks)
 {
-	ChunkBlock* b= GetBlockAt(localPosition);
+	ChunkBlock* block = GetBlockAt(localPosition);
 
-	if (GetBlockAt(localPosition)->m_BlockType == NULL)
+	if (block->m_BlockType == NULL)
 		return false;
 
-	if (b->m_BlockType == &BlockTypes::Blocks[BlockIds::Air])
+	if (block->m_BlockType == &BlockTypes::Blocks[BlockIds::Air])
 		return true;
 
-	if (!b->GetEnabled())
+	if (includeTransparentBlocks && block->m_BlockType->isTransparent)
+		return false;
+
+	if (!block->GetEnabled())
 		return false;
 
 	return true;

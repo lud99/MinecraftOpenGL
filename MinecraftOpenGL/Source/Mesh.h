@@ -75,6 +75,7 @@ public:
 
 	void CreateVao();
 
+	void Update();
 	void UpdateVertices(const std::vector<Vertex>&);
 	void SetVertexAttributes();
 
@@ -90,13 +91,10 @@ public:
 	const unsigned int GetVao();
 
 	~Mesh();
-	unsigned int test = 1;
 
 public:
 	std::vector<Vertex> m_Vertices;
 	std::vector<unsigned int> m_Indices;
-
-	int m_TextureIndex = -1;
 
 	Texture2D* m_Texture;
 

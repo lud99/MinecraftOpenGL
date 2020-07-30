@@ -36,6 +36,11 @@ void Mesh::CreateVao()
 	glGenVertexArrays(1, &m_Vao);
 }
 
+void Mesh::Update()
+{
+	UpdateVertices(m_Vertices);
+}
+
 void Mesh::UpdateVertices(const std::vector<Vertex>& vertices)
 {
 	// Don't update the vertices if there are none

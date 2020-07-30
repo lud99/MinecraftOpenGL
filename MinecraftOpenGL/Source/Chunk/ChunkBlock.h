@@ -58,7 +58,7 @@ private:
 	ChunkBlock* GetBlockAtRelativePosition(glm::ivec3 offset);
 
 	bool ChunkExistsAtRelativePosition(glm::ivec3 offset);
-	bool BlockExistsAtRelativePosition(glm::ivec3 offset);
+	bool BlockExistsAtRelativePosition(glm::ivec3 offset, bool includeTransparentBlocks = false);
 
 	bool ShouldAddBlockFace(ChunkBorderEdges direction, Chunk* adjacentChunk, glm::ivec3 offset);
 

@@ -84,14 +84,24 @@ bool ChunkBlock::ShouldAddBlockFace(ChunkBorderEdges direction, Chunk* adjacentC
 			return true;
 	}
 	else if(m_LocalPosition.y + offset.y >= 0 && m_LocalPosition.y + offset.y <= Chunk::Height - 1) {
-		//ChunkBlock* b = GetBlockAtRelativePosition(offset);
+		ChunkBlock* block = GetBlockAtRelativePosition(offset);
 
-		//if (m_BlockType->isTransparent && b->m_BlockType->isTransparent);
-			//return false;
+		if (block->m_BlockType == NULL)
+			return true;
+
+		if (block->m_BlockType == &BlockTypes::Blocks[BlockIds::Air])
+			return true;
+
+		if (block->m_BlockType->isTransparent && !m_BlockType->isTransparent)
+			return true;
+
+		if (block->GetEnabled())
+			return false;
+
 
 		// Check if a block exists at offset
-		if (!BlockExistsAtRelativePosition(offset))
-			return true;
+		//if (!BlockExistsAtRelativePosition(offset, true))
+			//return true;
 	}
 
 	return false;
@@ -107,13 +117,19 @@ void ChunkBlock::AddBlockFace(BlockFace& face)
 
 		glm::vec3 position = face.positions[i] + (glm::vec3)GetWorldPosition();
 
-		//std::cout << position.x << ", ";
-
-		chunk->m_Vertices.push_back(Vertex(position, texture.textureCoordinates[i]));
+		if (m_BlockType == &BlockTypes::Blocks[BlockIds::Water])
+			chunk->m_WaterMesh.m_Vertices.push_back(Vertex(position, texture.textureCoordinates[i]));
+		else
+			chunk->m_OpaqueMesh.m_Vertices.push_back(Vertex(position, texture.textureCoordinates[i]));
 	}
 
 	for (int i = 0; i < 6; i++)
-		chunk->m_Indices.push_back(CubeFaces::Indices[i] + chunk->m_Vertices.size() - 4);
+	{
+		if (m_BlockType == &BlockTypes::Blocks[BlockIds::Water])
+			chunk->m_WaterMesh.m_Indices.push_back(CubeFaces::Indices[i] + chunk->m_WaterMesh.m_Vertices.size() - 4);
+		else
+			chunk->m_OpaqueMesh.m_Indices.push_back(CubeFaces::Indices[i] + chunk->m_OpaqueMesh.m_Vertices.size() - 4);
+	}
 }
 
 void ChunkBlock::AddAllBlockFaces()
@@ -198,7 +214,7 @@ bool ChunkBlock::ChunkExistsAtRelativePosition(glm::ivec3 offset)
 	return World::ChunkExistsAtPosition(Utils::WorldPositionToChunkPosition(GetWorldPosition() + offset));
 }
 
-bool ChunkBlock::BlockExistsAtRelativePosition(glm::ivec3 offset)
+bool ChunkBlock::BlockExistsAtRelativePosition(glm::ivec3 offset, bool includeTransparentBlocks)
 {
 	return GetChunk()->BlockExistsAt(m_LocalPosition + offset);
 }
