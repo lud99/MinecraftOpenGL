@@ -15,11 +15,11 @@ ChunkBlock::ChunkBlock()
 {
 }
 
-bool ChunkBlock::ShouldAddBlockFace(ChunkBorderEdges direction, Chunk* adjacentChunk, glm::vec3 offset)
+bool ChunkBlock::ShouldAddBlockFace(ChunkBorderEdges direction, Chunk* adjacentChunk, glm::ivec3 offset)
 {
 	if (!m_Enabled) return false;
 
-	glm::vec3 blockInAdjacentChunkOffset(0, 0, 0);
+	glm::ivec3 blockInAdjacentChunkOffset(0, 0, 0);
 
 	bool isAtChunkBorder = false;
 
@@ -59,10 +59,10 @@ bool ChunkBlock::ShouldAddBlockFace(ChunkBorderEdges direction, Chunk* adjacentC
 	}
 	
 	switch (direction) {
-		case Left: blockInAdjacentChunkOffset = glm::vec3(Chunk::Width - 1, 0, 0); break;
-		case Right: blockInAdjacentChunkOffset = glm::vec3(-Chunk::Width + 1 , 0, 0); break;
-		case Back: blockInAdjacentChunkOffset = glm::vec3(0, 0, Chunk::Depth - 1); break;
-		case Front: blockInAdjacentChunkOffset = glm::vec3(0, 0, -Chunk::Depth + 1); break;
+		case Left: blockInAdjacentChunkOffset = glm::ivec3(Chunk::Width - 1, 0, 0); break;
+		case Right: blockInAdjacentChunkOffset = glm::ivec3(-Chunk::Width + 1 , 0, 0); break;
+		case Back: blockInAdjacentChunkOffset = glm::ivec3(0, 0, Chunk::Depth - 1); break;
+		case Front: blockInAdjacentChunkOffset = glm::ivec3(0, 0, -Chunk::Depth + 1); break;
 	}
 
 	if (isAtChunkBorder)
@@ -105,14 +105,18 @@ void ChunkBlock::AddBlockFace(BlockFace& face)
 	{
 		BlockTexture& texture = World::Textures[face.textureId];
 
-		chunk->m_Vertices.push_back(Vertex(face.positions[i] + GetWorldPosition(), texture.textureCoordinates[i]));
+		glm::vec3 position = face.positions[i] + (glm::vec3)GetWorldPosition();
+
+		//std::cout << position.x << ", ";
+
+		chunk->m_Vertices.push_back(Vertex(position, texture.textureCoordinates[i]));
 	}
 
 	for (int i = 0; i < 6; i++)
 		chunk->m_Indices.push_back(CubeFaces::Indices[i] + chunk->m_Vertices.size() - 4);
 }
 
-void ChunkBlock::AddAllBlockFaces(const glm::vec4* colors)
+void ChunkBlock::AddAllBlockFaces()
 {
 	if (!m_Enabled) return;
 
@@ -124,28 +128,28 @@ void ChunkBlock::AddAllBlockFaces(const glm::vec4* colors)
 	AddBlockFace(m_BlockType->faces[Front]);
 }
 
-void ChunkBlock::AddBlockFaces(const glm::vec4* colors)
+void ChunkBlock::AddBlockFaces()
 {
 	if (!GetEnabled()) return;
 
 	AdjacentChunks adjacentChunks = GetAdjacentChunks();
 
 	// Check for chunks on the x axis
-	if (ShouldAddBlockFace(Left, adjacentChunks.Left, glm::vec3(-1, 0, 0)))
+	if (ShouldAddBlockFace(Left, adjacentChunks.Left, glm::ivec3(-1, 0, 0)))
 		AddBlockFace(m_BlockType->faces[Left]);
-	if (ShouldAddBlockFace(Right, adjacentChunks.Right, glm::vec3(1, 0, 0)))
+	if (ShouldAddBlockFace(Right, adjacentChunks.Right, glm::ivec3(1, 0, 0)))
 		AddBlockFace(m_BlockType->faces[Right]);
 
 	// Check for chunks on the y axis
-	if (ShouldAddBlockFace(Top, adjacentChunks.Top, glm::vec3(0, 1, 0)))
+	if (ShouldAddBlockFace(Top, adjacentChunks.Top, glm::ivec3(0, 1, 0)))
 		AddBlockFace(m_BlockType->faces[Top]);
-	if (ShouldAddBlockFace(Bottom, adjacentChunks.Bottom, glm::vec3(0, -1, 0)))
+	if (ShouldAddBlockFace(Bottom, adjacentChunks.Bottom, glm::ivec3(0, -1, 0)))
 		AddBlockFace(m_BlockType->faces[Bottom]);
 
 	// Check for chunks on the z axis
-	if (ShouldAddBlockFace(Back, adjacentChunks.Back, glm::vec3(0, 0, -1)))
+	if (ShouldAddBlockFace(Back, adjacentChunks.Back, glm::ivec3(0, 0, -1)))
 		AddBlockFace(m_BlockType->faces[Back]);
-	if (ShouldAddBlockFace(Front, adjacentChunks.Front, glm::vec3(0, 0, 1)))
+	if (ShouldAddBlockFace(Front, adjacentChunks.Front, glm::ivec3(0, 0, 1)))
 		AddBlockFace(m_BlockType->faces[Front]);
 }
 
@@ -154,22 +158,24 @@ Chunk* ChunkBlock::GetChunk()
 	return World::GetChunkFromIndex(m_ChunkIndex);
 }
 
-const glm::vec3 ChunkBlock::GetLocalPosition() 
+const glm::ivec3 ChunkBlock::GetLocalPosition() 
 { 
 	return m_LocalPosition; 
 }
 
-const glm::vec3 ChunkBlock::GetWorldPosition() 
+const glm::ivec3 ChunkBlock::GetWorldPosition() 
 { 
-	return m_LocalPosition + GetChunk()->GetWorldPosition(); 
+	glm::ivec2 chunkPosition = GetChunk()->GetWorldPosition();
+
+	return m_LocalPosition + glm::ivec3(chunkPosition.x, 0, chunkPosition.y);
 }
 
-void ChunkBlock::SetLocalPosition(glm::vec3 position) 
+void ChunkBlock::SetLocalPosition(glm::ivec3 position) 
 { 
 	m_LocalPosition = position; 
 
 }
-void ChunkBlock::SetWorldPosition(glm::vec3 position) 
+void ChunkBlock::SetWorldPosition(glm::ivec3 position) 
 { 
 	m_LocalPosition = position; 
 }
@@ -177,22 +183,22 @@ void ChunkBlock::SetWorldPosition(glm::vec3 position)
 void ChunkBlock::SetEnabled(bool flag) { m_Enabled = flag; }
 bool ChunkBlock::GetEnabled() { return m_Enabled; }
 
-Chunk* ChunkBlock::GetChunkAtRelativePosition(glm::vec3 offset)
+Chunk* ChunkBlock::GetChunkAtRelativePosition(glm::ivec3 offset)
 {
 	return World::GetChunkAtPosition(Utils::WorldPositionToChunkPosition(GetWorldPosition() + offset));
 }
 
-ChunkBlock* ChunkBlock::GetBlockAtRelativePosition(glm::vec3 offset)
+ChunkBlock* ChunkBlock::GetBlockAtRelativePosition(glm::ivec3 offset)
 {
 	return GetChunk()->GetBlockAt(m_LocalPosition + offset);
 }
 
-bool ChunkBlock::ChunkExistsAtRelativePosition(glm::vec3 offset)
+bool ChunkBlock::ChunkExistsAtRelativePosition(glm::ivec3 offset)
 {
 	return World::ChunkExistsAtPosition(Utils::WorldPositionToChunkPosition(GetWorldPosition() + offset));
 }
 
-bool ChunkBlock::BlockExistsAtRelativePosition(glm::vec3 offset)
+bool ChunkBlock::BlockExistsAtRelativePosition(glm::ivec3 offset)
 {
 	return GetChunk()->BlockExistsAt(m_LocalPosition + offset);
 }
@@ -201,10 +207,10 @@ AdjacentChunks ChunkBlock::GetAdjacentChunks()
 {
 	AdjacentChunks chunks;
 
-	chunks.Left = GetChunkAtRelativePosition(glm::vec3(-1, 0, 0));
-	chunks.Right = GetChunkAtRelativePosition(glm::vec3(1, 0, 0));
-	chunks.Back = GetChunkAtRelativePosition(glm::vec3(0, 0, -1));
-	chunks.Front = GetChunkAtRelativePosition(glm::vec3(0, 0, 1));
+	chunks.Left = GetChunkAtRelativePosition(glm::ivec3(-1, 0, 0));
+	chunks.Right = GetChunkAtRelativePosition(glm::ivec3(1, 0, 0));
+	chunks.Back = GetChunkAtRelativePosition(glm::ivec3(0, 0, -1));
+	chunks.Front = GetChunkAtRelativePosition(glm::ivec3(0, 0, 1));
 
 	return chunks;
 }

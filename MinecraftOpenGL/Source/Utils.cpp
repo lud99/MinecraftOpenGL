@@ -4,11 +4,11 @@
 
 #include "Chunk/Chunk.h";
 
-int Utils::to1D(glm::vec3& position, int width, int height, int depth) {
-	return position.x * width*width + position.y * width + position.z;
+int Utils::to1D(glm::vec3& position, int width) {
+	return position.x * width * width + position.y * width + position.z;
 }
 
-int Utils::to1D(glm::vec2 position, int width) {
+int Utils::to1D(glm::ivec2 position, int width) {
 	return position.x + width * position.y;
 }
 
@@ -27,9 +27,9 @@ glm::vec2 Utils::to2D(int index, int width) {
 	return glm::vec2(x, y);
 }
 
-int Utils::ChunkPositionToIndex(glm::vec3 position)
+int Utils::ChunkPositionToIndex(glm::ivec2 position)
 {
-	return to1D(position, Chunk::Width, Chunk::Height, Chunk::Depth);
+	return to1D(position, Chunk::Width);
 }
 
 glm::vec3 Utils::ChunkIndexToPosition(int index)

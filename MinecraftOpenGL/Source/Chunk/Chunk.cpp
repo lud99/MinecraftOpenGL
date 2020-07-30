@@ -11,7 +11,7 @@
 #include "../BLocks/BlockTypes.h"
 #include "../World.h"
 
-Chunk::Chunk(glm::vec3 position)
+Chunk::Chunk(glm::ivec2 position)
 {
 	// Generate vertex array object
 	CreateVao();
@@ -188,7 +188,7 @@ void Chunk::UpdateMesh()
 				ChunkBlock* block = GetBlockAt(glm::vec3(x, y, z));
 
 				// Add all the faces on the cube
-				block->AddBlockFaces(colors);
+				block->AddBlockFaces();
 			}
 		}
 	}
@@ -237,14 +237,14 @@ bool Chunk::BlockExistsAt(glm::vec3 localPosition)
 	return true;
 }
 
-glm::vec3 Chunk::GetPosition() { return m_Position; }
+glm::ivec2& Chunk::GetPosition() { return m_Position; }
 
-glm::vec3 Chunk::GetWorldPosition()
+glm::ivec2 Chunk::GetWorldPosition()
 {
-	return m_Position * glm::vec3(Chunk::Width, 1, Chunk::Depth);
+	return m_Position * glm::ivec2(Chunk::Width, Chunk::Depth);
 }
 
-void Chunk::SetPosition(glm::vec3 position) { m_Position = position; }
+void Chunk::SetPosition(glm::ivec2 position) { m_Position = position; }
 
 int Chunk::GetIndex() { return m_Index; }
 

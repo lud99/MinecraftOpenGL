@@ -59,16 +59,16 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	cameraFront = glm::normalize(direction);
 }
 
-void CreateChunks(int count, float offset = 1)
+void CreateChunks(int count, int offset = 1)
 {
 	for (int x = -count / 2; x < count / 2; x++)
 	{
 		for (int z = -count / 2; z < count / 2; z++)
 		{
-			if (World::ChunkExistsAtPosition(glm::vec3(x, 0, z)))
+			if (World::ChunkExistsAtPosition(glm::ivec2(x, z)))
 				continue;
 
-			Chunk* chunk = World::CreateChunk(glm::vec3(x * offset, 0, z * offset));
+			Chunk* chunk = World::CreateChunk(glm::ivec2(x * offset, z * offset));
 		}
 	}
 
@@ -76,7 +76,7 @@ void CreateChunks(int count, float offset = 1)
 	{
 		for (int z = -count / 2; z < count / 2; z++)
 		{
-			Chunk* chunk = World::GetChunkAtPosition(glm::vec3(x * offset, 0, z * offset));
+			Chunk* chunk = World::GetChunkAtPosition(glm::ivec2(x * offset, z * offset));
 
 			if (chunk->m_HasGenerated)
 				continue;
@@ -89,6 +89,8 @@ void CreateChunks(int count, float offset = 1)
 		}
 	}
 }
+
+// New memory usage: 134mb
 
 
 int main()
@@ -131,7 +133,7 @@ int main()
 
 	auto start = std::chrono::high_resolution_clock::now();
 
-	int count = 4;
+	int count = 8;
 
 	CreateChunks(count);
 

@@ -10,15 +10,15 @@ class Chunk;
 
 namespace World
 {
-	Chunk* CreateChunk(glm::vec3 position);
+	Chunk* CreateChunk(glm::ivec2 position);
 
 	std::map<int, Chunk*>& GetChunks();
 
 	Chunk* GetChunkFromIndex(int index);
-	Chunk* GetChunkAtPosition(glm::vec3 position);
+	Chunk* GetChunkAtPosition(glm::ivec2 position);
 
 	bool ChunkExistsAtIndex(int index);
-	bool ChunkExistsAtPosition(glm::vec3 position);
+	bool ChunkExistsAtPosition(glm::ivec2 position);
 
 	void Init();
 

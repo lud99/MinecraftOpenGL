@@ -14,7 +14,7 @@ void World::Init()
 	BlockTypes::CreateBlocks();
 }
 
-Chunk* World::CreateChunk(glm::vec3 position)
+Chunk* World::CreateChunk(glm::ivec2 position)
 {
 	int chunkIndex = Utils::ChunkPositionToIndex(position);
 
@@ -37,7 +37,7 @@ Chunk* World::GetChunkFromIndex(int index)
 	return nullptr;
 }
 
-Chunk* World::GetChunkAtPosition(glm::vec3 position)
+Chunk* World::GetChunkAtPosition(glm::ivec2 position)
 {
 	int index = Utils::ChunkPositionToIndex(position);
 
@@ -49,7 +49,7 @@ bool World::ChunkExistsAtIndex(int index)
 	return m_Chunks.count(index) > 0;
 }
 
-bool World::ChunkExistsAtPosition(glm::vec3 position)
+bool World::ChunkExistsAtPosition(glm::ivec2 position)
 {
 	int index = Utils::ChunkPositionToIndex(position);
 
