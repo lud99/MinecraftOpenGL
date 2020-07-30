@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 
 #include <iostream>
+#include <algorithm>
 
 #include "../Noise/FastNoise.h"
 #include "ChunkBlock.h"
@@ -38,7 +39,7 @@ Chunk::Chunk(glm::vec3 position)
 				m_Blocks[x][y][z].m_ChunkIndex = m_Index;
 				m_Blocks[x][y][z].SetEnabled(false);
 				m_Blocks[x][y][z].SetLocalPosition(glm::vec3(x, y, z));
-				m_Blocks[x][y][z].m_BlockType = &BlockTypes::Blocks[BlockIds::Dirt];
+				m_Blocks[x][y][z].m_BlockType = &BlockTypes::Blocks[BlockIds::Air];
 			}
 		}
 	}
@@ -79,48 +80,101 @@ void Chunk::CreateSphere(const glm::vec4* colors)
 	}
 }
 
+float Normalize(float num)
+{
+	return std::abs(num) * 2;
+}
 
+float GetOctaveNoise(float x, float z, int octaves, int f = 4)
+{
+	FastNoise noise; // Create a FastNoise object
+	noise.SetSeed(122);
+	noise.SetNoiseType(FastNoise::Simplex); // Set the desired noise type
+
+	float height = 0;
+	float u = 1.0f;
+
+	for (int i = 0; i < octaves; i++) {
+		height += noise.GetNoise(x / u, z / u) * u;
+		u *= 2.0f;
+	}
+
+	return height;
+}
+
+float GetCombinedNoise(float x, float z, int octaves1, int octaves2, int f = 1)
+{
+	return GetOctaveNoise(x + GetOctaveNoise(x, z, octaves1, f), z, octaves2, f);
+}
 
 void Chunk::GenerateTerrain()
 {
-	FastNoise myNoise; // Create a FastNoise object
-	myNoise.SetNoiseType(FastNoise::SimplexFractal); // Set the desired noise type
+	int waterLevel = Height / 2;
 
 	for (int x = 0; x < Width; x++)
 	{
-		for (int y = 0; y < Height; y++) 
+		for (int z = 0; z < Depth; z++)
 		{
-			for (int z = 0; z < Depth; z++)
+			glm::vec3 worldPosition = GetBlockAt(glm::vec3(x, 0, z))->GetWorldPosition();
+
+			float scale1 = 5.0f;
+			float scale2 = 12.0f;
+			float scale3 = 20.0f;
+
+			float noise1 = Normalize(GetOctaveNoise(worldPosition.x * scale1, worldPosition.z * scale1, 5)) / 1.75f - 2.f;
+			float noise2 = Normalize(GetOctaveNoise(worldPosition.x * scale2, worldPosition.z * scale2, 2)) / 2.f + 0.25f;
+			float noise3 = Normalize(GetOctaveNoise(worldPosition.x * scale3, worldPosition.z * scale3, 6)); // Holes
+
+			float height = noise1 + noise2;
+
+			bool setWater = false;
+
+			if (noise3 > 36) {
+				float s = 5.0f;
+
+				height = Normalize(GetOctaveNoise(worldPosition.x * s, worldPosition.z * s, 3)) / 2.f;
+			}
+
+			if (height < 1.0f) {
+				setWater = true;
+
+				height = 0;
+			}
+
+			int finalHeight = (int)floor(height) + waterLevel;
+
+			for (int y = 0; y < Height; y++)
 			{
 				ChunkBlock* block = GetBlockAt(glm::vec3(x, y, z));
 
-
-				glm::vec3 worldPosition = block->GetWorldPosition();
-				int height = (int)((myNoise.GetNoise(worldPosition.x, worldPosition.z) + 1) / 2 * 16);
-
-				if (y < height) 
+				if (y < finalHeight)
 				{
 					block->SetEnabled(true);
-					block->m_BlockType = &BlockTypes::Blocks[BlockIds::Dirt];
-				} 
-				else if (y == height)
-				{
-					block->SetEnabled(true);
-					block->m_BlockType = &BlockTypes::Blocks[BlockIds::Grass];
+
+					if (y < finalHeight - 2)
+						block->m_BlockType = &BlockTypes::Blocks[BlockIds::Stone];
+					else
+						block->m_BlockType = &BlockTypes::Blocks[BlockIds::Dirt];
 				}
-				else if (y > height) 
+				else if (y == finalHeight)
+				{
+					block->SetEnabled(true);
+
+					if (!setWater)
+						block->m_BlockType = &BlockTypes::Blocks[BlockIds::Grass];
+					else
+						block->m_BlockType = &BlockTypes::Blocks[BlockIds::Water];
+				}
+				else if (y > finalHeight)
 				{
 					block->SetEnabled(false);
+					block->m_BlockType = BlockIds::Air;
 				}
-
-
-
-				//std::cout << height << "\n";
-
-				//m_Blocks[x][y][z] = myNoise.GetNoise(x, y);
 			}
 		}
 	}
+
+	m_HasGenerated = true;
 }
 
 void Chunk::UpdateMesh()
@@ -170,7 +224,17 @@ ChunkBlock* Chunk::GetBlockAt(glm::vec3 position)
 bool Chunk::BlockExistsAt(glm::vec3 localPosition)
 {
 	ChunkBlock* b= GetBlockAt(localPosition);
-	return GetBlockAt(localPosition)->GetEnabled();
+
+	if (GetBlockAt(localPosition)->m_BlockType == NULL)
+		return false;
+
+	if (b->m_BlockType == &BlockTypes::Blocks[BlockIds::Air])
+		return true;
+
+	if (!b->GetEnabled())
+		return false;
+
+	return true;
 }
 
 glm::vec3 Chunk::GetPosition() { return m_Position; }

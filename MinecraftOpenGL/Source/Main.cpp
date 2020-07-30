@@ -20,8 +20,8 @@
 float lastX = 400, lastY = 300;
 float yaw = 0, pitch = 0;
 
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, -3.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraPos = glm::vec3(50.0f, 70.0f, 50.0f);
+glm::vec3 cameraFront = glm::vec3(1.0f, 0.0f, 0.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 bool firstMouse = true;
@@ -61,19 +61,25 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 void CreateChunks(int count, float offset = 1)
 {
-	for (int x = 0; x < count; x++)
+	for (int x = -count / 2; x < count / 2; x++)
 	{
-		for (int z = 0; z < count; z++)
+		for (int z = -count / 2; z < count / 2; z++)
 		{
+			if (World::ChunkExistsAtPosition(glm::vec3(x, 0, z)))
+				continue;
+
 			Chunk* chunk = World::CreateChunk(glm::vec3(x * offset, 0, z * offset));
 		}
 	}
 
-	for (int x = 0; x < count; x++)
+	for (int x = -count / 2; x < count / 2; x++)
 	{
-		for (int z = 0; z < count; z++)
+		for (int z = -count / 2; z < count / 2; z++)
 		{
 			Chunk* chunk = World::GetChunkAtPosition(glm::vec3(x * offset, 0, z * offset));
+
+			if (chunk->m_HasGenerated)
+				continue;
 
 			// Fill the chunk with blocks
 			chunk->GenerateTerrain();
@@ -109,26 +115,29 @@ int main()
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, mouse_callback);
-	//glfwSwapInterval(0);
+	glfwWindowHint(GLFW_SAMPLES, 4);
+	//glfwSwapInterval(0); // Vsync
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glEnable(GL_MULTISAMPLE);
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Print the OpenGL version
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
-	auto start = std::chrono::high_resolution_clock::now();
-
 	World::Init();
 
-	CreateChunks(4);
+	auto start = std::chrono::high_resolution_clock::now();
+
+	int count = 4;
+
+	CreateChunks(count);
 
 	auto stop = std::chrono::high_resolution_clock::now();
-
 	auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
 	std::cout << "Seconds: " << duration.count() << std::endl;
-
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
-
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Load shaders
 	Shader shader = ShaderLoader::CreateShader("Resources/Shaders/Basic.vert", "Resources/Shaders/Basic.frag");
@@ -173,6 +182,11 @@ int main()
 			cameraPos.y += cameraSpeed;
 		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 			cameraPos.y -= cameraSpeed;
+		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+			count += 2;
+
+			CreateChunks(count);
+		}
 
 		if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
 			cameraSpeed -= 0.025f;

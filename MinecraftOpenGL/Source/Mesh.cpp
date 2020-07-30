@@ -72,8 +72,8 @@ void Mesh::SetVertexAttributes()
 	glVertexAttribPointer(0, 3 /* x, y, z */, GL_FLOAT, GL_FALSE, sizeof(Vertex) /* Number of total bytes */, 0);
 
 	// Color
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 4 /* r, g, b, a */, GL_FLOAT, GL_FALSE, sizeof(Vertex) /* Number of total bytes */, (const void*)offsetof(Vertex, color));
+	//glEnableVertexAttribArray(1);
+	//glVertexAttribPointer(1, 4 /* r, g, b, a */, GL_FLOAT, GL_FALSE, sizeof(Vertex) /* Number of total bytes */, (const void*)offsetof(Vertex, color));
 
 	// Texture coordinates
 	glEnableVertexAttribArray(2);

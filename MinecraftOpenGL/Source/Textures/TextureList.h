@@ -18,7 +18,7 @@ struct BlockTexture {
 
 	glm::vec2 textureAtlasOffset;
 
-	void SetTextureAtlasOffset(glm::ivec2 offset);
+	void SetTextureAtlasOffset(glm::vec2 offset);
 	void CalculateCoordinates();
 };
 

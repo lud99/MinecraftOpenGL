@@ -67,7 +67,7 @@ private:
 public:
 	unsigned int m_ChunkIndex = 0;
 
-	Block* m_BlockType;
+	Block* m_BlockType = &BlockTypes::Blocks[BlockIds::Air];
 
 private:
 	glm::vec3 m_LocalPosition;

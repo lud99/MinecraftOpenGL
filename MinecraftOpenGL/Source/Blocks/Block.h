@@ -19,8 +19,15 @@ struct Block
 {
 	const std::string name;
 	int id;
+	bool isTransparent = false;
 
 	BlockFace faces[6];
 
 	static constexpr int facesCount = 6;
+
+	void SetTexture(int textureId)
+	{
+		for (int i = 0; i < facesCount; i++)
+			faces[i].textureId = textureId;
+	}
 };

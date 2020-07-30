@@ -14,15 +14,18 @@ namespace BlockTypes {
 			}
 		}
 
+		// Set all sides to the same texture as the default
+		Blocks[Dirt].SetTexture(TextureIds::Dirt);
+		Blocks[Stone].SetTexture(TextureIds::Stone);
+		Blocks[Water].SetTexture(TextureIds::Water);
+		Blocks[Water].isTransparent = true;
+
 		Blocks[Grass].faces[Left].textureId = TextureIds::GrassSide;
 		Blocks[Grass].faces[Right].textureId = TextureIds::GrassSide;
 		Blocks[Grass].faces[Bottom].textureId = TextureIds::Dirt;
 		Blocks[Grass].faces[Top].textureId = TextureIds::GrassTop;
 		Blocks[Grass].faces[Front].textureId = TextureIds::GrassSide;
 		Blocks[Grass].faces[Back].textureId = TextureIds::GrassSide;
-
-		for (int i = 0; i < Blocks[Dirt].facesCount; i++)
-			Blocks[Dirt].faces[i].textureId = TextureIds::Dirt;
 	}
 }
 

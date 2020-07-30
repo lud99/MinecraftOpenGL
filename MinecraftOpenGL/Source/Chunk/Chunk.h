@@ -80,10 +80,12 @@ public:
 
 public:
 	static const int Width = 16;
-	static const int Height = 16;
+	static const int Height = 128;
 	static const int Depth = 16;
 
 	static const int BlockCount = Width * Height * Depth;
+
+	bool m_HasGenerated = false;
 
 	ChunkBlock*** m_Blocks;
 

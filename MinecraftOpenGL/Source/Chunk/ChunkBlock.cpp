@@ -70,9 +70,10 @@ bool ChunkBlock::ShouldAddBlockFace(ChunkBorderEdges direction, Chunk* adjacentC
 		// Because chunks don't stack vertically, nothing can occlude the top or bottom blocks
 		if (direction == Bottom || direction == Top) return true;
 
-		//std::cout << m_Enabled;
-		return true;// if (!adjacentChunk && m_Enabled) return true;
-		return false;
+		if (!adjacentChunk && m_Enabled) return true;
+
+		return true;
+		
 
 		glm::vec3 p = m_LocalPosition + blockInAdjacentChunkOffset;
 
@@ -83,11 +84,15 @@ bool ChunkBlock::ShouldAddBlockFace(ChunkBorderEdges direction, Chunk* adjacentC
 			return true;
 	}
 	else if(m_LocalPosition.y + offset.y >= 0 && m_LocalPosition.y + offset.y <= Chunk::Height - 1) {
+		//ChunkBlock* b = GetBlockAtRelativePosition(offset);
+
+		//if (m_BlockType->isTransparent && b->m_BlockType->isTransparent);
+			//return false;
+
 		// Check if a block exists at offset
 		if (!BlockExistsAtRelativePosition(offset))
 			return true;
 	}
-	else return false;
 
 	return false;
 }
@@ -100,7 +105,7 @@ void ChunkBlock::AddBlockFace(BlockFace& face)
 	{
 		BlockTexture& texture = World::Textures[face.textureId];
 
-		chunk->m_Vertices.push_back(Vertex(face.positions[i] + GetWorldPosition(), colors[i / 3], texture.textureCoordinates[i]));
+		chunk->m_Vertices.push_back(Vertex(face.positions[i] + GetWorldPosition(), texture.textureCoordinates[i]));
 	}
 
 	for (int i = 0; i < 6; i++)
