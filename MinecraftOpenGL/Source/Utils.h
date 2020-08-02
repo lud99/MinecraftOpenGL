@@ -13,5 +13,5 @@ namespace Utils
 	int ChunkPositionToIndex(glm::ivec2 position);
 	glm::vec3 ChunkIndexToPosition(int index);
 
-	glm::vec3 WorldPositionToChunkPosition(glm::vec3 position);
+	glm::ivec2 WorldPositionToChunkPosition(glm::vec3 position);
 }

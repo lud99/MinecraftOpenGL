@@ -41,6 +41,8 @@ public:
 	void SetEnabled(bool flag);
 	bool GetEnabled();
 
+	Block* GetBlockType();
+
 	~ChunkBlock();
 
 private:
@@ -54,20 +56,20 @@ private:
 		Front = 5
 	};
 
-	Chunk* GetChunkAtRelativePosition(glm::ivec3 offset);
+	Chunk* GetChunkAtRelativePosition(glm::ivec2 offset);
 	ChunkBlock* GetBlockAtRelativePosition(glm::ivec3 offset);
 
 	bool ChunkExistsAtRelativePosition(glm::ivec3 offset);
 	bool BlockExistsAtRelativePosition(glm::ivec3 offset, bool includeTransparentBlocks = false);
 
-	bool ShouldAddBlockFace(ChunkBorderEdges direction, Chunk* adjacentChunk, glm::ivec3 offset);
+	bool ShouldAddBlockFace(ChunkBorderEdges direction, Chunk* adjacentChunk);
 
 	AdjacentChunks GetAdjacentChunks();
 
 public:
-	unsigned int m_ChunkIndex = 0;
+	int m_ChunkIndex = 0;
 
-	Block* m_BlockType = &BlockTypes::Blocks[BlockIds::Air];
+	int m_BlockId = BlockIds::Air;
 
 private:
 	glm::ivec3 m_LocalPosition;

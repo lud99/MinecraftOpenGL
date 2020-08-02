@@ -9,6 +9,8 @@ namespace BlockTypes {
 	void CreateBlocks()
 	{
 		for (int i = 0; i < Count; i++) {
+			Blocks[i].id = i;
+			
 			for (int j = 0; j < Block::facesCount; j++) {
 				Blocks[i].faces[j].positions = CubeFaces::GetFace(j);
 			}

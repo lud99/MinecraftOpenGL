@@ -37,13 +37,10 @@ glm::vec3 Utils::ChunkIndexToPosition(int index)
 	return to3D(index, Chunk::Width, Chunk::Height, Chunk::Depth);
 }
 
-glm::vec3 Utils::WorldPositionToChunkPosition(glm::vec3 position)
+glm::ivec2 Utils::WorldPositionToChunkPosition(glm::vec3 position)
 {
-	glm::vec3 chunkPosition(
+	return glm::ivec2(
 		floor(position.x / Chunk::Width),
-		floor(position.y / Chunk::Height),
 		floor(position.z / Chunk::Depth)
 	);
-
-	return chunkPosition;
 }

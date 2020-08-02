@@ -20,7 +20,7 @@
 float lastX = 400, lastY = 300;
 float yaw = 0, pitch = 0;
 
-glm::vec3 cameraPos = glm::vec3(50.0f, 70.0f, 50.0f);
+glm::vec3 cameraPos = glm::vec3(0.0f, 10.0f, 0.0f);
 glm::vec3 cameraFront = glm::vec3(1.0f, 0.0f, 0.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -68,7 +68,7 @@ void CreateChunks(int count, int offset = 1)
 			if (World::ChunkExistsAtPosition(glm::ivec2(x, z)))
 				continue;
 
-			Chunk* chunk = World::CreateChunk(glm::ivec2(x * offset, z * offset));
+			Chunk* chunk = World::CreateChunk(glm::ivec2(x, z));
 		}
 	}
 
@@ -76,22 +76,27 @@ void CreateChunks(int count, int offset = 1)
 	{
 		for (int z = -count / 2; z < count / 2; z++)
 		{
-			Chunk* chunk = World::GetChunkAtPosition(glm::ivec2(x * offset, z * offset));
+			Chunk* chunk = World::GetChunkAtPosition(glm::ivec2(x, z));
 
 			if (chunk->m_HasGenerated)
 				continue;
 
 			// Fill the chunk with blocks
 			chunk->GenerateTerrain();
+		}
+	}
+
+	for (int x = -count / 2; x < count / 2; x++)
+	{
+		for (int z = -count / 2; z < count / 2; z++)
+		{
+			Chunk* chunk = World::GetChunkAtPosition(glm::ivec2(x, z));
 
 			// Create the block mesh
 			chunk->UpdateMesh();
 		}
 	}
 }
-
-// New memory usage: 134mb
-
 
 int main()
 {
@@ -133,7 +138,7 @@ int main()
 
 	auto start = std::chrono::high_resolution_clock::now();
 
-	int count = 8;
+	int count = 2;
 
 	CreateChunks(count);
 
@@ -166,7 +171,7 @@ int main()
 		// If a second has passed.
 		if (currentTime - previousTime >= 1.0)
 		{
-			//std::cout << cameraPos.x << ", " << cameraPos.y << ", " << cameraPos.z << std::endl;
+		//	std::cout << frameCount << std::endl;
 
 			frameCount = 0;
 			previousTime = currentTime;

@@ -98,5 +98,5 @@ public:
 private:
 	glm::ivec2 m_Position = glm::ivec2(0, 0);
 
-	unsigned int m_Index;
+	int m_Index = 0;
 };

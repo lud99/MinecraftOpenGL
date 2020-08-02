@@ -42,7 +42,7 @@ Chunk::Chunk(glm::ivec2 position)
 				m_Blocks[x][y][z].m_ChunkIndex = m_Index;
 				m_Blocks[x][y][z].SetEnabled(false);
 				m_Blocks[x][y][z].SetLocalPosition(glm::vec3(x, y, z));
-				m_Blocks[x][y][z].m_BlockType = &BlockTypes::Blocks[BlockIds::Air];
+				m_Blocks[x][y][z].m_BlockId = BlockIds::Air;
 			}
 		}
 	}
@@ -155,23 +155,23 @@ void Chunk::GenerateTerrain()
 					block->SetEnabled(true);
 
 					if (y < finalHeight - 2)
-						block->m_BlockType = &BlockTypes::Blocks[BlockIds::Stone];
+						block->m_BlockId = BlockIds::Stone;
 					else
-						block->m_BlockType = &BlockTypes::Blocks[BlockIds::Dirt];
+						block->m_BlockId = BlockIds::Dirt;
 				}
 				else if (y == finalHeight)
 				{
 					block->SetEnabled(true);
 
 					if (!setWater)
-						block->m_BlockType = &BlockTypes::Blocks[BlockIds::Grass];
+						block->m_BlockId = BlockIds::Grass;
 					else
-						block->m_BlockType = &BlockTypes::Blocks[BlockIds::Water];
+						block->m_BlockId = BlockIds::Water;
 				}
 				else if (y > finalHeight)
 				{
 					block->SetEnabled(false);
-					block->m_BlockType = BlockIds::Air;
+					block->m_BlockId = BlockIds::Air;
 				}
 			}
 		}
@@ -188,7 +188,7 @@ void Chunk::UpdateMesh()
 		{
 			for (int x = 0; x < Chunk::Depth; x++)
 			{
-				ChunkBlock* block = GetBlockAt(glm::vec3(x, y, z));
+				ChunkBlock* block = GetBlockAt(glm::ivec3(x, y, z));
 
 				// Add all the faces on the cube
 				block->AddBlockFaces();
@@ -234,14 +234,15 @@ ChunkBlock* Chunk::GetBlockAt(glm::vec3 position)
 bool Chunk::BlockExistsAt(glm::vec3 localPosition, bool includeTransparentBlocks)
 {
 	ChunkBlock* block = GetBlockAt(localPosition);
+	Block* blockType = block->GetBlockType();
 
-	if (block->m_BlockType == NULL)
+	if (blockType == NULL)
 		return false;
 
-	if (block->m_BlockType == &BlockTypes::Blocks[BlockIds::Air])
+	if (blockType->id == BlockIds::Air)
 		return true;
 
-	if (includeTransparentBlocks && block->m_BlockType->isTransparent)
+	if (includeTransparentBlocks && blockType->isTransparent)
 		return false;
 
 	if (!block->GetEnabled())

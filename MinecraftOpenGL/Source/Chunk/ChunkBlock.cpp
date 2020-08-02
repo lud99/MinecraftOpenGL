@@ -15,11 +15,12 @@ ChunkBlock::ChunkBlock()
 {
 }
 
-bool ChunkBlock::ShouldAddBlockFace(ChunkBorderEdges direction, Chunk* adjacentChunk, glm::ivec3 offset)
+bool ChunkBlock::ShouldAddBlockFace(ChunkBorderEdges direction, Chunk* adjacentChunk)
 {
 	if (!m_Enabled) return false;
 
 	glm::ivec3 blockInAdjacentChunkOffset(0, 0, 0);
+	glm::ivec3 offset(0, 0, 0);
 
 	bool isAtChunkBorder = false;
 
@@ -30,78 +31,95 @@ bool ChunkBlock::ShouldAddBlockFace(ChunkBorderEdges direction, Chunk* adjacentC
 		if (m_LocalPosition.x - 1 < 0)
 			isAtChunkBorder = true;
 
+		offset = glm::ivec3(-1, 0, 0);
+		blockInAdjacentChunkOffset = glm::ivec3(Chunk::Width - 1, 0, 0);
+
 		break;
 	case Right:
 		if (m_LocalPosition.x + 1 >= Chunk::Width)
 			isAtChunkBorder = true;
+
+		offset = glm::ivec3(1, 0, 0);
+		blockInAdjacentChunkOffset = glm::ivec3(-Chunk::Width + 1, 0, 0);
 
 		break;
 	case Bottom:
 		if (m_LocalPosition.y - 1 < 0)
 			isAtChunkBorder = true;
 
+		offset = glm::ivec3(0, -1, 0);
+
 		break;
 	case Top:
 		if (m_LocalPosition.y + 1 >= Chunk::Height)
 			isAtChunkBorder = true;
+
+		offset = glm::ivec3(0, 1, 0);
 
 		break;
 	case Back:
 		if (m_LocalPosition.z - 1 < 0)
 			isAtChunkBorder = true;
 
+		offset = glm::ivec3(0, 0, -1);
+		blockInAdjacentChunkOffset = glm::ivec3(0, 0, Chunk::Depth - 1);
+
 		break;
 	case Front:
 		if (m_LocalPosition.z + 1 >= Chunk::Depth)
 			isAtChunkBorder = true;
 
+		offset = glm::ivec3(0, 0, 1);
+		blockInAdjacentChunkOffset = glm::ivec3(0, 0, -Chunk::Depth + 1);
+
 		break;
 	}
 	
-	switch (direction) {
-		case Left: blockInAdjacentChunkOffset = glm::ivec3(Chunk::Width - 1, 0, 0); break;
-		case Right: blockInAdjacentChunkOffset = glm::ivec3(-Chunk::Width + 1 , 0, 0); break;
-		case Back: blockInAdjacentChunkOffset = glm::ivec3(0, 0, Chunk::Depth - 1); break;
-		case Front: blockInAdjacentChunkOffset = glm::ivec3(0, 0, -Chunk::Depth + 1); break;
-	}
-
 	if (isAtChunkBorder)
 	{
 		// Because chunks don't stack vertically, nothing can occlude the top or bottom blocks
 		if (direction == Bottom || direction == Top) return true;
 
-		if (!adjacentChunk && m_Enabled) return true;
-
-		return true;
-		
-
-		glm::vec3 p = m_LocalPosition + blockInAdjacentChunkOffset;
+		if (!adjacentChunk)
+			return true;
 
 		// Check if the block adjacent to this one (in the adjacent chunk) is enabled
-		bool chunkHasBlock = adjacentChunk->BlockExistsAt(m_LocalPosition + blockInAdjacentChunkOffset);
 
-		if (!chunkHasBlock)
+		ChunkBlock* adjacentBlock = adjacentChunk->GetBlockAt(m_LocalPosition + blockInAdjacentChunkOffset);
+		Block* adjacentBlockType = adjacentBlock->GetBlockType();
+
+		// Return to prevent errors if the block doesn't have a valid block type
+		if (!adjacentBlockType)
 			return true;
+
+		// Don't render air blocks
+		if (adjacentBlock->m_BlockId == BlockIds::Air)			
+			return true;
+
+		// If the adjacent block is transparent and this block is opaque
+		// This is to prevent seeing a side of for example water inside other water blocks, which you wouldn't expect
+		if (adjacentBlockType->isTransparent && !GetBlockType()->isTransparent)
+			return true;
+
+		return false;
 	}
-	else if(m_LocalPosition.y + offset.y >= 0 && m_LocalPosition.y + offset.y <= Chunk::Height - 1) {
-		ChunkBlock* block = GetBlockAtRelativePosition(offset);
+	else if (m_LocalPosition.y + offset.y >= 0 && m_LocalPosition.y + offset.y <= Chunk::Height - 1) {
+		
+		ChunkBlock* adjacentBlock = GetBlockAtRelativePosition(offset);
+		Block* adjacentBlockType = adjacentBlock->GetBlockType();
 
-		if (block->m_BlockType == NULL)
+		// Return to prevent errors if the block doesn't have a valid block type
+		if (!adjacentBlockType)
 			return true;
 
-		if (block->m_BlockType == &BlockTypes::Blocks[BlockIds::Air])
+		// Don't render air blocks
+		if (adjacentBlock->m_BlockId == BlockIds::Air)
 			return true;
 
-		if (block->m_BlockType->isTransparent && !m_BlockType->isTransparent)
+		// If the adjacent block is transparent and this block is opaque
+		// This is to prevent seeing a side of for example water inside other water blocks, which you wouldn't expect
+		if (adjacentBlockType->isTransparent && !GetBlockType()->isTransparent)
 			return true;
-
-		if (block->GetEnabled())
-			return false;
-
-
-		// Check if a block exists at offset
-		//if (!BlockExistsAtRelativePosition(offset, true))
-			//return true;
 	}
 
 	return false;
@@ -117,7 +135,7 @@ void ChunkBlock::AddBlockFace(BlockFace& face)
 
 		glm::vec3 position = face.positions[i] + (glm::vec3)GetWorldPosition();
 
-		if (m_BlockType == &BlockTypes::Blocks[BlockIds::Water])
+		if (m_BlockId == BlockIds::Water)
 			chunk->m_WaterMesh.m_Vertices.push_back(Vertex(position, texture.textureCoordinates[i]));
 		else
 			chunk->m_OpaqueMesh.m_Vertices.push_back(Vertex(position, texture.textureCoordinates[i]));
@@ -125,7 +143,7 @@ void ChunkBlock::AddBlockFace(BlockFace& face)
 
 	for (int i = 0; i < 6; i++)
 	{
-		if (m_BlockType == &BlockTypes::Blocks[BlockIds::Water])
+		if (m_BlockId == BlockIds::Water)
 			chunk->m_WaterMesh.m_Indices.push_back(CubeFaces::Indices[i] + chunk->m_WaterMesh.m_Vertices.size() - 4);
 		else
 			chunk->m_OpaqueMesh.m_Indices.push_back(CubeFaces::Indices[i] + chunk->m_OpaqueMesh.m_Vertices.size() - 4);
@@ -136,12 +154,14 @@ void ChunkBlock::AddAllBlockFaces()
 {
 	if (!m_Enabled) return;
 
-	AddBlockFace(m_BlockType->faces[Left]);
-	AddBlockFace(m_BlockType->faces[Right]);
-	AddBlockFace(m_BlockType->faces[Top]);
-	AddBlockFace(m_BlockType->faces[Bottom]);
-	AddBlockFace(m_BlockType->faces[Back]);
-	AddBlockFace(m_BlockType->faces[Front]);
+	Block* blockType = GetBlockType();
+
+	AddBlockFace(blockType->faces[Left]);
+	AddBlockFace(blockType->faces[Right]);
+	AddBlockFace(blockType->faces[Top]);
+	AddBlockFace(blockType->faces[Bottom]);
+	AddBlockFace(blockType->faces[Back]);
+	AddBlockFace(blockType->faces[Front]);
 }
 
 void ChunkBlock::AddBlockFaces()
@@ -149,24 +169,25 @@ void ChunkBlock::AddBlockFaces()
 	if (!GetEnabled()) return;
 
 	AdjacentChunks adjacentChunks = GetAdjacentChunks();
+	Block* blockType = GetBlockType();
 
 	// Check for chunks on the x axis
-	if (ShouldAddBlockFace(Left, adjacentChunks.Left, glm::ivec3(-1, 0, 0)))
-		AddBlockFace(m_BlockType->faces[Left]);
-	if (ShouldAddBlockFace(Right, adjacentChunks.Right, glm::ivec3(1, 0, 0)))
-		AddBlockFace(m_BlockType->faces[Right]);
+	if (ShouldAddBlockFace(Left, adjacentChunks.Left))
+		AddBlockFace(blockType->faces[Left]);
+	if (ShouldAddBlockFace(Right, adjacentChunks.Right))
+		AddBlockFace(blockType->faces[Right]);
 
 	// Check for chunks on the y axis
-	if (ShouldAddBlockFace(Top, adjacentChunks.Top, glm::ivec3(0, 1, 0)))
-		AddBlockFace(m_BlockType->faces[Top]);
-	if (ShouldAddBlockFace(Bottom, adjacentChunks.Bottom, glm::ivec3(0, -1, 0)))
-		AddBlockFace(m_BlockType->faces[Bottom]);
+	if (ShouldAddBlockFace(Top, adjacentChunks.Top))
+		AddBlockFace(blockType->faces[Top]);
+	if (ShouldAddBlockFace(Bottom, adjacentChunks.Bottom))
+		AddBlockFace(blockType->faces[Bottom]);
 
 	// Check for chunks on the z axis
-	if (ShouldAddBlockFace(Back, adjacentChunks.Back, glm::ivec3(0, 0, -1)))
-		AddBlockFace(m_BlockType->faces[Back]);
-	if (ShouldAddBlockFace(Front, adjacentChunks.Front, glm::ivec3(0, 0, 1)))
-		AddBlockFace(m_BlockType->faces[Front]);
+	if (ShouldAddBlockFace(Back, adjacentChunks.Back))
+		AddBlockFace(blockType->faces[Back]);
+	if (ShouldAddBlockFace(Front, adjacentChunks.Front))
+		AddBlockFace(blockType->faces[Front]);
 }
 
 Chunk* ChunkBlock::GetChunk()
@@ -199,9 +220,14 @@ void ChunkBlock::SetWorldPosition(glm::ivec3 position)
 void ChunkBlock::SetEnabled(bool flag) { m_Enabled = flag; }
 bool ChunkBlock::GetEnabled() { return m_Enabled; }
 
-Chunk* ChunkBlock::GetChunkAtRelativePosition(glm::ivec3 offset)
+Block* ChunkBlock::GetBlockType() 
 {
-	return World::GetChunkAtPosition(Utils::WorldPositionToChunkPosition(GetWorldPosition() + offset));
+	return &BlockTypes::Blocks[m_BlockId];
+}
+
+Chunk* ChunkBlock::GetChunkAtRelativePosition(glm::ivec2 offset)
+{
+	return World::GetChunkAtPosition(Utils::WorldPositionToChunkPosition(GetWorldPosition() + glm::ivec3(offset.x, 0, offset.y)));
 }
 
 ChunkBlock* ChunkBlock::GetBlockAtRelativePosition(glm::ivec3 offset)
@@ -223,10 +249,10 @@ AdjacentChunks ChunkBlock::GetAdjacentChunks()
 {
 	AdjacentChunks chunks;
 
-	chunks.Left = GetChunkAtRelativePosition(glm::ivec3(-1, 0, 0));
-	chunks.Right = GetChunkAtRelativePosition(glm::ivec3(1, 0, 0));
-	chunks.Back = GetChunkAtRelativePosition(glm::ivec3(0, 0, -1));
-	chunks.Front = GetChunkAtRelativePosition(glm::ivec3(0, 0, 1));
+	chunks.Left = GetChunkAtRelativePosition(glm::ivec2(-1, 0));
+	chunks.Right = GetChunkAtRelativePosition(glm::ivec2(1, 0));
+	chunks.Back = GetChunkAtRelativePosition(glm::ivec2(0, -1));
+	chunks.Front = GetChunkAtRelativePosition(glm::ivec2(0, 1));
 
 	return chunks;
 }
