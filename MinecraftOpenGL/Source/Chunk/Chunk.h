@@ -56,7 +56,7 @@ class Chunk
 public:
 	Chunk(glm::ivec2 position);
 
-	void UpdateMesh();
+	void RebuildMesh();
 
 	void Render();
 
@@ -71,7 +71,7 @@ public:
 	ChunkBlock* GetBlockAt(glm::ivec3 position);
 	ChunkBlock* GetBlockAt(glm::vec3 position);
 
-	bool BlockExistsAt(glm::vec3 localPosition, bool includeTransparentBlocks = false);
+	bool BlockExistsAt(glm::vec3 localPosition);
 
 	glm::ivec2& GetPosition();
 	glm::ivec2 GetWorldPosition();

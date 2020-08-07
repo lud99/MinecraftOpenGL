@@ -8,11 +8,31 @@
 #include "Utils.h"
 #include "Blocks/BlockTypes.h"
 
-void World::Init()
+void World::Init(GLFWwindow* window)
 {
+	m_Window = window;
+
 	Textures.Load();
 	BlockTypes::CreateBlocks();
+
+	m_Player.SetWindow(window);
 }
+
+void World::Update()
+{
+	m_Player.Update();
+}
+
+void World::Render()
+{
+	for (auto const& entry : m_Chunks)
+		entry.second->m_OpaqueMesh.Render();
+
+	for (auto const& entry : m_Chunks)
+		entry.second->m_WaterMesh.Render();
+}
+
+Player& World::GetPlayer() { return m_Player; }
 
 Chunk* World::CreateChunk(glm::ivec2 position)
 {
@@ -23,17 +43,14 @@ Chunk* World::CreateChunk(glm::ivec2 position)
 	return m_Chunks[chunkIndex];
 }
 
-std::map<int, Chunk*>& World::GetChunks()
-{
-	return m_Chunks;
-}
+std::map<int, Chunk*>& World::GetChunks() { return m_Chunks; }
 
 Chunk* World::GetChunkFromIndex(int index)
 {
 	// Check if it exists
 	if (ChunkExistsAtIndex(index))
 		return m_Chunks.at(index);
-	
+
 	return nullptr;
 }
 
@@ -56,14 +73,6 @@ bool World::ChunkExistsAtPosition(glm::ivec2 position)
 	return m_Chunks.count(index) > 0;
 }
 
-void World::Render()
-{
-	for (auto const& entry : m_Chunks)
-	{
-		entry.second->Render();
-	}
-		
-}
-
 TextureList World::Textures;
+
 unsigned int World::m_ChunkCount = 0;

@@ -3,8 +3,6 @@
 #include "BlockIds.h"
 #include "../Textures/TextureIds.h"
 
-using namespace BlockIds;
-
 namespace BlockTypes {
 	void CreateBlocks()
 	{

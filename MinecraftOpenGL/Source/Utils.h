@@ -3,6 +3,8 @@
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 
+#include <algorithm>
+
 namespace Utils
 {
 	int to1D(glm::vec3& position, int width);
@@ -14,4 +16,9 @@ namespace Utils
 	glm::vec3 ChunkIndexToPosition(int index);
 
 	glm::ivec2 WorldPositionToChunkPosition(glm::vec3 position);
+
+	namespace Math
+	{
+		inline float Clamp(float value, float min, float max) { return std::max(min, std::min(value, max)); }
+ 	}
 }

@@ -23,7 +23,7 @@ struct BlockTexture {
 };
 
 struct TextureList {
-	static Texture2D* Atlas;
+	static Texture2D Atlas;
 
 	const static int TextureMapSize = 128;
 	const static int BlockSize = 16;

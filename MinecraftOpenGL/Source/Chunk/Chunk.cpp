@@ -20,8 +20,8 @@ Chunk::Chunk(glm::ivec2 position)
 	
 	SetPosition(position);
 
-	m_OpaqueMesh.m_Texture = World::Textures.Atlas;
-	m_WaterMesh.m_Texture = World::Textures.Atlas;
+	m_OpaqueMesh.m_Texture = &World::Textures.Atlas;
+	m_WaterMesh.m_Texture = &World::Textures.Atlas;
 
 	m_Index = Utils::ChunkPositionToIndex(position);
 
@@ -40,7 +40,6 @@ Chunk::Chunk(glm::ivec2 position)
 			for (int z = 0; z < Chunk::Depth; z++) // All blocks are already created. Iterate through each block to set some variables
 			{
 				m_Blocks[x][y][z].m_ChunkIndex = m_Index;
-				m_Blocks[x][y][z].SetEnabled(false);
 				m_Blocks[x][y][z].SetLocalPosition(glm::vec3(x, y, z));
 				m_Blocks[x][y][z].m_BlockId = BlockIds::Air;
 			}
@@ -180,8 +179,11 @@ void Chunk::GenerateTerrain()
 	m_HasGenerated = true;
 }
 
-void Chunk::UpdateMesh()
+void Chunk::RebuildMesh()
 {
+	m_OpaqueMesh.Clear();
+	m_WaterMesh.Clear();
+
 	for (int z = 0; z < Chunk::Width; z++)
 	{
 		for (int y = 0; y < Chunk::Height; y++)
@@ -231,22 +233,15 @@ ChunkBlock* Chunk::GetBlockAt(glm::vec3 position)
 	return GetBlockAt((glm::ivec3)position);
 }
 
-bool Chunk::BlockExistsAt(glm::vec3 localPosition, bool includeTransparentBlocks)
+bool Chunk::BlockExistsAt(glm::vec3 localPosition)
 {
 	ChunkBlock* block = GetBlockAt(localPosition);
-	Block* blockType = block->GetBlockType();
 
-	if (blockType == NULL)
-		return false;
+	if (!block) return false;
 
-	if (blockType->id == BlockIds::Air)
-		return true;
+	if (block->m_BlockId == BlockIds::Air) return false;
 
-	if (includeTransparentBlocks && blockType->isTransparent)
-		return false;
-
-	if (!block->GetEnabled())
-		return false;
+	if (!block->IsEnabled()) return false;
 
 	return true;
 }

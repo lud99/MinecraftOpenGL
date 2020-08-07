@@ -16,50 +16,10 @@
 #include "Chunk/ChunkBlock.h"
 #include "World.h"
 #include "Textures/TextureList.h"
+#include "InputHandler.h"
+#include "Player.h"
 
-float lastX = 400, lastY = 300;
-float yaw = 0, pitch = 0;
-
-glm::vec3 cameraPos = glm::vec3(0.0f, 10.0f, 0.0f);
-glm::vec3 cameraFront = glm::vec3(1.0f, 0.0f, 0.0f);
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-bool firstMouse = true;
-
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
-	if (firstMouse) // initially set to true
-	{
-		lastX = (float)xpos;
-		lastY = (float)ypos;
-		firstMouse = false;
-	}
-
-	float xoffset = (float)xpos - lastX;
-	float yoffset = lastY - (float)ypos;
-	lastX = (float)xpos;
-	lastY = (float)ypos;
-
-	float sensitivity = 0.1f;
-	xoffset *= sensitivity;
-	yoffset *= sensitivity;
-
-	yaw += xoffset;
-	pitch += yoffset;
-
-	if (pitch > 89.0f)
-		pitch = 89.0f;
-	if (pitch < -89.0f)
-		pitch = -89.0f;
-
-	glm::vec3 direction;
-	direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	direction.y = sin(glm::radians(pitch));
-	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-	cameraFront = glm::normalize(direction);
-}
-
-void CreateChunks(int count, int offset = 1)
+void CreateChunks(int count)
 {
 	for (int x = -count / 2; x < count / 2; x++)
 	{
@@ -93,9 +53,14 @@ void CreateChunks(int count, int offset = 1)
 			Chunk* chunk = World::GetChunkAtPosition(glm::ivec2(x, z));
 
 			// Create the block mesh
-			chunk->UpdateMesh();
+			chunk->RebuildMesh();
 		}
 	}
+}
+
+void MouseCallback(GLFWwindow* window, double xpos, double ypos)
+{
+	World::GetPlayer().MouseCallback(window, xpos, ypos);
 }
 
 int main()
@@ -103,11 +68,10 @@ int main()
 	GLFWwindow* window;
 
 	/* Initialize the library */
-	if (!glfwInit())
-		return -1;
+	if (!glfwInit()) return -1;
 
 	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(1920, 1080, "Hello World", NULL, NULL);
+	window = glfwCreateWindow(1920, 1080, "MinecraftOpenGL", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
@@ -120,8 +84,10 @@ int main()
 	if (glewInit() != GLEW_OK)
 		std::cout << "Error initializing GLEW\n";
 
+	// Do OpenGl stuff here
+
+	glfwSetCursorPosCallback(window, MouseCallback);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	//glfwSwapInterval(0); // Vsync
 
@@ -129,22 +95,25 @@ int main()
 	glEnable(GL_BLEND);
 	glEnable(GL_MULTISAMPLE);
 
+	// Enable opacity
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Print the OpenGL version
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
-	World::Init();
+	World::Init(window);
 
-	auto start = std::chrono::high_resolution_clock::now();
+	InputHandler input(window);
+
+	//auto start = std::chrono::high_resolution_clock::now();
 
 	int count = 2;
 
 	CreateChunks(count);
 
-	auto stop = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
-	std::cout << "Seconds: " << duration.count() << std::endl;
+	//auto stop = std::chrono::high_resolution_clock::now();
+	//auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
+	//std::cout << "Seconds: " << duration.count() << std::endl;
 
 	// Load shaders
 	Shader shader = ShaderLoader::CreateShader("Resources/Shaders/Basic.vert", "Resources/Shaders/Basic.frag");
@@ -152,8 +121,6 @@ int main()
 	shader.Bind();
 
 	glm::mat4 projection = glm::perspective(glm::radians(70.0f), 1920.0f / 1080.0f, 0.1f, 1000.0f);
-
-	float cameraSpeed = 0.05f; // adjust accordingly
 
 	double previousTime = glfwGetTime();
 	int frameCount = 0;
@@ -163,6 +130,10 @@ int main()
 	{
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		// Close the window if escape is pressed
+		if (input.IsKeyPressed(GLFW_KEY_ESCAPE))
+			glfwSetWindowShouldClose(window, true);
 
 		// Calcuate FPS
 		double currentTime = glfwGetTime();
@@ -177,47 +148,23 @@ int main()
 			previousTime = currentTime;
 		}
 
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-			cameraPos += cameraSpeed * cameraFront;
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-			cameraPos -= cameraSpeed * cameraFront;
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-			cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-			cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-			cameraPos.y += cameraSpeed;
-		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-			cameraPos.y -= cameraSpeed;
-		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+		if (input.IsKeyPressed(GLFW_KEY_R)) {
 			count += 2;
 
 			CreateChunks(count);
 		}
 
-		if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-			cameraSpeed -= 0.025f;
-		if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-			cameraSpeed += 0.025f;
+		// Update everything in the world
+		World::Update();
 
-		// Remove focus from the window
-		if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-
-		// Exit
-		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-			glfwSetWindowShouldClose(window, true);
-		
-		glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+		// Update the view matrix
+		Camera& camera = World::GetPlayer().GetCamera();
+		glm::mat4 view = glm::lookAt(World::GetPlayer().m_Position, World::GetPlayer().m_Position + camera.m_Front, camera.m_Up);
 
 		shader.SetUniform("u_ProjectionMatrix", projection);
 		shader.SetUniform("u_ViewMatrix", view);
 
-		//glUniform1i(glGetUniformLocation(shader.m_id, "tex"), 0);
-
-		//glEnable(GL_TEXTURE_2D);
 		World::Render();
-		//glDisable(GL_TEXTURE_2D);
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);

@@ -148,6 +148,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Camera.cpp" />
+    <ClCompile Include="Source\InputHandler.cpp" />
+    <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\Blocks\BlockTypes.cpp" />
     <ClCompile Include="Source\Chunk\ChunkBlock.cpp" />
     <ClCompile Include="Source\Noise\FastNoise.cpp" />
@@ -162,6 +165,9 @@
     <ClCompile Include="Source\Textures\Texture2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Camera.h" />
+    <ClInclude Include="Source\InputHandler.h" />
+    <ClInclude Include="Source\Player.h" />
     <ClInclude Include="Source\Blocks\Block.h" />
     <ClInclude Include="Source\Blocks\BlockIds.h" />
     <ClInclude Include="Source\Blocks\BlockTypes.h" />

@@ -21,7 +21,7 @@ void BlockTexture::CalculateCoordinates()
 
 void TextureList::Load()
 {
-	Atlas = new Texture2D("Resources/Images/textures.png");
+	Atlas = Texture2D("Resources/Images/textures.png");
 
 	// Grass
 	BlockTextures[GrassSide].SetTextureAtlasOffset(glm::vec2(0, 0));
@@ -50,4 +50,4 @@ BlockTexture& TextureList::operator[] (int id)
 
 BlockTexture TextureList::BlockTextures[Count];
 
-Texture2D* TextureList::Atlas;
+Texture2D TextureList::Atlas;

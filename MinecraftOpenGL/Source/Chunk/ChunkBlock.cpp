@@ -152,7 +152,7 @@ void ChunkBlock::AddBlockFace(BlockFace& face)
 
 void ChunkBlock::AddAllBlockFaces()
 {
-	if (!m_Enabled) return;
+	if (!m_Enabled || m_BlockId == BlockIds::Air) return;
 
 	Block* blockType = GetBlockType();
 
@@ -166,7 +166,7 @@ void ChunkBlock::AddAllBlockFaces()
 
 void ChunkBlock::AddBlockFaces()
 {
-	if (!GetEnabled()) return;
+	if (!m_Enabled || m_BlockId == BlockIds::Air) return;
 
 	AdjacentChunks adjacentChunks = GetAdjacentChunks();
 	Block* blockType = GetBlockType();
@@ -195,34 +195,11 @@ Chunk* ChunkBlock::GetChunk()
 	return World::GetChunkFromIndex(m_ChunkIndex);
 }
 
-const glm::ivec3 ChunkBlock::GetLocalPosition() 
-{ 
-	return m_LocalPosition; 
-}
-
 const glm::ivec3 ChunkBlock::GetWorldPosition() 
 { 
 	glm::ivec2 chunkPosition = GetChunk()->GetWorldPosition();
 
 	return m_LocalPosition + glm::ivec3(chunkPosition.x, 0, chunkPosition.y);
-}
-
-void ChunkBlock::SetLocalPosition(glm::ivec3 position) 
-{ 
-	m_LocalPosition = position; 
-
-}
-void ChunkBlock::SetWorldPosition(glm::ivec3 position) 
-{ 
-	m_LocalPosition = position; 
-}
-
-void ChunkBlock::SetEnabled(bool flag) { m_Enabled = flag; }
-bool ChunkBlock::GetEnabled() { return m_Enabled; }
-
-Block* ChunkBlock::GetBlockType() 
-{
-	return &BlockTypes::Blocks[m_BlockId];
 }
 
 Chunk* ChunkBlock::GetChunkAtRelativePosition(glm::ivec2 offset)
@@ -240,7 +217,7 @@ bool ChunkBlock::ChunkExistsAtRelativePosition(glm::ivec3 offset)
 	return World::ChunkExistsAtPosition(Utils::WorldPositionToChunkPosition(GetWorldPosition() + offset));
 }
 
-bool ChunkBlock::BlockExistsAtRelativePosition(glm::ivec3 offset, bool includeTransparentBlocks)
+bool ChunkBlock::BlockExistsAtRelativePosition(glm::ivec3 offset)
 {
 	return GetChunk()->BlockExistsAt(m_LocalPosition + offset);
 }

@@ -93,6 +93,12 @@ void Mesh::BindBuffer(unsigned int buffer) { glBindBuffer(GL_ARRAY_BUFFER, buffe
 
 void Mesh::UnbindBuffer() { glBindBuffer(GL_ARRAY_BUFFER, 0); }
 
+void Mesh::Clear() 
+{
+	m_Vertices.clear();
+	m_Indices.clear();
+}
+
 void Mesh::Render()
 {
 	BindVao();
@@ -118,4 +124,9 @@ const unsigned int Mesh::GetVao() { return m_Vao; }
 
 Mesh::~Mesh()
 {
+	glDeleteVertexArrays(1, &m_Vao);
+
+	glDeleteBuffers(1, &m_Vbo);
+	glDeleteBuffers(1, &m_Ibo);
+	glDeleteBuffers(1, &m_Ebo);
 }

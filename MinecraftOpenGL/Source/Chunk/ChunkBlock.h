@@ -32,16 +32,15 @@ public:
 
 	Chunk* GetChunk();
 
-	const glm::ivec3 GetLocalPosition();
+	inline const glm::ivec3 GetLocalPosition() { return m_LocalPosition; };
 	const glm::ivec3 GetWorldPosition();
 
-	void SetLocalPosition(glm::ivec3 position);
-	void SetWorldPosition(glm::ivec3 position);
+	inline void SetLocalPosition(glm::ivec3 position) { m_LocalPosition = position; }
 
-	void SetEnabled(bool flag);
-	bool GetEnabled();
+	inline void SetEnabled(bool flag) { m_Enabled = flag; };
+	inline bool IsEnabled() { return m_Enabled; }
 
-	Block* GetBlockType();
+	inline Block* GetBlockType() { return &BlockTypes::Blocks[m_BlockId]; }
 
 	~ChunkBlock();
 
@@ -60,7 +59,7 @@ private:
 	ChunkBlock* GetBlockAtRelativePosition(glm::ivec3 offset);
 
 	bool ChunkExistsAtRelativePosition(glm::ivec3 offset);
-	bool BlockExistsAtRelativePosition(glm::ivec3 offset, bool includeTransparentBlocks = false);
+	bool BlockExistsAtRelativePosition(glm::ivec3 offset);
 
 	bool ShouldAddBlockFace(ChunkBorderEdges direction, Chunk* adjacentChunk);
 
@@ -74,5 +73,5 @@ public:
 private:
 	glm::ivec3 m_LocalPosition;
 
-	bool m_Enabled = false;
+	bool m_Enabled = true;
 };

@@ -84,6 +84,8 @@ public:
 	void UnbindVao();
 	void UnbindBuffer();
 
+	void Clear();
+
 	void Render();
 	void Render(int verticesCount);
 
