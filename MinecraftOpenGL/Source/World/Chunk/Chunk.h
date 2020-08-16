@@ -5,7 +5,7 @@
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 
-#include "../Mesh.h"
+#include "../../Graphics/Mesh.h"
 
 #ifdef cols
 	const glm::vec4 colors[36] = {

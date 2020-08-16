@@ -5,12 +5,12 @@
 #include <iostream>
 #include <algorithm>
 
-#include "../Noise/FastNoise.h"
+#include "../../Noise/FastNoise.h"
 #include "ChunkBlock.h"
-#include "../Utils.h"
-#include "../BLocks/BlockTypes.h"
+#include "../../Utils.h"
+#include "../../Blocks/BlockTypes.h"
 #include "../World.h"
-#include "../Mesh.h"
+#include "../../Graphics/Mesh.h"
 
 Chunk::Chunk(glm::ivec2 position)
 {
@@ -20,8 +20,8 @@ Chunk::Chunk(glm::ivec2 position)
 	
 	SetPosition(position);
 
-	m_OpaqueMesh.m_Texture = &World::Textures.Atlas;
-	m_WaterMesh.m_Texture = &World::Textures.Atlas;
+	m_OpaqueMesh.m_Texture = World::m_TextureAtlas.Texture;
+	m_WaterMesh.m_Texture = World::m_TextureAtlas.Texture;
 
 	m_Index = Utils::ChunkPositionToIndex(position);
 

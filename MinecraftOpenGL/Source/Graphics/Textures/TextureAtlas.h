@@ -22,16 +22,18 @@ struct BlockTexture {
 	void CalculateCoordinates();
 };
 
-struct TextureList {
-	static Texture2D Atlas;
+struct TextureAtlas {
+	static Texture2D* Texture;
 
-	const static int TextureMapSize = 128;
+	const static int Size = 128;
 	const static int BlockSize = 16;
-	const static int BlockCountRow = TextureMapSize / BlockSize;
+	const static int BlockCountRow = Size / BlockSize;
 
 	static BlockTexture BlockTextures[TextureIds::Count];
 
 	static void Load();
 	
 	BlockTexture& operator[] (int id);
+
+	~TextureAtlas();
 };

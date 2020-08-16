@@ -1,17 +1,17 @@
-#include "TextureList.h"
+#include "TextureAtlas.h"
 
 using namespace TextureIds;
 
 void BlockTexture::SetTextureAtlasOffset(glm::vec2 offset)
 {
-	float blockSize = 1.0f / TextureList::BlockCountRow;
+	float blockSize = 1.0f / TextureAtlas::BlockCountRow;
 
 	textureAtlasOffset = glm::vec2(offset.x * blockSize, 1.0f - blockSize - (blockSize * offset.y));
 }
 
 void BlockTexture::CalculateCoordinates()
 {
-	float blockSize = 1.0f / TextureList::BlockCountRow;
+	float blockSize = 1.0f / TextureAtlas::BlockCountRow;
 
 	textureCoordinates[0] = glm::vec2(textureAtlasOffset.x, textureAtlasOffset.y);
 	textureCoordinates[1] = glm::vec2(textureAtlasOffset.x + blockSize, textureAtlasOffset.y);
@@ -19,9 +19,9 @@ void BlockTexture::CalculateCoordinates()
 	textureCoordinates[3] = glm::vec2(textureAtlasOffset.x, textureAtlasOffset.y + blockSize);
 }
 
-void TextureList::Load()
+void TextureAtlas::Load()
 {
-	Atlas = Texture2D("Resources/Images/textures.png");
+	Texture = new Texture2D("Resources/Images/textures.png");
 
 	// Grass
 	BlockTextures[GrassSide].SetTextureAtlasOffset(glm::vec2(0, 0));
@@ -43,11 +43,16 @@ void TextureList::Load()
 	BlockTextures[Water].CalculateCoordinates();
 }
 
-BlockTexture& TextureList::operator[] (int id)
+BlockTexture& TextureAtlas::operator[] (int id)
 {
 	return BlockTextures[id];
 }
 
-BlockTexture TextureList::BlockTextures[Count];
+TextureAtlas::~TextureAtlas()
+{
+	delete Texture;
+}
 
-Texture2D TextureList::Atlas;
+BlockTexture TextureAtlas::BlockTextures[Count];
+
+Texture2D* TextureAtlas::Texture;

@@ -2,7 +2,7 @@
 
 #include <math.h>
 
-#include "Chunk/Chunk.h";
+#include "World/Chunk/Chunk.h"
 
 int Utils::to1D(glm::vec3& position, int width) {
 	return position.x * width * width + position.y * width + position.z;

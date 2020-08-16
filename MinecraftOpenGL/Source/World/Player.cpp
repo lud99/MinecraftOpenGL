@@ -24,21 +24,17 @@ Player::Player(GLFWwindow* window)
 
 void Player::Update()
 {
-	// Remove the y axis from the camera direction so it's only possible
-	// To move in the xz directions
-	glm::vec3 cameraFrontXY(m_Camera.m_Front.x, 0, m_Camera.m_Front.z);
-
 	// Forward, Backward
 	if (m_Input.IsKeyPressed(GLFW_KEY_W))
-		m_Position += m_MovementSpeed * cameraFrontXY;
+		m_Position += m_MovementSpeed * m_Camera.m_Front2D;
 	if (m_Input.IsKeyPressed(GLFW_KEY_S))
-		m_Position -= m_MovementSpeed * cameraFrontXY;
+		m_Position -= m_MovementSpeed * m_Camera.m_Front2D;
 
 	// Left, Right
 	if (m_Input.IsKeyPressed(GLFW_KEY_A))
-		m_Position -= glm::normalize(glm::cross(cameraFrontXY, m_Camera.m_Up)) * m_MovementSpeed;
+		m_Position -= glm::normalize(glm::cross(m_Camera.m_Front2D, m_Camera.m_Up)) * m_MovementSpeed;
 	if (m_Input.IsKeyPressed(GLFW_KEY_D))
-		m_Position += glm::normalize(glm::cross(cameraFrontXY, m_Camera.m_Up)) * m_MovementSpeed;
+		m_Position += glm::normalize(glm::cross(m_Camera.m_Front2D, m_Camera.m_Up)) * m_MovementSpeed;
 
 	// Up, Down
 	if (m_Input.IsKeyPressed(GLFW_KEY_SPACE))
@@ -60,8 +56,6 @@ void Player::Update()
 
 	glm::vec3 raycastPosition = m_Position;
 
-	std::cout << "x: " << m_Camera.m_Front.x << ", y: " << m_Camera.m_Front.y << ", z: " << m_Camera.m_Front.z << "\n";
-
 	while (true)
 	{
 		raycastPosition += m_Camera.m_Front * resolution;
@@ -76,14 +70,18 @@ void Player::Update()
 		glm::ivec3 localRaycastPosition = glm::mod(glm::floor(raycastPosition), glm::vec3(Chunk::Width, Chunk::Height, Chunk::Depth));
 		//glm::ivec3 raycastPositionClamped = glm::clamp(raycastPositionFloored, glm::ivec3(0, 0, 0), glm::ivec3(Chunk::Width, Chunk::Height, Chunk::Depth));
 
-		ChunkBlock* block = chunk->GetBlockAt(localRaycastPosition);
+		m_HighlightedBlock = chunk->GetBlockAt(localRaycastPosition);
 
-		if (block != NULL && block->m_BlockId != BlockIds::Air)
+		if (m_HighlightedBlock != NULL && m_HighlightedBlock->m_BlockId != BlockIds::Air)
 		{
-			std::cout << raycastPosition.x << "\n";
+			World::m_LookingAtCollider.m_Position = glm::floor(raycastPosition);
 
-			block->m_BlockId = BlockIds::Air;
-			chunk->RebuildMesh();
+			//std::cout << raycastPosition.x << "\n";
+
+			//block->m_BlockId = BlockIds::Air;
+			//chunk->RebuildMesh();
+
+			//World::m_LookingAtColliderMesh.
 
 			break;
 		}
@@ -127,11 +125,28 @@ void Player::MouseCallback(GLFWwindow* window, double xpos, double ypos)
 	if (pitch < -89.0f)
 		pitch = -89.0f;
 
+
+	glm::vec3 direction2D;
+	direction2D.x = cos(glm::radians(yaw));
+	direction2D.y = 0;
+	direction2D.z = sin(glm::radians(yaw));
+	m_Camera.m_Front2D = glm::normalize(direction2D);
+
 	glm::vec3 direction;
-	direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	direction.x = direction2D.x * cos(glm::radians(pitch));
 	direction.y = sin(glm::radians(pitch));
-	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	direction.z = direction2D.z * cos(glm::radians(pitch));
 	m_Camera.m_Front = glm::normalize(direction);
+}
+
+void Player::MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	{
+		m_HighlightedBlock->m_BlockId = BlockIds::Air;
+
+		m_HighlightedBlock->GetChunk()->RebuildMesh();
+	}
 }
 
 void Player::SetWindow(GLFWwindow* window)

@@ -8,9 +8,11 @@
 class Shader
 {
 public:
+	Shader();
 	Shader(unsigned int shaderProgramId);
 
 	void Bind();
+	void Unbind();
 
 	void SetUniform(const std::string& name, glm::mat4 matrix);
 

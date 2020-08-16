@@ -102,11 +102,11 @@ void Mesh::Clear()
 void Mesh::Render()
 {
 	BindVao();
-	m_Texture->Bind();
+	if (m_Texture) m_Texture->Bind();
 
 	glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
 
-	m_Texture->Unbind();
+	if (m_Texture)m_Texture->Unbind();
 	UnbindVao();
 }
 

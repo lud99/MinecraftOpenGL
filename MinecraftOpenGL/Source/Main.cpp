@@ -10,14 +10,14 @@
 #include <glm/vec3.hpp>
 #include <glm/gtc/matrix_transform.hpp> 
 
-#include "Shaders/ShaderLoader.h"
+#include "Graphics/Shaders/ShaderLoader.h"
 
-#include "Chunk/Chunk.h"
-#include "Chunk/ChunkBlock.h"
-#include "World.h"
-#include "Textures/TextureList.h"
+#include "World/Chunk/Chunk.h"
+#include "World/Chunk/ChunkBlock.h"
+#include "World/World.h"
+#include "Graphics/Textures/TextureAtlas.h"
 #include "InputHandler.h"
-#include "Player.h"
+#include "World/WorldRenderer.h"
 
 void CreateChunks(int count)
 {
@@ -63,6 +63,11 @@ void MouseCallback(GLFWwindow* window, double xpos, double ypos)
 	World::GetPlayer().MouseCallback(window, xpos, ypos);
 }
 
+void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+{
+	World::GetPlayer().MouseButtonCallback(window, button, action, mods);
+}
+
 int main()
 {
 	GLFWwindow* window;
@@ -87,6 +92,8 @@ int main()
 	// Do OpenGl stuff here
 
 	glfwSetCursorPosCallback(window, MouseCallback);
+	glfwSetMouseButtonCallback(window, MouseButtonCallback);
+
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	//glfwSwapInterval(0); // Vsync
@@ -98,6 +105,8 @@ int main()
 	// Enable opacity
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	glLineWidth(5);
+
 	// Print the OpenGL version
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
@@ -105,22 +114,15 @@ int main()
 
 	InputHandler input(window);
 
-	//auto start = std::chrono::high_resolution_clock::now();
+	auto start = std::chrono::high_resolution_clock::now();
 
 	int count = 2;
 
 	CreateChunks(count);
 
-	//auto stop = std::chrono::high_resolution_clock::now();
-	//auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
-	//std::cout << "Seconds: " << duration.count() << std::endl;
-
-	// Load shaders
-	Shader shader = ShaderLoader::CreateShader("Resources/Shaders/Basic.vert", "Resources/Shaders/Basic.frag");
-
-	shader.Bind();
-
-	glm::mat4 projection = glm::perspective(glm::radians(70.0f), 1920.0f / 1080.0f, 0.1f, 1000.0f);
+	auto stop = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
+	std::cout << "Chunk generation took " << duration.count() << " seconds\n";
 
 	double previousTime = glfwGetTime();
 	int frameCount = 0;
@@ -157,14 +159,7 @@ int main()
 		// Update everything in the world
 		World::Update();
 
-		// Update the view matrix
-		Camera& camera = World::GetPlayer().GetCamera();
-		glm::mat4 view = glm::lookAt(World::GetPlayer().m_Position, World::GetPlayer().m_Position + camera.m_Front, camera.m_Up);
-
-		shader.SetUniform("u_ProjectionMatrix", projection);
-		shader.SetUniform("u_ViewMatrix", view);
-
-		World::Render();
+		World::m_Renderer->Render();
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);

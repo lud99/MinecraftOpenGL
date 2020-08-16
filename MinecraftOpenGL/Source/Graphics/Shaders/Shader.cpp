@@ -4,13 +4,24 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
+Shader::Shader()
+{
+
+}
+
 Shader::Shader(unsigned int shaderProgramId) : m_id(shaderProgramId)
 {
+
 }
 
 void Shader::Bind()
 {
 	glUseProgram(m_id);
+}
+
+void Shader::Unbind()
+{
+	glUseProgram(0);
 }
 
 void Shader::SetUniform(const std::string& name, glm::mat4 matrix)

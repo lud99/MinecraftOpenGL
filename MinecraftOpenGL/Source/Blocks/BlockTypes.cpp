@@ -1,7 +1,9 @@
 #include "BlockTypes.h"
 
 #include "BlockIds.h"
-#include "../Textures/TextureIds.h"
+#include "../Graphics/Textures/TextureIds.h"
+
+using namespace BlockIds;
 
 namespace BlockTypes {
 	void CreateBlocks()
@@ -29,4 +31,4 @@ namespace BlockTypes {
 	}
 }
 
-Block BlockTypes::Blocks[BlockIds::Count];
+Block BlockTypes::Blocks[Count];

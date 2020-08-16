@@ -3,9 +3,12 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-#include "../Textures/Texture2D.h"
-#include "../Textures/TextureList.h"
-#include "../Blocks/BlockTypes.h"
+#include "../../Graphics/Textures/Texture2D.h"
+#include "../../Graphics/Textures/TextureAtlas.h"
+#include "../World.h"
+#include "../../Blocks/BlockTypes.h"
+
+#include "../../Collider.h"
 
 class Chunk;
 
@@ -45,23 +48,13 @@ public:
 	~ChunkBlock();
 
 private:
-	enum ChunkBorderEdges {
-		None = -1,
-		Left = 0,
-		Right = 1,
-		Bottom = 2,
-		Top = 3,
-		Back = 4,
-		Front = 5
-	};
-
 	Chunk* GetChunkAtRelativePosition(glm::ivec2 offset);
 	ChunkBlock* GetBlockAtRelativePosition(glm::ivec3 offset);
 
 	bool ChunkExistsAtRelativePosition(glm::ivec3 offset);
 	bool BlockExistsAtRelativePosition(glm::ivec3 offset);
 
-	bool ShouldAddBlockFace(ChunkBorderEdges direction, Chunk* adjacentChunk);
+	bool ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk);
 
 	AdjacentChunks GetAdjacentChunks();
 
@@ -74,4 +67,5 @@ private:
 	glm::ivec3 m_LocalPosition;
 
 	bool m_Enabled = true;
+	bool m_Highlighted = false;
 };

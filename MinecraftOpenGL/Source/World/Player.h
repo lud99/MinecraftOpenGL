@@ -4,9 +4,11 @@
 
 #include <glm/vec3.hpp>
 
-#include "InputHandler.h"
+#include "../InputHandler.h"
 
 #include "Camera.h"
+
+class ChunkBlock;
 
 class Player
 {
@@ -18,6 +20,7 @@ public:
 	void UpdateCameraPosition();
 
 	void MouseCallback(GLFWwindow* window, double xpos, double ypos);
+	void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 
 	void SetWindow(GLFWwindow* window);
 
@@ -32,6 +35,8 @@ public:
 private:
 	InputHandler m_Input;
 	Camera m_Camera;
+
+	ChunkBlock* m_HighlightedBlock;
 
 	float m_MovementSpeed = 0.05f;
 

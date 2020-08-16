@@ -4,6 +4,7 @@
 #include <glm/vec3.hpp>
 
 #include <algorithm>
+#include <iostream>
 
 namespace Utils
 {
@@ -16,6 +17,8 @@ namespace Utils
 	glm::vec3 ChunkIndexToPosition(int index);
 
 	glm::ivec2 WorldPositionToChunkPosition(glm::vec3 position);
+
+	inline void PrintVector(glm::vec3 vector) { std::cout << "x: " << vector.x << ", y: " << vector.y << ", z: " << vector.z << "\n"; }
 
 	namespace Math
 	{

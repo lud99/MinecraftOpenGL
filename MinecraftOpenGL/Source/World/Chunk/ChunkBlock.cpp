@@ -5,9 +5,9 @@
 
 #include "Chunk.h"
 #include "../World.h"
-#include "../Mesh.h"
-#include "../Utils.h"
-#include "../Textures/TextureList.h"
+#include "../../Graphics/Mesh.h"
+#include "../../Utils.h"
+#include "../../Graphics/Textures/TextureAtlas.h"
 
 AdjacentChunks::AdjacentChunks() { }
 
@@ -15,7 +15,7 @@ ChunkBlock::ChunkBlock()
 {
 }
 
-bool ChunkBlock::ShouldAddBlockFace(ChunkBorderEdges direction, Chunk* adjacentChunk)
+bool ChunkBlock::ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk)
 {
 	if (!m_Enabled) return false;
 
@@ -131,7 +131,7 @@ void ChunkBlock::AddBlockFace(BlockFace& face)
 
 	for (int i = 0; i < 4; i ++)
 	{
-		BlockTexture& texture = World::Textures[face.textureId];
+		BlockTexture& texture = World::m_TextureAtlas[face.textureId];
 
 		glm::vec3 position = face.positions[i] + (glm::vec3)GetWorldPosition();
 

@@ -148,41 +148,45 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Camera.cpp" />
+    <ClCompile Include="Source\World\Camera.cpp" />
+    <ClCompile Include="Source\Collider.cpp" />
     <ClCompile Include="Source\InputHandler.cpp" />
-    <ClCompile Include="Source\Player.cpp" />
+    <ClCompile Include="Source\World\Player.cpp" />
     <ClCompile Include="Source\Blocks\BlockTypes.cpp" />
-    <ClCompile Include="Source\Chunk\ChunkBlock.cpp" />
+    <ClCompile Include="Source\World\Chunk\ChunkBlock.cpp" />
     <ClCompile Include="Source\Noise\FastNoise.cpp" />
-    <ClCompile Include="Source\Mesh.cpp" />
-    <ClCompile Include="Source\Chunk\Chunk.cpp" />
-    <ClCompile Include="Source\Shaders\Shader.cpp" />
-    <ClCompile Include="Source\Shaders\ShaderLoader.cpp" />
+    <ClCompile Include="Source\Graphics\Mesh.cpp" />
+    <ClCompile Include="Source\World\Chunk\Chunk.cpp" />
+    <ClCompile Include="Source\Graphics\Shaders\Shader.cpp" />
+    <ClCompile Include="Source\Graphics\Shaders\ShaderLoader.cpp" />
     <ClCompile Include="Source\Main.cpp" />
-    <ClCompile Include="Source\Textures\TextureList.cpp" />
+    <ClCompile Include="Source\Graphics\Textures\TextureAtlas.cpp" />
     <ClCompile Include="Source\Utils.cpp" />
-    <ClCompile Include="Source\World.cpp" />
-    <ClCompile Include="Source\Textures\Texture2D.cpp" />
+    <ClCompile Include="Source\World\World.cpp" />
+    <ClCompile Include="Source\Graphics\Textures\Texture2D.cpp" />
+    <ClCompile Include="Source\World\WorldRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Camera.h" />
+    <ClInclude Include="Source\World\Camera.h" />
+    <ClInclude Include="Source\Collider.h" />
     <ClInclude Include="Source\InputHandler.h" />
-    <ClInclude Include="Source\Player.h" />
+    <ClInclude Include="Source\World\Player.h" />
     <ClInclude Include="Source\Blocks\Block.h" />
     <ClInclude Include="Source\Blocks\BlockIds.h" />
     <ClInclude Include="Source\Blocks\BlockTypes.h" />
-    <ClInclude Include="Source\Chunk\ChunkBlock.h" />
+    <ClInclude Include="Source\World\Chunk\ChunkBlock.h" />
     <ClInclude Include="Source\Noise\FastNoise.h" />
-    <ClInclude Include="Source\Mesh.h" />
-    <ClInclude Include="Source\Chunk\Chunk.h" />
-    <ClInclude Include="Source\Shaders\Shader.h" />
-    <ClInclude Include="Source\Shaders\ShaderLoader.h" />
-    <ClInclude Include="Source\Textures\TextureIds.h" />
-    <ClInclude Include="Source\Textures\TextureList.h" />
+    <ClInclude Include="Source\Graphics\Mesh.h" />
+    <ClInclude Include="Source\World\Chunk\Chunk.h" />
+    <ClInclude Include="Source\Graphics\Shaders\Shader.h" />
+    <ClInclude Include="Source\Graphics\Shaders\ShaderLoader.h" />
+    <ClInclude Include="Source\Graphics\Textures\TextureIds.h" />
+    <ClInclude Include="Source\Graphics\Textures\TextureAtlas.h" />
     <ClInclude Include="Source\Utils.h" />
-    <ClInclude Include="Source\Vertex.h" />
-    <ClInclude Include="Source\World.h" />
-    <ClInclude Include="Source\Textures\Texture2D.h" />
+    <ClInclude Include="Source\Graphics\Vertex.h" />
+    <ClInclude Include="Source\World\World.h" />
+    <ClInclude Include="Source\Graphics\Textures\Texture2D.h" />
+    <ClInclude Include="Source\World\WorldRenderer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

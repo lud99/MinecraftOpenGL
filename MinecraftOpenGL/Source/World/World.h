@@ -2,12 +2,18 @@
 
 #include <map>
 #include <glm/vec3.hpp>
+#include <glm/gtc/matrix_transform.hpp> 
 
 #include <GLFW/glfw3.h>
 
-#include "Utils.h"
-#include "Textures/TextureList.h"
+#include "../Utils.h"
+#include "../Graphics/Textures/TextureAtlas.h"
+#include "../Graphics/Mesh.h"
+#include "../Collider.h"
 #include "Player.h"
+#include "WorldRenderer.h"
+
+typedef Faces Directions;
 
 class Player;
 class Chunk;
@@ -31,7 +37,11 @@ namespace World
 
 	extern unsigned int m_ChunkCount;
 
-	extern TextureList Textures;
+	extern TextureAtlas m_TextureAtlas;
+
+	extern Collider m_LookingAtCollider;
+
+	extern WorldRenderer* m_Renderer;
 
 	namespace {
 		GLFWwindow* m_Window;
@@ -41,4 +51,3 @@ namespace World
 		Player m_Player;
 	}
 };
-

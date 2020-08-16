@@ -5,17 +5,22 @@
 #include <glm/vec3.hpp>
 
 #include "Chunk/Chunk.h"
-#include "Utils.h"
-#include "Blocks/BlockTypes.h"
+#include "../Utils.h"
+#include "../Blocks/BlockTypes.h"
+#include "../Collider.h"
 
 void World::Init(GLFWwindow* window)
 {
 	m_Window = window;
 
-	Textures.Load();
+	m_TextureAtlas.Load();
 	BlockTypes::CreateBlocks();
 
+	m_Renderer = new WorldRenderer();
+
 	m_Player.SetWindow(window);
+
+	m_LookingAtCollider.Init();
 }
 
 void World::Update()
@@ -25,11 +30,7 @@ void World::Update()
 
 void World::Render()
 {
-	for (auto const& entry : m_Chunks)
-		entry.second->m_OpaqueMesh.Render();
-
-	for (auto const& entry : m_Chunks)
-		entry.second->m_WaterMesh.Render();
+	m_Renderer->Render();
 }
 
 Player& World::GetPlayer() { return m_Player; }
@@ -73,6 +74,8 @@ bool World::ChunkExistsAtPosition(glm::ivec2 position)
 	return m_Chunks.count(index) > 0;
 }
 
-TextureList World::Textures;
+TextureAtlas World::m_TextureAtlas;
+Collider World::m_LookingAtCollider;
+WorldRenderer* World::m_Renderer;
 
 unsigned int World::m_ChunkCount = 0;
