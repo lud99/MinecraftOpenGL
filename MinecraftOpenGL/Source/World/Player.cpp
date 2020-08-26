@@ -11,6 +11,8 @@
 #include "World.h"
 #include "Chunk/Chunk.h"
 #include "Chunk/ChunkBlock.h"
+#include "Chunk/ChunkRebuilder.h"
+#include "../Crosshair.h"
 
 Player::Player()
 {
@@ -20,6 +22,11 @@ Player::Player(GLFWwindow* window)
 {
 	m_Window = window;
 	m_Input.SetWindow(window);
+}
+
+void Player::Init()
+{
+	m_Crosshair = new Crosshair();
 }
 
 void Player::Update()
@@ -51,7 +58,7 @@ void Player::Update()
 	UpdateCameraPosition();
 
 	// Raycast
-	float maxDistance = 25.0f;
+	float maxDistance = 7.0f;
 	float resolution = 0.1f;
 
 	glm::vec3 raycastPosition = m_Position;
@@ -60,38 +67,38 @@ void Player::Update()
 	{
 		raycastPosition += m_Camera.m_Front * resolution;
 
-		if (glm::distance(m_Position, raycastPosition) > maxDistance)
+		glm::vec3 diff = raycastPosition - m_Position;
+		float distanceSquared = diff.x * diff.x + diff.y * diff.y + diff.z * diff.z;
+
+		if (distanceSquared > maxDistance * maxDistance)
+		{
+			m_LookingAtPosition = raycastPosition;
+			m_HighlightedBlock = nullptr;
+			World::m_LookingAtCollider.m_Enabled = false;
+
 			break;
+		}
 
 		Chunk* chunk = World::GetChunkAtPosition(Utils::WorldPositionToChunkPosition(raycastPosition));
 
 		if (!chunk) continue;
 
 		glm::ivec3 localRaycastPosition = glm::mod(glm::floor(raycastPosition), glm::vec3(Chunk::Width, Chunk::Height, Chunk::Depth));
-		//glm::ivec3 raycastPositionClamped = glm::clamp(raycastPositionFloored, glm::ivec3(0, 0, 0), glm::ivec3(Chunk::Width, Chunk::Height, Chunk::Depth));
+
+		//std::cout << localRaycastPosition.x << ", " << localRaycastPosition.y << ", " << localRaycastPosition.z << "\n";
 
 		m_HighlightedBlock = chunk->GetBlockAt(localRaycastPosition);
 
-		if (m_HighlightedBlock != NULL && m_HighlightedBlock->m_BlockId != BlockIds::Air)
+		if (m_HighlightedBlock && m_HighlightedBlock->m_BlockId != BlockIds::Air)
 		{
-			World::m_LookingAtCollider.m_Position = glm::floor(raycastPosition);
+			World::m_LookingAtCollider.m_Enabled = true;
+			World::m_LookingAtCollider.m_Position = glm::floor(raycastPosition) + 0.5f;
 
-			//std::cout << raycastPosition.x << "\n";
+			m_LookingAtPosition = raycastPosition;
 
-			//block->m_BlockId = BlockIds::Air;
-			//chunk->RebuildMesh();
-
-			//World::m_LookingAtColliderMesh.
-
-			break;
-		}
-
-		if (raycastPosition.x - m_Position.x > maxDistance)
-		{
 			break;
 		}
 	}
-
 }
 
 void Player::UpdateCameraPosition()
@@ -143,12 +150,27 @@ void Player::MouseButtonCallback(GLFWwindow* window, int button, int action, int
 {
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
 	{
-		m_HighlightedBlock->m_BlockId = BlockIds::Air;
+		if (!m_HighlightedBlock) return;
 
-		m_HighlightedBlock->GetChunk()->RebuildMesh();
+		Chunk* chunk = m_HighlightedBlock->GetChunk();
+
+		glm::vec3 highlightedBlockPosition = m_HighlightedBlock->GetWorldPosition();
+
+		float distanceToBlock = glm::distance(m_Position, highlightedBlockPosition);
+
+		glm::vec3 directionToBlock(highlightedBlockPosition / distanceToBlock);
+
+		ChunkBlock* placeBlock = chunk->GetBlockAt(glm::floor(highlightedBlockPosition - directionToBlock));
+		placeBlock->m_BlockId = BlockIds::Stone;
+
+		//m_HighlightedBlock->m_BlockId = BlockIds::Air;
+
+		//m_HighlightedBlock->GetChunk()->RebuildMeshThreaded();
+
+		chunk->m_Rebuilder.Rebuild(chunk);
 	}
 }
-
+   
 void Player::SetWindow(GLFWwindow* window)
 {
 	m_Window = window;

@@ -10,6 +10,8 @@ std::string ShaderLoader::ParseShader(const std::string& filepath)
 {
 	std::ifstream stream(filepath);
 
+	//assert(!stream.is_open() && "Invalid file specified");
+
 	std::string line;
 	std::stringstream shaderStringStream;
 

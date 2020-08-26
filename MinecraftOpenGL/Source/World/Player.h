@@ -9,12 +9,15 @@
 #include "Camera.h"
 
 class ChunkBlock;
+class Crosshair;
 
 class Player
 {
 public:
 	Player();
 	Player(GLFWwindow* window);
+
+	void Init();
 
 	void Update();
 	void UpdateCameraPosition();
@@ -25,16 +28,19 @@ public:
 	void SetWindow(GLFWwindow* window);
 
 	Camera& GetCamera();
+	inline Crosshair* GetCrosshair() { return m_Crosshair; }
 
 	~Player();
 public:
 	glm::vec3 m_Position = glm::vec3(0.0f, 70.0f, 0.0f);
+	glm::vec3 m_LookingAtPosition;
 
 	GLFWwindow* m_Window;
 
 private:
 	InputHandler m_Input;
 	Camera m_Camera;
+	Crosshair* m_Crosshair;
 
 	ChunkBlock* m_HighlightedBlock;
 

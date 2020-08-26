@@ -12,6 +12,14 @@
 
 class Chunk;
 
+struct BlockFaceData
+{
+	std::vector<Vertex> opaqueVertices;
+	std::vector<Vertex> waterVertices;
+	std::vector<unsigned int> opaqueIndices;
+	std::vector<unsigned int> waterIndices;
+};
+
 struct AdjacentChunks
 {
 	AdjacentChunks();
@@ -24,13 +32,17 @@ struct AdjacentChunks
 	Chunk* Front = nullptr;
 };
 
+/*std::vector<Vertex>& opaqueVertices, std::vector<Vertex>& waterVertices,
+		std::vector<unsigned int>& opaqueIndices, std::vector<unsigned int>& waterIndices*/
+
 class ChunkBlock
 {
 public:
 	ChunkBlock();
 
-	void AddBlockFace(BlockFace& face);
-	void AddBlockFaces();
+	void AddBlockFace(BlockFace& face, Mesh* opaqueMesh = nullptr, Mesh* waterMesh = nullptr);
+
+	void AddBlockFaces(Mesh* opaqueMesh = nullptr, Mesh* waterMesh = nullptr);
 	void AddAllBlockFaces();
 
 	Chunk* GetChunk();

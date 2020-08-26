@@ -4,6 +4,7 @@
 
 #include <glm/vec3.hpp>
 
+#include "Player.h"
 #include "Chunk/Chunk.h"
 #include "../Utils.h"
 #include "../Blocks/BlockTypes.h"
@@ -16,9 +17,10 @@ void World::Init(GLFWwindow* window)
 	m_TextureAtlas.Load();
 	BlockTypes::CreateBlocks();
 
-	m_Renderer = new WorldRenderer();
-
+	m_Player.Init();
 	m_Player.SetWindow(window);
+
+	m_Renderer = new WorldRenderer();
 
 	m_LookingAtCollider.Init();
 }
@@ -26,14 +28,14 @@ void World::Init(GLFWwindow* window)
 void World::Update()
 {
 	m_Player.Update();
+
+	Chunk::m_Rebuilder.CheckForRebuiltChunks();
 }
 
 void World::Render()
 {
 	m_Renderer->Render();
 }
-
-Player& World::GetPlayer() { return m_Player; }
 
 Chunk* World::CreateChunk(glm::ivec2 position)
 {
@@ -73,6 +75,8 @@ bool World::ChunkExistsAtPosition(glm::ivec2 position)
 
 	return m_Chunks.count(index) > 0;
 }
+
+Player& World::GetPlayer() { return m_Player; };
 
 TextureAtlas World::m_TextureAtlas;
 Collider World::m_LookingAtCollider;

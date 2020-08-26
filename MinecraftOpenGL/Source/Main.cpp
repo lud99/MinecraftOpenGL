@@ -18,6 +18,7 @@
 #include "Graphics/Textures/TextureAtlas.h"
 #include "InputHandler.h"
 #include "World/WorldRenderer.h"
+#include "World/Player.h"
 
 void CreateChunks(int count)
 {
@@ -127,11 +128,15 @@ int main()
 	double previousTime = glfwGetTime();
 	int frameCount = 0;
 
+	/*std::map<int, Chunk*>& chunks = World::GetChunks();
+	for (auto const& entry : chunks)
+		std::cout << entry.second->m_OpaqueMesh.m_Vertices.size() << ", " << entry.second->m_WaterMesh.m_Vertices.size() << "\n";*/
+
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
 		/* Render here */
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 
 		// Close the window if escape is pressed
 		if (input.IsKeyPressed(GLFW_KEY_ESCAPE))
@@ -144,7 +149,11 @@ int main()
 		// If a second has passed.
 		if (currentTime - previousTime >= 1.0)
 		{
-		//	std::cout << frameCount << std::endl;
+			std::string title = "MinecraftOpenGL | FPS: ";
+
+			title.append(std::to_string(frameCount));
+
+			glfwSetWindowTitle(window, title.c_str());
 
 			frameCount = 0;
 			previousTime = currentTime;

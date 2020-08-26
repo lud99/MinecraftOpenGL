@@ -148,9 +148,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Crosshair.cpp" />
     <ClCompile Include="Source\World\Camera.cpp" />
     <ClCompile Include="Source\Collider.cpp" />
     <ClCompile Include="Source\InputHandler.cpp" />
+    <ClCompile Include="Source\World\Chunk\ChunkRebuilder.cpp" />
     <ClCompile Include="Source\World\Player.cpp" />
     <ClCompile Include="Source\Blocks\BlockTypes.cpp" />
     <ClCompile Include="Source\World\Chunk\ChunkBlock.cpp" />
@@ -167,9 +169,11 @@
     <ClCompile Include="Source\World\WorldRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Crosshair.h" />
     <ClInclude Include="Source\World\Camera.h" />
     <ClInclude Include="Source\Collider.h" />
     <ClInclude Include="Source\InputHandler.h" />
+    <ClInclude Include="Source\World\Chunk\ChunkRebuilder.h" />
     <ClInclude Include="Source\World\Player.h" />
     <ClInclude Include="Source\Blocks\Block.h" />
     <ClInclude Include="Source\Blocks\BlockIds.h" />

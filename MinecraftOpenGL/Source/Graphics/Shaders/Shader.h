@@ -15,6 +15,7 @@ public:
 	void Unbind();
 
 	void SetUniform(const std::string& name, glm::mat4 matrix);
+	void SetUniform(const std::string& name, float value);
 
 	~Shader();
 

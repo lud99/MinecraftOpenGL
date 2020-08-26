@@ -10,12 +10,11 @@
 #include "../Graphics/Textures/TextureAtlas.h"
 #include "../Graphics/Mesh.h"
 #include "../Collider.h"
-#include "Player.h"
 #include "WorldRenderer.h"
+#include "Player.h"
 
 typedef Faces Directions;
 
-class Player;
 class Chunk;
 
 namespace World
@@ -23,8 +22,6 @@ namespace World
 	void Init(GLFWwindow* window);
 	void Update();
 	void Render();
-
-	Player& GetPlayer();
 
 	Chunk* CreateChunk(glm::ivec2 position);
 	std::map<int, Chunk*>& GetChunks();
@@ -34,6 +31,8 @@ namespace World
 
 	bool ChunkExistsAtIndex(int index);
 	bool ChunkExistsAtPosition(glm::ivec2 position);
+
+	Player& GetPlayer();
 
 	extern unsigned int m_ChunkCount;
 

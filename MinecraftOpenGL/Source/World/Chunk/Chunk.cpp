@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <thread>
 
 #include "../../Noise/FastNoise.h"
 #include "ChunkBlock.h"
@@ -17,6 +18,8 @@ Chunk::Chunk(glm::ivec2 position)
 	// Generate vertex array object
 	m_OpaqueMesh.CreateVao();
 	m_WaterMesh.CreateVao();
+
+	//m_OpaqueMesh.m_Vertices.reserve(11676);
 	
 	SetPosition(position);
 
@@ -271,3 +274,5 @@ Chunk::~Chunk()
 	}
 	delete[] m_Blocks;
 }
+
+ChunkRebuilder Chunk::m_Rebuilder;

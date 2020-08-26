@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "World.h"
 #include "Chunk/Chunk.h"
+#include "../Crosshair.h"
 
 WorldRenderer::WorldRenderer()
 {
@@ -28,7 +29,14 @@ void WorldRenderer::Render()
 	for (auto const& entry : chunks)
 		entry.second->m_WaterMesh.Render();
 
-	World::m_LookingAtCollider.RenderHitbox();
+	if (World::m_LookingAtCollider.m_Enabled) World::m_LookingAtCollider.RenderHitbox();
+
+	//World::GetPlayer().GetCrosshair()->Render();
+
+	/*glVertex3f(World::GetPlayer().m_LookingAtPosition.x, World::GetPlayer().m_LookingAtPosition.y, World::GetPlayer().m_LookingAtPosition.z);
+	glVertex3f(World::GetPlayer().m_Position.x, World::GetPlayer().m_Position.y, World::GetPlayer().m_Position.z);
+	
+	glEnd();*/
 }
 
 void WorldRenderer::UpdateViewMatrix()

@@ -46,6 +46,8 @@ public:
 public:
 	glm::vec3 m_Position;
 
+	bool m_Enabled = false;
+
 private:
 	Mesh m_Mesh;
 	Shader m_Shader;
