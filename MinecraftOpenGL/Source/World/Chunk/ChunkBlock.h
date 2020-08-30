@@ -32,17 +32,14 @@ struct AdjacentChunks
 	Chunk* Front = nullptr;
 };
 
-/*std::vector<Vertex>& opaqueVertices, std::vector<Vertex>& waterVertices,
-		std::vector<unsigned int>& opaqueIndices, std::vector<unsigned int>& waterIndices*/
-
 class ChunkBlock
 {
 public:
 	ChunkBlock();
 
-	void AddBlockFace(BlockFace& face, Mesh* opaqueMesh = nullptr, Mesh* waterMesh = nullptr);
+	void AddBlockFace(BlockFace& face);
 
-	void AddBlockFaces(Mesh* opaqueMesh = nullptr, Mesh* waterMesh = nullptr);
+	void AddBlockFaces();
 	void AddAllBlockFaces();
 
 	Chunk* GetChunk();

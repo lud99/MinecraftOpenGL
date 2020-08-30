@@ -123,13 +123,13 @@ bool ChunkBlock::ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk)
 	return false;
 }
 
-void ChunkBlock::AddBlockFace(BlockFace& face, Mesh* opaqueMesh, Mesh* waterMesh)
+void ChunkBlock::AddBlockFace(BlockFace& face)
 {
 	Chunk* chunk = GetChunk();
-	glm::vec3 worldPosition = (glm::vec3)GetWorldPosition();
+	glm::vec3 worldPosition = GetWorldPosition();
 
-	if (!opaqueMesh) opaqueMesh = &chunk->m_OpaqueMesh;
-	if (!waterMesh) waterMesh = &chunk->m_WaterMesh;
+	Mesh& opaqueMesh = chunk->m_TempOpaqueMesh; 
+	Mesh& waterMesh = chunk->m_TempWaterMesh;
 
 	for (int i = 0; i < 4; i ++)
 	{
@@ -138,46 +138,19 @@ void ChunkBlock::AddBlockFace(BlockFace& face, Mesh* opaqueMesh, Mesh* waterMesh
 		glm::vec3 position = face.positions[i] + worldPosition + 0.5f;
 
 		if (m_BlockId == BlockIds::Water)
-			waterMesh->m_Vertices.emplace_back(position, texture.textureCoordinates[i]);
+			waterMesh.AddVertex(Vertex(position, texture.textureCoordinates[i]));
 		else
-			opaqueMesh->m_Vertices.emplace_back(position, texture.textureCoordinates[i]);
+			opaqueMesh.AddVertex(Vertex(position, texture.textureCoordinates[i]));
 	}
 
 	for (int i = 0; i < 6; i++)
 	{
 		if (m_BlockId == BlockIds::Water)
-			waterMesh->m_Indices.emplace_back(CubeFaces::Indices[i] + chunk->m_WaterMesh.m_Vertices.size() - 4);
+			waterMesh.AddIndex(CubeFaces::Indices[i] + waterMesh.GetVertices().size() - 4);
 		else
-			opaqueMesh->m_Indices.emplace_back(CubeFaces::Indices[i] + chunk->m_OpaqueMesh.m_Vertices.size() - 4);
+			opaqueMesh.AddIndex(CubeFaces::Indices[i] + opaqueMesh.GetVertices().size() - 4);
 	}
 } 
-/*
-void ChunkBlock::AddBlockFace(BlockFace& face, std::vector<Vertex>& opaqueVertices, std::vector<Vertex>& waterVertices,
-	std::vector<unsigned int>& opaqueIndices, std::vector<unsigned int>& waterIndices)
-{
-	Chunk* chunk = GetChunk();
-	glm::vec3 worldPosition = (glm::vec3)GetWorldPosition();
-
-	for (int i = 0; i < 4; i++)
-	{
-		BlockTexture& texture = World::m_TextureAtlas[face.textureId];
-
-		glm::vec3 position = face.positions[i] + worldPosition + 0.5f;
-
-		if (m_BlockId == BlockIds::Water)
-			waterVertices.emplace_back(position, texture.textureCoordinates[i]);
-		else
-			opaqueVertices.emplace_back(position, texture.textureCoordinates[i]);
-	}
-
-	for (int i = 0; i < 6; i++)
-	{
-		if (m_BlockId == BlockIds::Water)
-			waterIndices.emplace_back(CubeFaces::Indices[i] + chunk->m_WaterMesh.m_Vertices.size() - 4);
-		else
-			opaqueIndices.emplace_back(CubeFaces::Indices[i] + chunk->m_OpaqueMesh.m_Vertices.size() - 4);
-	}
-}*/
 
 void ChunkBlock::AddAllBlockFaces()
 {
@@ -193,7 +166,7 @@ void ChunkBlock::AddAllBlockFaces()
 	AddBlockFace(blockType->faces[Front]);
 }
 
-void ChunkBlock::AddBlockFaces(Mesh* opaqueMesh, Mesh* waterMesh)
+void ChunkBlock::AddBlockFaces()
 {
 	if (!m_Enabled || m_BlockId == BlockIds::Air) return;
 
@@ -202,21 +175,21 @@ void ChunkBlock::AddBlockFaces(Mesh* opaqueMesh, Mesh* waterMesh)
 
 	// Check for chunks on the x axis
 	if (ShouldAddBlockFace(Left, adjacentChunks.Left))
-		AddBlockFace(blockType->faces[Left], opaqueMesh, waterMesh);
+		AddBlockFace(blockType->faces[Left]);
 	if (ShouldAddBlockFace(Right, adjacentChunks.Right))
-		AddBlockFace(blockType->faces[Right], opaqueMesh, waterMesh);
+		AddBlockFace(blockType->faces[Right]);
 
 	// Check for chunks on the y axis
 	if (ShouldAddBlockFace(Top, adjacentChunks.Top))
-		AddBlockFace(blockType->faces[Top], opaqueMesh, waterMesh);
+		AddBlockFace(blockType->faces[Top]);
 	if (ShouldAddBlockFace(Bottom, adjacentChunks.Bottom))
-		AddBlockFace(blockType->faces[Bottom], opaqueMesh, waterMesh);
+		AddBlockFace(blockType->faces[Bottom]);
 
 	// Check for chunks on the z axis
 	if (ShouldAddBlockFace(Back, adjacentChunks.Back))
-		AddBlockFace(blockType->faces[Back], opaqueMesh, waterMesh);
+		AddBlockFace(blockType->faces[Back]);
 	if (ShouldAddBlockFace(Front, adjacentChunks.Front))
-		AddBlockFace(blockType->faces[Front], opaqueMesh, waterMesh);
+		AddBlockFace(blockType->faces[Front]);
 }
 
 Chunk* ChunkBlock::GetChunk()

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <mutex>
 
 #include <glm/vec3.hpp>
 
@@ -89,20 +90,33 @@ public:
 	void Render();
 	void Render(int verticesCount);
 
+	void AddVertex(Vertex vertex);
+	void SetVertices(std::vector<Vertex> vertices);
+	void SetVertices(Mesh mesh);
+
+	void AddIndex(unsigned int index);
+	void SetIndices(std::vector<unsigned int> indices);
+	void SetIndices(Mesh mesh);
+
 	std::vector<Vertex>& GetVertices();
+	std::vector<unsigned int>& GetIndices();
+
 	const unsigned int GetVao();
 
 	~Mesh();
 
 public:
-	std::vector<Vertex> m_Vertices;
-	std::vector<unsigned int> m_Indices;
-
 	Texture2D* m_Texture;
 
 protected:
+	std::vector<Vertex> m_Vertices;
+	std::vector<unsigned int> m_Indices;
+
 	unsigned int m_Vao;
 	unsigned int m_Vbo;
-	unsigned int m_Ibo;
 	unsigned int m_Ebo;
+
+private:
+	std::mutex m_VerticesMutex;
+	std::mutex m_IndicesMutex;
 };

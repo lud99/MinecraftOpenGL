@@ -12,6 +12,7 @@
 #include "../Collider.h"
 #include "WorldRenderer.h"
 #include "Player.h"
+#include "Chunk/ChunkBuilder.h"
 
 typedef Faces Directions;
 
@@ -35,12 +36,10 @@ namespace World
 	Player& GetPlayer();
 
 	extern unsigned int m_ChunkCount;
-
 	extern TextureAtlas m_TextureAtlas;
-
 	extern Collider m_LookingAtCollider;
-
 	extern WorldRenderer* m_Renderer;
+	extern ChunkBuilder m_ChunkBuilder;
 
 	namespace {
 		GLFWwindow* m_Window;

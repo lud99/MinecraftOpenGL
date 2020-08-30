@@ -23,13 +23,13 @@ void Crosshair::Render()
 
 	m_Mesh.Clear();
 
-	m_Mesh.m_Vertices.push_back(Vertex(World::GetPlayer().m_Position));
+	/*m_Mesh.m_Vertices.push_back(Vertex(World::GetPlayer().m_Position));
 	m_Mesh.m_Vertices.push_back(Vertex(World::GetPlayer().m_Position + glm::vec3(0.1, 0.1, 0.1)));
 	m_Mesh.m_Vertices.push_back(Vertex(lookingAt));
-	m_Mesh.m_Vertices.push_back(Vertex(lookingAt + glm::vec3(0.1, 0.1, 0.1)));
+	m_Mesh.m_Vertices.push_back(Vertex(lookingAt + glm::vec3(0.1, 0.1, 0.1)));*/
 
 	for (int i = 0; i < 6; i++)
-		m_Mesh.m_Indices.push_back(CubeFaces::Indices[i]);
+		m_Mesh.AddIndex(CubeFaces::Indices[i]);
 
 	m_Mesh.Update();
 

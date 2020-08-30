@@ -101,12 +101,14 @@ void Mesh::Clear()
 
 void Mesh::Render()
 {
+	if (!m_Vao || !m_Vbo) return;
+
 	BindVao();
 	if (m_Texture) m_Texture->Bind();
 
 	glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
 
-	if (m_Texture)m_Texture->Unbind();
+	if (m_Texture) m_Texture->Unbind();
 	UnbindVao();
 }
 
@@ -120,6 +122,31 @@ void Mesh::Render(int verticesCount)
 }
 
 std::vector<Vertex>& Mesh::GetVertices() { return m_Vertices; }
+std::vector<unsigned int>& Mesh::GetIndices() { return m_Indices; }
+
+void Mesh::AddVertex(Vertex vertex) 
+{ 
+	m_VerticesMutex.lock(); 
+
+	m_Vertices.push_back(vertex);
+
+	m_VerticesMutex.unlock(); 
+}
+void Mesh::SetVertices(std::vector<Vertex> vertices) { m_Vertices = vertices; };
+void Mesh::SetVertices(Mesh mesh) { m_Vertices = mesh.m_Vertices; }
+
+void Mesh::AddIndex(unsigned int index) 
+{ 
+	m_IndicesMutex.lock();
+
+	m_Indices.push_back(index);
+
+	m_IndicesMutex.unlock();
+};
+
+void Mesh::SetIndices(std::vector<unsigned int> indices) { m_Indices = indices; };
+void Mesh::SetIndices(Mesh mesh) { m_Indices = mesh.m_Indices; }
+
 const unsigned int Mesh::GetVao() { return m_Vao; }
 
 Mesh::~Mesh()
@@ -127,6 +154,5 @@ Mesh::~Mesh()
 	glDeleteVertexArrays(1, &m_Vao);
 
 	glDeleteBuffers(1, &m_Vbo);
-	glDeleteBuffers(1, &m_Ibo);
 	glDeleteBuffers(1, &m_Ebo);
 }

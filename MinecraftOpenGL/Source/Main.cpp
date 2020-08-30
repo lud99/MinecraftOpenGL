@@ -6,6 +6,7 @@
 #include <iostream>
 #include <chrono> 
 #include <vector>
+#include <mutex>
 
 #include <glm/vec3.hpp>
 #include <glm/gtc/matrix_transform.hpp> 
@@ -19,6 +20,7 @@
 #include "InputHandler.h"
 #include "World/WorldRenderer.h"
 #include "World/Player.h"
+#include "ThreadPool.h"
 
 void CreateChunks(int count)
 {
@@ -43,7 +45,7 @@ void CreateChunks(int count)
 				continue;
 
 			// Fill the chunk with blocks
-			chunk->GenerateTerrain();
+			chunk->GenerateTerrainThreaded();
 		}
 	}
 
@@ -54,7 +56,7 @@ void CreateChunks(int count)
 			Chunk* chunk = World::GetChunkAtPosition(glm::ivec2(x, z));
 
 			// Create the block mesh
-			chunk->RebuildMesh();
+			chunk->RebuildMeshThreaded();
 		}
 	}
 }
@@ -106,7 +108,7 @@ int main()
 	// Enable opacity
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glLineWidth(5);
+	glLineWidth(2);
 
 	// Print the OpenGL version
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
@@ -121,9 +123,9 @@ int main()
 
 	CreateChunks(count);
 
-	auto stop = std::chrono::high_resolution_clock::now();
+	/*auto stop = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
-	std::cout << "Chunk generation took " << duration.count() << " seconds\n";
+	std::cout << "Chunk generation took " << duration.count() << " seconds\n";*/
 
 	double previousTime = glfwGetTime();
 	int frameCount = 0;
@@ -168,7 +170,7 @@ int main()
 		// Update everything in the world
 		World::Update();
 
-		World::m_Renderer->Render();
+		World::Render();
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);

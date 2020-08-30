@@ -12,6 +12,7 @@
 #include "../../Blocks/BlockTypes.h"
 #include "../World.h"
 #include "../../Graphics/Mesh.h"
+#include "../../Noise/NoiseGenerator.h"
 
 Chunk::Chunk(glm::ivec2 position)
 {
@@ -85,40 +86,25 @@ void Chunk::CreateSphere(const glm::vec4* colors)
 	}
 }
 
-float Normalize(float num)
+void Chunk::GenerateTerrainThreaded()
 {
-	return std::abs(num) * 2;
-}
-
-float GetOctaveNoise(float x, float z, int octaves, int f = 4)
-{
-	FastNoise noise; // Create a FastNoise object
-	noise.SetSeed(122);
-	noise.SetNoiseType(FastNoise::Simplex); // Set the desired noise type
-
-	float height = 0;
-	float u = 1.0f;
-
-	for (int i = 0; i < octaves; i++) {
-		height += noise.GetNoise(x / u, z / u) * u;
-		u *= 2.0f;
-	}
-
-	return height;
-}
-
-float GetCombinedNoise(float x, float z, int octaves1, int octaves2, int f = 1)
-{
-	return GetOctaveNoise(x + GetOctaveNoise(x, z, octaves1, f), z, octaves2, f);
+	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::Generate, this));
 }
 
 void Chunk::GenerateTerrain()
 {
-	int waterLevel = Height / 2;
+	std::mutex mutex;
+	mutex.lock();
 
-	for (int x = 0; x < Width; x++)
+	int waterLevel = Chunk::Height / 2;
+
+	NoiseGenerator noise;
+	noise.SetSeed(112);
+	noise.SetNoiseType(FastNoise::Simplex);
+
+	for (int x = 0; x < Chunk::Width; x++)
 	{
-		for (int z = 0; z < Depth; z++)
+		for (int z = 0; z < Chunk::Depth; z++)
 		{
 			glm::vec3 worldPosition = GetBlockAt(glm::vec3(x, 0, z))->GetWorldPosition();
 
@@ -126,9 +112,9 @@ void Chunk::GenerateTerrain()
 			float scale2 = 12.0f;
 			float scale3 = 20.0f;
 
-			float noise1 = Normalize(GetOctaveNoise(worldPosition.x * scale1, worldPosition.z * scale1, 5)) / 1.75f - 2.f;
-			float noise2 = Normalize(GetOctaveNoise(worldPosition.x * scale2, worldPosition.z * scale2, 2)) / 2.f + 0.25f;
-			float noise3 = Normalize(GetOctaveNoise(worldPosition.x * scale3, worldPosition.z * scale3, 6)); // Holes
+			float noise1 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale1, worldPosition.z * scale1, 5)) / 1.75f - 2.f;
+			float noise2 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale2, worldPosition.z * scale2, 2)) / 2.f + 0.25f;
+			float noise3 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale3, worldPosition.z * scale3, 6)); // Holes
 
 			float height = noise1 + noise2;
 
@@ -137,7 +123,7 @@ void Chunk::GenerateTerrain()
 			if (noise3 > 36) {
 				float s = 5.0f;
 
-				height = Normalize(GetOctaveNoise(worldPosition.x * s, worldPosition.z * s, 3)) / 2.f;
+				height = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * s, worldPosition.z * s, 3)) / 2.f;
 			}
 
 			if (height < 1.0f) {
@@ -148,7 +134,7 @@ void Chunk::GenerateTerrain()
 
 			int finalHeight = (int)floor(height) + waterLevel;
 
-			for (int y = 0; y < Height; y++)
+			for (int y = 0; y < Chunk::Height; y++)
 			{
 				ChunkBlock* block = GetBlockAt(glm::vec3(x, y, z));
 
@@ -180,18 +166,22 @@ void Chunk::GenerateTerrain()
 	}
 
 	m_HasGenerated = true;
+
+	mutex.unlock();
 }
 
 void Chunk::RebuildMesh()
 {
-	m_OpaqueMesh.Clear();
-	m_WaterMesh.Clear();
+	m_MeshMutex.lock();
 
-	for (int z = 0; z < Chunk::Width; z++)
+	m_TempOpaqueMesh.Clear();
+	m_TempWaterMesh.Clear();
+
+	for (int x = 0; x < Chunk::Width; x++)
 	{
 		for (int y = 0; y < Chunk::Height; y++)
 		{
-			for (int x = 0; x < Chunk::Depth; x++)
+			for (int z = 0; z < Chunk::Depth; z++)
 			{
 				ChunkBlock* block = GetBlockAt(glm::ivec3(x, y, z));
 
@@ -201,8 +191,22 @@ void Chunk::RebuildMesh()
 		}
 	}
 
-	m_OpaqueMesh.Update();
-	m_WaterMesh.Update();
+	m_OpaqueMesh.SetVertices(m_TempOpaqueMesh.GetVertices());
+	m_OpaqueMesh.SetIndices(m_TempOpaqueMesh.GetIndices());
+	m_WaterMesh.SetVertices(m_TempWaterMesh.GetVertices());
+	m_WaterMesh.SetIndices(m_TempWaterMesh.GetIndices());
+
+	m_TempOpaqueMesh.Clear();
+	m_TempWaterMesh.Clear();
+
+	std::cout << "Chunk mesh rebuilt\n";
+
+	m_MeshMutex.unlock();
+}
+
+void Chunk::RebuildMeshThreaded()
+{
+	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::Rebuild, this));
 }
 
 void Chunk::Render()
@@ -274,5 +278,3 @@ Chunk::~Chunk()
 	}
 	delete[] m_Blocks;
 }
-
-ChunkRebuilder Chunk::m_Rebuilder;

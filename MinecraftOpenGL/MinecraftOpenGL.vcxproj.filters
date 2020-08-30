@@ -69,7 +69,13 @@
     <ClCompile Include="Source\Crosshair.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\World\Chunk\ChunkRebuilder.cpp">
+    <ClCompile Include="Source\World\Chunk\ChunkBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ThreadPool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Noise\NoiseGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -137,8 +143,14 @@
     <ClInclude Include="Source\Crosshair.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\World\Chunk\ChunkRebuilder.h">
+    <ClInclude Include="Source\World\Chunk\ChunkBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\ThreadPool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\Noise\NoiseGenerator.h" />
   </ItemGroup>
 </Project>

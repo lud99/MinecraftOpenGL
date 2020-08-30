@@ -16,10 +16,10 @@ void Collider::Init()
 	m_Shader = ShaderLoader::CreateShader("Resources/Shaders/Collider.vert", "Resources/Shaders/Collider.frag");
 
 	for (int i = 0; i < 8; i++)
-		m_Mesh.m_Vertices.push_back(Vertex(BasicColliders::Box[i] * 1.00625f));
+		m_Mesh.AddVertex(Vertex(BasicColliders::Box[i] * 1.00625f));
 
 	for (int i = 0; i < 36; i++)
-		m_Mesh.m_Indices.push_back(BasicColliders::BoxIndices[i]);
+		m_Mesh.AddIndex(BasicColliders::BoxIndices[i]);
 
 	m_Mesh.Update();
 }

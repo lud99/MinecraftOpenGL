@@ -29,13 +29,10 @@ void World::Update()
 {
 	m_Player.Update();
 
-	Chunk::m_Rebuilder.CheckForRebuiltChunks();
+	m_ChunkBuilder.ProcessQueue();
 }
 
-void World::Render()
-{
-	m_Renderer->Render();
-}
+void World::Render() { m_Renderer->Render(); }
 
 Chunk* World::CreateChunk(glm::ivec2 position)
 {
@@ -64,10 +61,7 @@ Chunk* World::GetChunkAtPosition(glm::ivec2 position)
 	return GetChunkFromIndex(index);
 }
 
-bool World::ChunkExistsAtIndex(int index)
-{
-	return m_Chunks.count(index) > 0;
-}
+bool World::ChunkExistsAtIndex(int index) { return m_Chunks.count(index) > 0; }
 
 bool World::ChunkExistsAtPosition(glm::ivec2 position)
 {
@@ -81,5 +75,6 @@ Player& World::GetPlayer() { return m_Player; };
 TextureAtlas World::m_TextureAtlas;
 Collider World::m_LookingAtCollider;
 WorldRenderer* World::m_Renderer;
+ChunkBuilder World::m_ChunkBuilder;
 
 unsigned int World::m_ChunkCount = 0;

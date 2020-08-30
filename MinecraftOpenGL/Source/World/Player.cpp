@@ -11,7 +11,6 @@
 #include "World.h"
 #include "Chunk/Chunk.h"
 #include "Chunk/ChunkBlock.h"
-#include "Chunk/ChunkRebuilder.h"
 #include "../Crosshair.h"
 
 Player::Player()
@@ -153,21 +152,33 @@ void Player::MouseButtonCallback(GLFWwindow* window, int button, int action, int
 		if (!m_HighlightedBlock) return;
 
 		Chunk* chunk = m_HighlightedBlock->GetChunk();
-
+		/*
 		glm::vec3 highlightedBlockPosition = m_HighlightedBlock->GetWorldPosition();
+		glm::vec3 delta = highlightedBlockPosition - m_Position;
 
 		float distanceToBlock = glm::distance(m_Position, highlightedBlockPosition);
 
-		glm::vec3 directionToBlock(highlightedBlockPosition / distanceToBlock);
+		glm::vec3 directionToBlock(delta / distanceToBlock);
 
-		ChunkBlock* placeBlock = chunk->GetBlockAt(glm::floor(highlightedBlockPosition - directionToBlock));
-		placeBlock->m_BlockId = BlockIds::Stone;
+		//glm::vec3 directionToBlock(highlightedBlockPosition / distanceToBlock);*/
+
+		//glm::vec3 chunkLocalLookingAtPosition = glm::mod(m_LookingAtPosition, glm::vec3(Chunk::Width, Chunk::Height, Chunk::Depth));
+		//glm::vec3 blockLocalLookingAtPosition = glm::mod(chunkLocalLookingAtPosition, 
+
+		//std::cout << m_LastLookingAtPosition.x << ", " << m_LastLookingAtPosition.y << ", " << m_LastLookingAtPosition.z << "\n";
+
+		//glm::vec3 blockPos = glm::round(m_LastLookingAtPosition);
+
+		ChunkBlock* block = chunk->GetBlockAt(m_HighlightedBlock->GetLocalPosition());
+		block->m_BlockId = BlockIds::Air;
+
+		World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::Rebuild, chunk));
 
 		//m_HighlightedBlock->m_BlockId = BlockIds::Air;
 
 		//m_HighlightedBlock->GetChunk()->RebuildMeshThreaded();
 
-		chunk->m_Rebuilder.Rebuild(chunk);
+		//.Rebuild(chunk);
 	}
 }
    

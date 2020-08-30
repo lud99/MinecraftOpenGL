@@ -6,7 +6,8 @@
 #include <glm/vec3.hpp>
 
 #include "../../Graphics/Mesh.h"
-#include "ChunkRebuilder.h"
+
+#include <mutex>
 
 class ChunkBlock;
 class ChunkMesh;
@@ -17,12 +18,14 @@ public:
 	Chunk(glm::ivec2 position);
 
 	void RebuildMesh();
+	void RebuildMeshThreaded();
 
 	void Render();
 
 	void Fill(const glm::vec4* colors);
 	void CreateSphere(const glm::vec4* colors);
 	void GenerateTerrain();
+	void GenerateTerrainThreaded();
 
 	void SetBlockAt(glm::ivec3 position, ChunkBlock* newBlock);
 	void SetBlockAt(glm::vec3 position, ChunkBlock* newBlock);
@@ -55,7 +58,10 @@ public:
 	Mesh m_OpaqueMesh;
 	Mesh m_WaterMesh;
 
-	static ChunkRebuilder m_Rebuilder;
+	Mesh m_TempOpaqueMesh;
+	Mesh m_TempWaterMesh;
+
+	std::mutex m_MeshMutex;
 
 private:
 	glm::ivec2 m_Position = glm::ivec2(0, 0);

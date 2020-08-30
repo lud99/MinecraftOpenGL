@@ -32,8 +32,8 @@ public:
 
 	~Player();
 public:
-	glm::vec3 m_Position = glm::vec3(0.0f, 70.0f, 0.0f);
-	glm::vec3 m_LookingAtPosition;
+	glm::vec3 m_Position = glm::vec3(0.0f, 100.0f, 0.0f);
+	glm::vec3 m_LookingAtPosition, m_LastLookingAtPosition;
 
 	GLFWwindow* m_Window;
 
