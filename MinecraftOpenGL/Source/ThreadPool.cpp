@@ -49,7 +49,7 @@ void ThreadPool::QueueWork(ChunkAction action)
 	// Grab the mutex
 	std::lock_guard<std::mutex> g(m_WorkQueueMutex); // Auto releases when going out of scope
 
-	for (int i = 0; i < m_WorkQueue.size(); i++)
+	/*for (unsigned int i = 0; i < m_WorkQueue.size(); i++)
 	{
 		// Check if multiple queued chunk actions are trying to do the same thing to the same chunk
 		if (m_WorkQueue[i].type == action.type && m_WorkQueue[i].chunk == action.chunk)
@@ -64,7 +64,7 @@ void ThreadPool::QueueWork(ChunkAction action)
 				break;
 			}
 		}
-	}
+	}*/
 
 	// Push the request to the queue
 	m_WorkQueue.push_back(action);

@@ -199,7 +199,7 @@ void Chunk::RebuildMesh()
 	m_TempOpaqueMesh.Clear();
 	m_TempWaterMesh.Clear();
 
-	std::cout << "Chunk mesh rebuilt\n";
+	//std::cout << "Chunk mesh rebuilt\n";
 
 	m_MeshMutex.unlock();
 }

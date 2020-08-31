@@ -26,8 +26,9 @@ void WorldRenderer::Render()
 	for (auto const& entry : chunks)
 		entry.second->m_OpaqueMesh.Render();
 
-	for (auto const& entry : chunks)
+	for (auto const& entry : chunks) {
 		entry.second->m_WaterMesh.Render();
+	}
 
 	if (World::m_LookingAtCollider.m_Enabled) World::m_LookingAtCollider.RenderHitbox();
 

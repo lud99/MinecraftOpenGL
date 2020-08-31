@@ -1,4 +1,5 @@
 #define STB_IMAGE_IMPLEMENTATION
+#define GLM_ENABLE_EXPERIMENTAL // glm::vec3 hash for maps
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -10,6 +11,7 @@
 
 #include <glm/vec3.hpp>
 #include <glm/gtc/matrix_transform.hpp> 
+#include <glm/gtx/hash.hpp>
 
 #include "Graphics/Shaders/ShaderLoader.h"
 
@@ -48,6 +50,7 @@ void CreateChunks(int count)
 			chunk->GenerateTerrainThreaded();
 		}
 	}
+
 
 	for (int x = -count / 2; x < count / 2; x++)
 	{
@@ -119,7 +122,7 @@ int main()
 
 	auto start = std::chrono::high_resolution_clock::now();
 
-	int count = 2;
+	int count = 16;
 
 	CreateChunks(count);
 
