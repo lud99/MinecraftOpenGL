@@ -25,11 +25,11 @@ void ChunkBuilder::AddToQueue(ChunkAction action)
 	m_UpdateQueueMutex.unlock();
 }
 
-void ChunkBuilder::AddToRebuiltChunks(Chunk* chunk)
+void ChunkBuilder::AddToRebuiltChunks(ChunkAction action)
 {
 	m_UpdateQueueMutex.lock();
 
-	m_RebuiltChunks.push_back(chunk->GetIndex());
+	m_RebuiltChunks.push_back(action);
 
 	m_UpdateQueueMutex.unlock();
 }
@@ -47,7 +47,7 @@ void ChunkBuilder::ProcessQueue()
 	// Check for chunks that have finished rebuilding
 	for (unsigned int i = 0; i < m_RebuiltChunks.size(); i++)
 	{
-		Chunk* chunk = World::GetChunkFromIndex(m_RebuiltChunks[i]);
+		Chunk* chunk = m_RebuiltChunks[i].chunk;
 
 		chunk->m_OpaqueMesh.Update();
 		chunk->m_WaterMesh.Update();

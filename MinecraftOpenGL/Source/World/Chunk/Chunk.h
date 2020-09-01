@@ -40,8 +40,6 @@ public:
 	glm::ivec2 GetWorldPosition();
 	void SetPosition(glm::ivec2 position);
 
-	int GetIndex();
-
 	~Chunk();
 
 public:
@@ -65,6 +63,4 @@ public:
 
 private:
 	glm::ivec2 m_Position = glm::ivec2(0, 0);
-
-	int m_Index = 0;
 };

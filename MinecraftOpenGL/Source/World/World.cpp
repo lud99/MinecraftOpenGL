@@ -36,39 +36,31 @@ void World::Render() { m_Renderer->Render(); }
 
 Chunk* World::CreateChunk(glm::ivec2 position)
 {
-	int chunkIndex = Utils::ChunkPositionToIndex(position);
+	if (position.x == 0 && position.y == 8)
+		int a = 2;
 
-	m_Chunks[chunkIndex] = new Chunk(position);
+	m_Chunks[position] = new Chunk(position);
 
-	return m_Chunks[chunkIndex];
+	return m_Chunks[position];
 }
 
-std::map<int, Chunk*>& World::GetChunks() { return m_Chunks; }
+Chunk* World::CreateChunk(glm::ivec3 position) { return CreateChunk(glm::ivec2(position.x, position.z)); }
 
-Chunk* World::GetChunkFromIndex(int index)
+ChunkMap& World::GetChunks() { return m_Chunks; }
+
+Chunk* World::GetChunkAt(glm::ivec2 position)
 {
 	// Check if it exists
-	if (ChunkExistsAtIndex(index))
-		return m_Chunks.at(index);
+	if (ChunkExistsAt(position))
+		return m_Chunks.at(position);
 
 	return nullptr;
 }
 
-Chunk* World::GetChunkAtPosition(glm::ivec2 position)
-{
-	int index = Utils::ChunkPositionToIndex(position);
+Chunk* World::GetChunkAt(glm::ivec3 position) { return GetChunkAt(glm::ivec2(position.x, position.z)); }
 
-	return GetChunkFromIndex(index);
-}
-
-bool World::ChunkExistsAtIndex(int index) { return m_Chunks.count(index) > 0; }
-
-bool World::ChunkExistsAtPosition(glm::ivec2 position)
-{
-	int index = Utils::ChunkPositionToIndex(position);
-
-	return m_Chunks.count(index) > 0;
-}
+bool World::ChunkExistsAt(glm::ivec2 position) { return m_Chunks.count(position) > 0; }
+bool World::ChunkExistsAt(glm::ivec3 position) { return m_Chunks.count(glm::ivec2(position.x, position.z)) > 0; }
 
 Player& World::GetPlayer() { return m_Player; };
 

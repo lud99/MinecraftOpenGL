@@ -25,7 +25,7 @@ struct ChunkAction
 		type(type), chunk(chunk) {};
 
 	ActionType type = Rebuild;
-	unsigned int timestamp;
+	unsigned long long timestamp;
 
 	Chunk* chunk;
 	ChunkBuilder* chunkBuilder;

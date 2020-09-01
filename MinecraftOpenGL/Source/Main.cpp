@@ -23,6 +23,7 @@
 #include "World/WorldRenderer.h"
 #include "World/Player.h"
 #include "ThreadPool.h"
+#include "World/Chunk/Chunk.h"
 
 void CreateChunks(int count)
 {
@@ -30,7 +31,7 @@ void CreateChunks(int count)
 	{
 		for (int z = -count / 2; z < count / 2; z++)
 		{
-			if (World::ChunkExistsAtPosition(glm::ivec2(x, z)))
+			if (World::ChunkExistsAt(glm::ivec2(x, z)))
 				continue;
 
 			Chunk* chunk = World::CreateChunk(glm::ivec2(x, z));
@@ -41,7 +42,7 @@ void CreateChunks(int count)
 	{
 		for (int z = -count / 2; z < count / 2; z++)
 		{
-			Chunk* chunk = World::GetChunkAtPosition(glm::ivec2(x, z));
+			Chunk* chunk = World::GetChunkAt(glm::ivec2(x, z));
 
 			if (chunk->m_HasGenerated)
 				continue;
@@ -51,12 +52,11 @@ void CreateChunks(int count)
 		}
 	}
 
-
 	for (int x = -count / 2; x < count / 2; x++)
 	{
 		for (int z = -count / 2; z < count / 2; z++)
 		{
-			Chunk* chunk = World::GetChunkAtPosition(glm::ivec2(x, z));
+			Chunk* chunk = World::GetChunkAt(glm::ivec2(x, z));
 
 			// Create the block mesh
 			chunk->RebuildMeshThreaded();
@@ -122,7 +122,7 @@ int main()
 
 	auto start = std::chrono::high_resolution_clock::now();
 
-	int count = 16;
+	int count = 64;
 
 	CreateChunks(count);
 

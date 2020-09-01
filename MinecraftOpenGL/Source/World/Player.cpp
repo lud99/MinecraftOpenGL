@@ -78,7 +78,7 @@ void Player::Update()
 			break;
 		}
 
-		Chunk* chunk = World::GetChunkAtPosition(Utils::WorldPositionToChunkPosition(raycastPosition));
+		Chunk* chunk = World::GetChunkAt(Utils::WorldPositionToChunkPosition(raycastPosition));
 
 		if (!chunk) continue;
 

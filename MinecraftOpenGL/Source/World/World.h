@@ -1,10 +1,13 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <glm/vec3.hpp>
 #include <glm/gtc/matrix_transform.hpp> 
+#include <glm/gtx/hash.hpp>
 
 #include <GLFW/glfw3.h>
+
+#include <mutex>
 
 #include "../Utils.h"
 #include "../Graphics/Textures/TextureAtlas.h"
@@ -18,6 +21,8 @@ typedef Faces Directions;
 
 class Chunk;
 
+typedef std::unordered_map<glm::ivec2, Chunk*> ChunkMap;
+
 namespace World
 {
 	void Init(GLFWwindow* window);
@@ -25,13 +30,15 @@ namespace World
 	void Render();
 
 	Chunk* CreateChunk(glm::ivec2 position);
-	std::map<int, Chunk*>& GetChunks();
+	Chunk* CreateChunk(glm::ivec3 position);
 
-	Chunk* GetChunkFromIndex(int index);
-	Chunk* GetChunkAtPosition(glm::ivec2 position);
+	Chunk* GetChunkAt(glm::ivec2 position);
+	Chunk* GetChunkAt(glm::ivec3 position);
 
-	bool ChunkExistsAtIndex(int index);
-	bool ChunkExistsAtPosition(glm::ivec2 position);
+	ChunkMap& GetChunks();
+
+	bool ChunkExistsAt(glm::ivec2 position);
+	bool ChunkExistsAt(glm::ivec3 position);
 
 	Player& GetPlayer();
 
@@ -44,8 +51,10 @@ namespace World
 	namespace {
 		GLFWwindow* m_Window;
 
-		std::map<int, Chunk*> m_Chunks;
+		ChunkMap m_Chunks;
 
 		Player m_Player;
+
+		std::mutex m_ChunkMutex;
 	}
 };

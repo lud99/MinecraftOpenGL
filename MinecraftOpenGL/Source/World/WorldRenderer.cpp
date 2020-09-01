@@ -22,7 +22,7 @@ void WorldRenderer::Render()
 	m_BlockShader.SetUniform("u_ProjectionMatrix", m_ProjectionMatrix);
 	m_BlockShader.SetUniform("u_ViewMatrix", m_ViewMatrix);
 
-	std::map<int, Chunk*>& chunks = World::GetChunks();
+	ChunkMap& chunks = World::GetChunks();
 	for (auto const& entry : chunks)
 		entry.second->m_OpaqueMesh.Render();
 

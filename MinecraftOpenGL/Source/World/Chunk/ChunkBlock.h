@@ -68,7 +68,7 @@ private:
 	AdjacentChunks GetAdjacentChunks();
 
 public:
-	int m_ChunkIndex = 0;
+	glm::ivec2 m_ChunkPosition;
 
 	int m_BlockId = BlockIds::Air;
 

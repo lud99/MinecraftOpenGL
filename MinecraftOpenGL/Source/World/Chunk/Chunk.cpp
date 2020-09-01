@@ -27,8 +27,6 @@ Chunk::Chunk(glm::ivec2 position)
 	m_OpaqueMesh.m_Texture = World::m_TextureAtlas.Texture;
 	m_WaterMesh.m_Texture = World::m_TextureAtlas.Texture;
 
-	m_Index = Utils::ChunkPositionToIndex(position);
-
 	// Fill the array with blocks
 	m_Blocks = new ChunkBlock**[Chunk::Width];
 
@@ -43,7 +41,7 @@ Chunk::Chunk(glm::ivec2 position)
 
 			for (int z = 0; z < Chunk::Depth; z++) // All blocks are already created. Iterate through each block to set some variables
 			{
-				m_Blocks[x][y][z].m_ChunkIndex = m_Index;
+				m_Blocks[x][y][z].m_ChunkPosition = m_Position;
 				m_Blocks[x][y][z].SetLocalPosition(glm::vec3(x, y, z));
 				m_Blocks[x][y][z].m_BlockId = BlockIds::Air;
 			}
@@ -199,7 +197,7 @@ void Chunk::RebuildMesh()
 	m_TempOpaqueMesh.Clear();
 	m_TempWaterMesh.Clear();
 
-	//std::cout << "Chunk mesh rebuilt\n";
+	//std::cout << "Chunk mesh rebuilt. " << m_Position.x << ", " << m_Position.y << "\n";
 
 	m_MeshMutex.unlock();
 }
@@ -261,8 +259,6 @@ glm::ivec2 Chunk::GetWorldPosition()
 }
 
 void Chunk::SetPosition(glm::ivec2 position) { m_Position = position; }
-
-int Chunk::GetIndex() { return m_Index; }
 
 Chunk::~Chunk()
 {

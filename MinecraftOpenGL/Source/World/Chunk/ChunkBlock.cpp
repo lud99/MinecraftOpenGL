@@ -194,11 +194,13 @@ void ChunkBlock::AddBlockFaces()
 
 Chunk* ChunkBlock::GetChunk()
 {
-	return World::GetChunkFromIndex(m_ChunkIndex);
+	return World::GetChunkAt(m_ChunkPosition);
 }
 
 const glm::ivec3 ChunkBlock::GetWorldPosition() 
 { 
+	Chunk* chunk = GetChunk();
+
 	glm::ivec2 chunkPosition = GetChunk()->GetWorldPosition();
 
 	return m_LocalPosition + glm::ivec3(chunkPosition.x, 0, chunkPosition.y);
@@ -206,7 +208,7 @@ const glm::ivec3 ChunkBlock::GetWorldPosition()
 
 Chunk* ChunkBlock::GetChunkAtRelativePosition(glm::ivec2 offset)
 {
-	return World::GetChunkAtPosition(Utils::WorldPositionToChunkPosition(GetWorldPosition() + glm::ivec3(offset.x, 0, offset.y)));
+	return World::GetChunkAt(m_ChunkPosition + offset);
 }
 
 ChunkBlock* ChunkBlock::GetBlockAtRelativePosition(glm::ivec3 offset)
@@ -216,7 +218,7 @@ ChunkBlock* ChunkBlock::GetBlockAtRelativePosition(glm::ivec3 offset)
 
 bool ChunkBlock::ChunkExistsAtRelativePosition(glm::ivec3 offset)
 {
-	return World::ChunkExistsAtPosition(Utils::WorldPositionToChunkPosition(GetWorldPosition() + offset));
+	return World::ChunkExistsAt(GetWorldPosition() + offset);
 }
 
 bool ChunkBlock::BlockExistsAtRelativePosition(glm::ivec3 offset)

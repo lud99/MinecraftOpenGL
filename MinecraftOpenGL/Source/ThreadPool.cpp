@@ -11,7 +11,7 @@ ThreadPool::ThreadPool()
 	// This returns the number of threads supported by the system. If the
 	// function can't figure out this information, it returns 0. 0 is not good,
 	// so we create at least 1
-	unsigned int numberOfThreads = 3;
+	unsigned int numberOfThreads = std::thread::hardware_concurrency() - 1;
 	if (numberOfThreads == 0) {
 		numberOfThreads = 1;
 	}
@@ -112,6 +112,6 @@ void ThreadPool::DoWork()
 
 		}
 
-		action.chunkBuilder->AddToRebuiltChunks(action.chunk);
+		action.chunkBuilder->AddToRebuiltChunks(action);
 	}
 };
