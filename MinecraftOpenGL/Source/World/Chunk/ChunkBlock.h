@@ -44,10 +44,10 @@ public:
 
 	Chunk* GetChunk();
 
-	inline const glm::ivec3 GetLocalPosition() { return m_LocalPosition; };
-	const glm::ivec3 GetWorldPosition();
+	inline const glm::i8vec3 GetLocalPosition() { return m_LocalPosition; };
+	const glm::i32vec3 GetWorldPosition();
 
-	inline void SetLocalPosition(glm::ivec3 position) { m_LocalPosition = position; }
+	inline void SetLocalPosition(glm::i8vec3 position) { m_LocalPosition = position; }
 
 	inline void SetEnabled(bool flag) { m_Enabled = flag; };
 	inline bool IsEnabled() { return m_Enabled; }
@@ -57,23 +57,23 @@ public:
 	~ChunkBlock();
 
 private:
-	Chunk* GetChunkAtRelativePosition(glm::ivec2 offset);
-	ChunkBlock* GetBlockAtRelativePosition(glm::ivec3 offset);
+	Chunk* GetChunkAtRelativePosition(glm::i8vec2 offset);
+	ChunkBlock* GetBlockAtRelativePosition(glm::i8vec3 offset);
 
-	bool ChunkExistsAtRelativePosition(glm::ivec3 offset);
-	bool BlockExistsAtRelativePosition(glm::ivec3 offset);
+	bool ChunkExistsAtRelativePosition(glm::i8vec3 offset);
+	bool BlockExistsAtRelativePosition(glm::i8vec3 offset);
 
 	bool ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk);
 
 	AdjacentChunks GetAdjacentChunks();
 
 public:
-	glm::ivec2 m_ChunkPosition;
+	glm::i32vec2 m_ChunkPosition;
 
 	int m_BlockId = BlockIds::Air;
 
 private:
-	glm::ivec3 m_LocalPosition;
+	glm::i8vec3 m_LocalPosition;
 
 	bool m_Enabled = true;
 	bool m_Highlighted = false;

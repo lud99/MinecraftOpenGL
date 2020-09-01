@@ -21,7 +21,7 @@ typedef Faces Directions;
 
 class Chunk;
 
-typedef std::unordered_map<glm::ivec2, Chunk*> ChunkMap;
+typedef std::unordered_map<glm::i32vec2, Chunk*> ChunkMap;
 
 namespace World
 {
@@ -29,16 +29,16 @@ namespace World
 	void Update();
 	void Render();
 
-	Chunk* CreateChunk(glm::ivec2 position);
-	Chunk* CreateChunk(glm::ivec3 position);
+	Chunk* CreateChunk(glm::i32vec2 position);
+	Chunk* CreateChunk(glm::i32vec3 position);
 
-	Chunk* GetChunkAt(glm::ivec2 position);
-	Chunk* GetChunkAt(glm::ivec3 position);
+	Chunk* GetChunkAt(glm::i32vec2 position);
+	Chunk* GetChunkAt(glm::i32vec3 position);
 
 	ChunkMap& GetChunks();
 
-	bool ChunkExistsAt(glm::ivec2 position);
-	bool ChunkExistsAt(glm::ivec3 position);
+	bool ChunkExistsAt(glm::i32vec2 position);
+	bool ChunkExistsAt(glm::i32vec3 position);
 
 	Player& GetPlayer();
 

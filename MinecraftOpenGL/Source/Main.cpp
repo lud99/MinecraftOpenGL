@@ -122,7 +122,7 @@ int main()
 
 	auto start = std::chrono::high_resolution_clock::now();
 
-	int count = 64;
+	int count = 32;
 
 	CreateChunks(count);
 
@@ -174,6 +174,13 @@ int main()
 		World::Update();
 
 		World::Render();
+
+
+		GLenum err;
+		while ((err = glGetError()) != GL_NO_ERROR)
+		{
+			std::cout << "err\n";
+		}
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);

@@ -7,7 +7,7 @@
 struct Vertex
 {
 	Vertex(
-		glm::vec3 position = glm::vec3(0.0f), 
+		glm::vec3 position = glm::vec3(0),
 		glm::vec2 textureCoordinates = glm::vec2(0, 0)):
 
 		position(position), 

@@ -14,6 +14,10 @@ public:
 	void Bind();
 	void Unbind();
 
+	void SetUniform(const std::string& name, glm::vec2 vector);
+	void SetUniform(const std::string& name, glm::ivec2 vector);
+	void SetUniform(const std::string& name, glm::vec3 vector);
+	void SetUniform(const std::string& name, glm::ivec3 vector);
 	void SetUniform(const std::string& name, glm::mat4 matrix);
 	void SetUniform(const std::string& name, float value);
 

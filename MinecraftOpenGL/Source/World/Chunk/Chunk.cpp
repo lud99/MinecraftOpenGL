@@ -223,14 +223,16 @@ void Chunk::SetBlockAt(glm::vec3 position, ChunkBlock* newBlock)
 	SetBlockAt((glm::ivec3)position, newBlock);
 }
 
-ChunkBlock*** Chunk::GetAllBlocks()
+ChunkBlock*** Chunk::GetAllBlocks() { return m_Blocks; }
+
+ChunkBlock* Chunk::GetBlockAt(glm::i8vec3 position)
 {
-	return m_Blocks;
+	return &m_Blocks[position.x][position.y][position.z];
 }
 
 ChunkBlock* Chunk::GetBlockAt(glm::ivec3 position)
 {
-	return &m_Blocks[position.x][position.y][position.z];
+	return GetBlockAt((glm::i8vec3)position);
 }
 
 ChunkBlock* Chunk::GetBlockAt(glm::vec3 position)

@@ -62,7 +62,7 @@ void Mesh::UpdateVertices(const std::vector<Vertex>& vertices)
 	glBindBuffer(GL_ARRAY_BUFFER, m_Vbo);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(unsigned int), &m_Indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(uint16_t), &m_Indices[0], GL_STATIC_DRAW);
 
 	SetVertexAttributes();
 
@@ -106,7 +106,7 @@ void Mesh::Render()
 	BindVao();
 	if (m_Texture) m_Texture->Bind();
 
-	glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_SHORT, 0);
 
 	if (m_Texture) m_Texture->Unbind();
 	UnbindVao();
@@ -122,7 +122,7 @@ void Mesh::Render(int verticesCount)
 }
 
 std::vector<Vertex>& Mesh::GetVertices() { return m_Vertices; }
-std::vector<unsigned int>& Mesh::GetIndices() { return m_Indices; }
+std::vector<uint16_t>& Mesh::GetIndices() { return m_Indices; }
 
 void Mesh::AddVertex(Vertex vertex) 
 { 
@@ -135,7 +135,7 @@ void Mesh::AddVertex(Vertex vertex)
 void Mesh::SetVertices(std::vector<Vertex> vertices) { m_Vertices = vertices; };
 void Mesh::SetVertices(Mesh mesh) { m_Vertices = mesh.m_Vertices; }
 
-void Mesh::AddIndex(unsigned int index) 
+void Mesh::AddIndex(uint16_t index)
 { 
 	m_IndicesMutex.lock();
 
@@ -144,7 +144,7 @@ void Mesh::AddIndex(unsigned int index)
 	m_IndicesMutex.unlock();
 };
 
-void Mesh::SetIndices(std::vector<unsigned int> indices) { m_Indices = indices; };
+void Mesh::SetIndices(std::vector<uint16_t> indices) { m_Indices = indices; };
 void Mesh::SetIndices(Mesh mesh) { m_Indices = mesh.m_Indices; }
 
 const unsigned int Mesh::GetVao() { return m_Vao; }

@@ -14,8 +14,12 @@ out float textureIndex;
 uniform mat4 u_ProjectionMatrix;
 uniform mat4 u_ViewMatrix;
 
+uniform ivec2 u_ChunkPosition;
+
 void main() {
-	gl_Position = u_ProjectionMatrix * u_ViewMatrix * vec4(position, 1.0);
+	vec3 pos = position + vec3(u_ChunkPosition.x, 1, u_ChunkPosition.y);
+
+	gl_Position = u_ProjectionMatrix * u_ViewMatrix * vec4(pos, 1.0);
 
 	outPosition = position;
 

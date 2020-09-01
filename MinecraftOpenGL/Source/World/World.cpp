@@ -34,21 +34,18 @@ void World::Update()
 
 void World::Render() { m_Renderer->Render(); }
 
-Chunk* World::CreateChunk(glm::ivec2 position)
+Chunk* World::CreateChunk(glm::i32vec2 position)
 {
-	if (position.x == 0 && position.y == 8)
-		int a = 2;
-
 	m_Chunks[position] = new Chunk(position);
 
 	return m_Chunks[position];
 }
 
-Chunk* World::CreateChunk(glm::ivec3 position) { return CreateChunk(glm::ivec2(position.x, position.z)); }
+Chunk* World::CreateChunk(glm::i32vec3 position) { return CreateChunk(glm::i32vec2(position.x, position.z)); }
 
 ChunkMap& World::GetChunks() { return m_Chunks; }
 
-Chunk* World::GetChunkAt(glm::ivec2 position)
+Chunk* World::GetChunkAt(glm::i32vec2 position)
 {
 	// Check if it exists
 	if (ChunkExistsAt(position))
@@ -57,10 +54,10 @@ Chunk* World::GetChunkAt(glm::ivec2 position)
 	return nullptr;
 }
 
-Chunk* World::GetChunkAt(glm::ivec3 position) { return GetChunkAt(glm::ivec2(position.x, position.z)); }
+Chunk* World::GetChunkAt(glm::i32vec3 position) { return GetChunkAt(glm::i32vec2(position.x, position.z)); }
 
-bool World::ChunkExistsAt(glm::ivec2 position) { return m_Chunks.count(position) > 0; }
-bool World::ChunkExistsAt(glm::ivec3 position) { return m_Chunks.count(glm::ivec2(position.x, position.z)) > 0; }
+bool World::ChunkExistsAt(glm::i32vec2 position) { return m_Chunks.count(position) > 0; }
+bool World::ChunkExistsAt(glm::i32vec3 position) { return m_Chunks.count(glm::i32vec2(position.x, position.z)) > 0; }
 
 Player& World::GetPlayer() { return m_Player; };
 

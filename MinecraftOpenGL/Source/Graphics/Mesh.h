@@ -3,6 +3,8 @@
 #include <vector>
 #include <mutex>
 
+#include <cstdint>
+
 #include <glm/vec3.hpp>
 
 #include "Vertex.h"
@@ -19,50 +21,50 @@ enum Faces {
 
 namespace CubeFaces {
 	const static glm::vec3 Top[4] = {
-		glm::vec3(-0.5f,  0.5f,  0.5f),
-		glm::vec3( 0.5f,  0.5f,  0.5f),
-		glm::vec3( 0.5f,  0.5f, -0.5f),
-		glm::vec3(-0.5f,  0.5f, -0.5f),
+		glm::vec3(-0.5,  0.5,  0.5),
+		glm::vec3( 0.5,  0.5,  0.5),
+		glm::vec3( 0.5,  0.5, -0.5),
+		glm::vec3(-0.5,  0.5, -0.5),
 	};
 
 	const static glm::vec3 Bottom[4] = {
-		glm::vec3(-0.5f, -0.5f,  0.5f),
-		glm::vec3( 0.5f, -0.5f,  0.5f),
-		glm::vec3( 0.5f, -0.5f, -0.5f),
-		glm::vec3(-0.5f, -0.5f, -0.5f),
+		glm::vec3(-0.5, -0.5,  0.5),
+		glm::vec3( 0.5, -0.5,  0.5),
+		glm::vec3( 0.5, -0.5, -0.5),
+		glm::vec3(-0.5, -0.5, -0.5),
 	};
 
 	const static glm::vec3 Left[4] = {
-		glm::vec3(-0.5f, -0.5f, -0.5f),
-		glm::vec3(-0.5f, -0.5f,  0.5f),
-		glm::vec3(-0.5f,  0.5f,  0.5f),
-		glm::vec3(-0.5f,  0.5f, -0.5f),
+		glm::vec3(-0.5, -0.5, -0.5),
+		glm::vec3(-0.5, -0.5,  0.5),
+		glm::vec3(-0.5,  0.5,  0.5),
+		glm::vec3(-0.5,  0.5, -0.5),
 	};
 
 	const static glm::vec3 Right[4] = {
-		glm::vec3( 0.5f, -0.5f, -0.5f),
-		glm::vec3( 0.5f, -0.5f,  0.5f),
-		glm::vec3( 0.5f,  0.5f,  0.5f),
-		glm::vec3( 0.5f,  0.5f, -0.5f),
+		glm::vec3( 0.5, -0.5, -0.5),
+		glm::vec3( 0.5, -0.5,  0.5),
+		glm::vec3( 0.5,  0.5,  0.5),
+		glm::vec3( 0.5,  0.5, -0.5),
 	};
 
 	const static glm::vec3 Front[4] = {
-		glm::vec3(-0.5f, -0.5f,  0.5f),
-		glm::vec3( 0.5f, -0.5f,  0.5f),
-		glm::vec3( 0.5f,  0.5f,  0.5f),
-		glm::vec3(-0.5f,  0.5f,  0.5f),
+		glm::vec3(-0.5, -0.5,  0.5),
+		glm::vec3( 0.5, -0.5,  0.5),
+		glm::vec3( 0.5,  0.5,  0.5),
+		glm::vec3(-0.5,  0.5,  0.5),
 	};
 
 	const static glm::vec3 Back[4] = {
-		glm::vec3(-0.5f, -0.5f, -0.5f),
-		glm::vec3( 0.5f, -0.5f, -0.5f),
-		glm::vec3( 0.5f,  0.5f, -0.5f),
-		glm::vec3(-0.5f,  0.5f, -0.5f),
+		glm::vec3(-0.5, -0.5, -0.5),
+		glm::vec3( 0.5, -0.5, -0.5),
+		glm::vec3( 0.5,  0.5, -0.5),
+		glm::vec3(-0.5,  0.5, -0.5),
 	};
 
 	const glm::vec3* GetFace(int id);
 
-	const static unsigned int Indices[6] = {
+	const static uint16_t Indices[6] = {
 		0, 1, 2,
 		2, 3, 0
 	};
@@ -94,12 +96,12 @@ public:
 	void SetVertices(std::vector<Vertex> vertices);
 	void SetVertices(Mesh mesh);
 
-	void AddIndex(unsigned int index);
-	void SetIndices(std::vector<unsigned int> indices);
+	void AddIndex(uint16_t index);
+	void SetIndices(std::vector<uint16_t> indices);
 	void SetIndices(Mesh mesh);
 
 	std::vector<Vertex>& GetVertices();
-	std::vector<unsigned int>& GetIndices();
+	std::vector<uint16_t>& GetIndices();
 
 	const unsigned int GetVao();
 
@@ -110,7 +112,7 @@ public:
 
 protected:
 	std::vector<Vertex> m_Vertices;
-	std::vector<unsigned int> m_Indices;
+	std::vector<uint16_t> m_Indices;
 
 	unsigned int m_Vao;
 	unsigned int m_Vbo;

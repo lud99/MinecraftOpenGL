@@ -24,9 +24,17 @@ void WorldRenderer::Render()
 
 	ChunkMap& chunks = World::GetChunks();
 	for (auto const& entry : chunks)
-		entry.second->m_OpaqueMesh.Render();
+	{
+		m_BlockShader.SetUniform("u_ChunkPosition", entry.second->GetWorldPosition());
 
-	for (auto const& entry : chunks) {
+		entry.second->m_OpaqueMesh.Render();
+	}
+		
+
+	for (auto const& entry : chunks) 
+	{
+		m_BlockShader.SetUniform("u_ChunkPosition", entry.second->GetWorldPosition());
+
 		entry.second->m_WaterMesh.Render();
 	}
 
