@@ -151,6 +151,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\Crosshair.cpp" />
+    <ClCompile Include="Source\Graphics\Vertex.cpp" />
     <ClCompile Include="Source\Noise\NoiseGenerator.cpp" />
     <ClCompile Include="Source\ThreadPool.cpp" />
     <ClCompile Include="Source\World\Camera.cpp" />

@@ -15,6 +15,19 @@ Shader::Shader(unsigned int shaderProgramId) : m_id(shaderProgramId)
 
 }
 
+int Shader::GetUniformLocation(const std::string& name)
+{
+	// Return it if it's already cached
+	if (m_UniformLocations.count(name) > 0)
+		return m_UniformLocations[name];
+
+	int location = glGetUniformLocation(m_id, name.c_str());
+
+	m_UniformLocations[name] = location;
+
+	return location;
+}
+
 void Shader::Bind()
 {
 	glUseProgram(m_id);
@@ -27,44 +40,32 @@ void Shader::Unbind()
 
 void Shader::SetUniform(const std::string& name, glm::vec2 vector)
 {
-	int location = glGetUniformLocation(m_id, name.c_str());
-
-	glUniform2f(location, vector.x, vector.y);
+	glUniform2f(GetUniformLocation(name.c_str()), vector.x, vector.y);
 }
 
 void Shader::SetUniform(const std::string& name, glm::ivec2 vector)
 {
-	int location = glGetUniformLocation(m_id, name.c_str());
-
-	glUniform2i(location, vector.x, vector.y);
+	glUniform2i(GetUniformLocation(name.c_str()), vector.x, vector.y);
 }
 
 void Shader::SetUniform(const std::string& name, glm::vec3 vector)
 {
-	int location = glGetUniformLocation(m_id, name.c_str());
-
-	glUniform3f(location, vector.x, vector.y, vector.z);
+	glUniform3f(GetUniformLocation(name.c_str()), vector.x, vector.y, vector.z);
 }
 
 void Shader::SetUniform(const std::string& name, glm::ivec3 vector)
 {
-	int location = glGetUniformLocation(m_id, name.c_str());
-
-	glUniform3i(location, vector.x, vector.y, vector.z);
+	glUniform3i(GetUniformLocation(name.c_str()), vector.x, vector.y, vector.z);
 }
 
 void Shader::SetUniform(const std::string& name, glm::mat4 matrix)
 {
-	int location = glGetUniformLocation(m_id, name.c_str());
-
-	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+	glUniformMatrix4fv(GetUniformLocation(name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 void Shader::SetUniform(const std::string& name, float value)
 {
-	int location = glGetUniformLocation(m_id, name.c_str());
-
-	glUniform1f(location, value);
+	glUniform1f(GetUniformLocation(name.c_str()), value);
 }
 
 Shader::~Shader()

@@ -79,7 +79,7 @@ int main()
 	GLFWwindow* window;
 
 	/* Initialize the library */
-	if (!glfwInit()) return -1;
+ 	if (!glfwInit()) return -1;
 
 	/* Create a windowed mode window and its OpenGL context */
 	window = glfwCreateWindow(1920, 1080, "MinecraftOpenGL", NULL, NULL);
@@ -122,7 +122,7 @@ int main()
 
 	auto start = std::chrono::high_resolution_clock::now();
 
-	int count = 32;
+	int count = 128;
 
 	CreateChunks(count);
 

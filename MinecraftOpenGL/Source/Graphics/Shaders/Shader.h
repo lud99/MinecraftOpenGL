@@ -2,6 +2,7 @@
 
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
+#include <unordered_map>
 
 #include <string>
 
@@ -10,6 +11,8 @@ class Shader
 public:
 	Shader();
 	Shader(unsigned int shaderProgramId);
+
+	int GetUniformLocation(const std::string& name);
 
 	void Bind();
 	void Unbind();
@@ -25,5 +28,8 @@ public:
 
 public:
 	unsigned int m_id;
+
+private:
+	std::unordered_map<std::string, int> m_UniformLocations;
 };
 

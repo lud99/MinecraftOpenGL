@@ -4,6 +4,7 @@
 
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
 #include "../../Graphics/Mesh.h"
 
@@ -31,7 +32,7 @@ public:
 	void SetBlockAt(glm::vec3 position, ChunkBlock* newBlock);
 
 	ChunkBlock*** GetAllBlocks();
-	ChunkBlock* GetBlockAt(glm::i8vec3 position);
+	ChunkBlock* GetBlockAt(glm::u8vec3 position);
 	ChunkBlock* GetBlockAt(glm::ivec3 position);
 	ChunkBlock* GetBlockAt(glm::vec3 position);
 
@@ -63,5 +64,5 @@ public:
 	std::mutex m_MeshMutex;
 
 private:
-	glm::i32vec2 m_Position = glm::i32vec2(0, 0);
+	glm::ivec2 m_Position = glm::ivec2(0, 0);
 };

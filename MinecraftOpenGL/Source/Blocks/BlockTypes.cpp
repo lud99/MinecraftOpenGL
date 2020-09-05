@@ -13,6 +13,7 @@ namespace BlockTypes {
 			
 			for (int j = 0; j < Block::facesCount; j++) {
 				Blocks[i].faces[j].positions = CubeFaces::GetFace(j);
+				Blocks[i].faces[j].direction = j;
 			}
 		}
 

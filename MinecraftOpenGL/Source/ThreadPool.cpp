@@ -11,7 +11,7 @@ ThreadPool::ThreadPool()
 	// This returns the number of threads supported by the system. If the
 	// function can't figure out this information, it returns 0. 0 is not good,
 	// so we create at least 1
-	unsigned int numberOfThreads = std::thread::hardware_concurrency() - 1;
+	unsigned int numberOfThreads = std::thread::hardware_concurrency() - 1; // Don't use the main rendering thread
 	if (numberOfThreads == 0) {
 		numberOfThreads = 1;
 	}
@@ -49,7 +49,7 @@ void ThreadPool::QueueWork(ChunkAction action)
 	// Grab the mutex
 	std::lock_guard<std::mutex> g(m_WorkQueueMutex); // Auto releases when going out of scope
 
-	/*for (unsigned int i = 0; i < m_WorkQueue.size(); i++)
+	for (unsigned int i = 0; i < m_WorkQueue.size(); i++)
 	{
 		// Check if multiple queued chunk actions are trying to do the same thing to the same chunk
 		if (m_WorkQueue[i].type == action.type && m_WorkQueue[i].chunk == action.chunk)
@@ -57,14 +57,14 @@ void ThreadPool::QueueWork(ChunkAction action)
 			// If so, then remove the older one from the queue
 			if (action.timestamp > m_WorkQueue[i].timestamp) // The entry is older than the action specified
 			{
-				std::cout << "Removing queue entry " << m_WorkQueue[i].timestamp << "\n";
+				//std::cout << "Removing queue entry " << m_WorkQueue[i].timestamp << "\n";
 
 				m_WorkQueue.erase(m_WorkQueue.begin() + i);
 				
 				break;
 			}
 		}
-	}*/
+	}
 
 	// Push the request to the queue
 	m_WorkQueue.push_back(action);

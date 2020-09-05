@@ -1,18 +1,23 @@
 #pragma once
 
-#include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
+
+#include <cstdint>
+
+struct VertexData
+{
+	glm::u8vec3 position;
+	uint8_t index;
+	uint8_t texture;
+	uint8_t lightLevel;
+};
 
 struct Vertex
 {
-	Vertex(
-		glm::vec3 position = glm::vec3(0),
-		glm::vec2 textureCoordinates = glm::vec2(0, 0)):
+	void SetData(VertexData vertexData);
+	VertexData GetData();
 
-		position(position), 
-		textureCoordinates(textureCoordinates) {}
+	unsigned int packedData;
 
-	glm::vec3 position;
-	glm::vec2 textureCoordinates;
+	static const int numBits = 8;
 };

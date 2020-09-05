@@ -3,6 +3,8 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
+#include <cstdint>
+
 #include "../../Graphics/Textures/Texture2D.h"
 #include "../../Graphics/Textures/TextureAtlas.h"
 #include "../World.h"
@@ -44,10 +46,10 @@ public:
 
 	Chunk* GetChunk();
 
-	inline const glm::i8vec3 GetLocalPosition() { return m_LocalPosition; };
-	const glm::i32vec3 GetWorldPosition();
+	inline const glm::u8vec3 GetLocalPosition() { return m_LocalPosition; };
+	const glm::ivec3 GetWorldPosition();
 
-	inline void SetLocalPosition(glm::i8vec3 position) { m_LocalPosition = position; }
+	inline void SetLocalPosition(glm::u8vec3 position) { m_LocalPosition = position; }
 
 	inline void SetEnabled(bool flag) { m_Enabled = flag; };
 	inline bool IsEnabled() { return m_Enabled; }
@@ -58,22 +60,22 @@ public:
 
 private:
 	Chunk* GetChunkAtRelativePosition(glm::i8vec2 offset);
-	ChunkBlock* GetBlockAtRelativePosition(glm::i8vec3 offset);
+	ChunkBlock* GetBlockAtRelativePosition(glm::u8vec3 offset);
 
 	bool ChunkExistsAtRelativePosition(glm::i8vec3 offset);
-	bool BlockExistsAtRelativePosition(glm::i8vec3 offset);
+	bool BlockExistsAtRelativePosition(glm::u8vec3 offset);
 
 	bool ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk);
 
 	AdjacentChunks GetAdjacentChunks();
 
 public:
-	glm::i32vec2 m_ChunkPosition;
+	glm::ivec2 m_ChunkPosition;
 
-	int m_BlockId = BlockIds::Air;
+	uint8_t m_BlockId = BlockIds::Air;
 
 private:
-	glm::i8vec3 m_LocalPosition;
+	glm::u8vec3 m_LocalPosition;
 
 	bool m_Enabled = true;
 	bool m_Highlighted = false;

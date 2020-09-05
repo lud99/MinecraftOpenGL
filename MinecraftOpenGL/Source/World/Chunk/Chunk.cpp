@@ -42,7 +42,7 @@ Chunk::Chunk(glm::ivec2 position)
 			for (int z = 0; z < Chunk::Depth; z++) // All blocks are already created. Iterate through each block to set some variables
 			{
 				m_Blocks[x][y][z].m_ChunkPosition = m_Position;
-				m_Blocks[x][y][z].SetLocalPosition(glm::vec3(x, y, z));
+				m_Blocks[x][y][z].SetLocalPosition(glm::u8vec3(x, y, z));
 				m_Blocks[x][y][z].m_BlockId = BlockIds::Air;
 			}
 		}
@@ -94,7 +94,7 @@ void Chunk::GenerateTerrain()
 	std::mutex mutex;
 	mutex.lock();
 
-	int waterLevel = Chunk::Height / 2;
+	int waterLevel = 32;
 
 	NoiseGenerator noise;
 	noise.SetSeed(112);
@@ -132,7 +132,7 @@ void Chunk::GenerateTerrain()
 
 			int finalHeight = (int)floor(height) + waterLevel;
 
-			for (int y = 0; y < Chunk::Height; y++)
+			for (int y = 0; y < Chunk::Height / 2; y++)
 			{
 				ChunkBlock* block = GetBlockAt(glm::vec3(x, y, z));
 
@@ -177,7 +177,7 @@ void Chunk::RebuildMesh()
 
 	for (int x = 0; x < Chunk::Width; x++)
 	{
-		for (int y = 0; y < Chunk::Height; y++)
+		for (int y = 0; y < Chunk::Height / 2; y++)
 		{
 			for (int z = 0; z < Chunk::Depth; z++)
 			{
@@ -225,14 +225,14 @@ void Chunk::SetBlockAt(glm::vec3 position, ChunkBlock* newBlock)
 
 ChunkBlock*** Chunk::GetAllBlocks() { return m_Blocks; }
 
-ChunkBlock* Chunk::GetBlockAt(glm::i8vec3 position)
+ChunkBlock* Chunk::GetBlockAt(glm::u8vec3 position)
 {
 	return &m_Blocks[position.x][position.y][position.z];
 }
 
 ChunkBlock* Chunk::GetBlockAt(glm::ivec3 position)
 {
-	return GetBlockAt((glm::i8vec3)position);
+	return GetBlockAt((glm::u8vec3)position);
 }
 
 ChunkBlock* Chunk::GetBlockAt(glm::vec3 position)

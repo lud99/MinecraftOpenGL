@@ -10,7 +10,9 @@
 
 struct BlockFace
 {
-	const glm::vec3* positions;
+	const glm::u8vec3* positions;
+
+	int direction;
 
 	int textureId;
 };

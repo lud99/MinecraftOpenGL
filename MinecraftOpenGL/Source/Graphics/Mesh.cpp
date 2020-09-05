@@ -4,7 +4,7 @@
 
 #include <GL/glew.h>
 
-const glm::vec3* CubeFaces::GetFace(int id)
+const glm::u8vec3* CubeFaces::GetFace(int id)
 {
 	switch (id)
 	{
@@ -72,17 +72,13 @@ void Mesh::UpdateVertices(const std::vector<Vertex>& vertices)
 
 void Mesh::SetVertexAttributes()
 {
-	// Position
+	// Packed data
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3 /* x, y, z */, GL_FLOAT, GL_FALSE, sizeof(Vertex) /* Number of total bytes */, 0);
-
-	// Color
-	//glEnableVertexAttribArray(1);
-	//glVertexAttribPointer(1, 4 /* r, g, b, a */, GL_FLOAT, GL_FALSE, sizeof(Vertex) /* Number of total bytes */, (const void*)offsetof(Vertex, color));
+	glVertexAttribIPointer(0, 1, GL_UNSIGNED_INT, sizeof(Vertex) /* Number of total bytes */, 0);
 
 	// Texture coordinates
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2 /* x, y */, GL_FLOAT, GL_FALSE, sizeof(Vertex) /* Number of total bytes */, (const void*)offsetof(Vertex, textureCoordinates));
+	//glEnableVertexAttribArray(2);
+	//glVertexAttribPointer(2, 2 /* x, y */, GL_FLOAT, GL_FALSE, sizeof(Vertex) /* Number of total bytes */, (const void*)offsetof(Vertex, textureCoordinates));
 }
 
 void Mesh::BindVao() { glBindVertexArray(m_Vao); }
@@ -106,7 +102,7 @@ void Mesh::Render()
 	BindVao();
 	if (m_Texture) m_Texture->Bind();
 
-	glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_SHORT, 0);
+	glDrawElements(GL_TRIANGLES, (GLsizei)m_Indices.size(), GL_UNSIGNED_SHORT, 0);
 
 	if (m_Texture) m_Texture->Unbind();
 	UnbindVao();
