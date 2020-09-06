@@ -14,6 +14,8 @@ WorldRenderer::WorldRenderer()
 
 void WorldRenderer::Render()
 {
+	auto start = std::chrono::high_resolution_clock::now();
+
 	// Update the view matrix
 	UpdateViewMatrix();
 
@@ -25,20 +27,50 @@ void WorldRenderer::Render()
 	ChunkMap& chunks = World::GetChunks();
 	for (auto const& entry : chunks)
 	{
-		m_BlockShader.SetUniform("u_ChunkPosition", entry.second->GetWorldPosition());
+		Player& player = World::GetPlayer();
+		glm::vec2 front(player.GetCamera().m_Front2D.x, player.GetCamera().m_Front2D.z);
 
-		entry.second->m_OpaqueMesh.Render();
+		glm::vec2 chunkPosition = entry.second->GetWorldPosition();
+		glm::vec2 pPos(player.m_Position.x, player.m_Position.z);
+
+		float dot = glm::dot(chunkPosition - pPos, front);
+
+		// Chunk is in front of camera
+		if (dot > 0)
+		{
+			m_BlockShader.SetUniform("u_ChunkPosition", entry.second->GetWorldPosition());
+
+			entry.second->m_OpaqueMesh.Render();
+			//entry.second->m_WaterMesh.Render();
+		}
 	}
-		
 
 	for (auto const& entry : chunks) 
 	{
-		m_BlockShader.SetUniform("u_ChunkPosition", entry.second->GetWorldPosition());
+		Player& player = World::GetPlayer();
+		glm::vec2 front(player.GetCamera().m_Front2D.x, player.GetCamera().m_Front2D.z);
 
-		entry.second->m_WaterMesh.Render();
+		glm::vec2 chunkPosition = entry.second->GetWorldPosition();
+		glm::vec2 pPos(player.m_Position.x, player.m_Position.z);
+
+		float dot = glm::dot(chunkPosition - pPos, front);
+
+		// Chunk is in front of camera
+		if (dot > 0)
+		{
+			m_BlockShader.SetUniform("u_ChunkPosition", entry.second->GetWorldPosition());
+
+			entry.second->m_WaterMesh.Render();
+		}
 	}
 
 	if (World::m_LookingAtCollider.m_Enabled) World::m_LookingAtCollider.RenderHitbox();
+
+	auto stop = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+	//std::cout << "Render took " << duration.count() << " ms\n";
+
+	// takes 40 ms, should take 16 ms
 
 	//World::GetPlayer().GetCrosshair()->Render();
 

@@ -122,7 +122,7 @@ int main()
 
 	auto start = std::chrono::high_resolution_clock::now();
 
-	int count = 128;
+	int count = 96;
 
 	CreateChunks(count);
 
