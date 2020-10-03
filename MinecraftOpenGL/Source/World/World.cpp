@@ -34,6 +34,11 @@ void World::Update()
 
 void World::Render() { m_Renderer->Render(); }
 
+Chunk* World::CreateChunk(glm::ivec3 position)
+{
+	return CreateChunk(glm::ivec2(position.x, position.z));
+}
+
 Chunk* World::CreateChunk(glm::ivec2 position)
 {
 	m_Chunks[position] = new Chunk(position);
@@ -41,7 +46,22 @@ Chunk* World::CreateChunk(glm::ivec2 position)
 	return m_Chunks[position];
 }
 
-Chunk* World::CreateChunk(glm::ivec3 position) { return CreateChunk(glm::ivec2(position.x, position.z)); }
+void World::RemoveChunk(Chunk* chunk)
+{
+	RemoveChunk(chunk->GetPosition());
+}
+
+void World::RemoveChunk(glm::ivec2 position)
+{
+	m_Chunks[position]->~Chunk(); // Call the destructor to free up memory
+
+	m_Chunks.erase(position);
+}
+
+void World::RemoveChunk(glm::ivec3 position)
+{
+	RemoveChunk(glm::ivec2(position.x, position.z));
+}
 
 ChunkMap& World::GetChunks() { return m_Chunks; }
 

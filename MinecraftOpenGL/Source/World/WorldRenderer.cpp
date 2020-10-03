@@ -36,9 +36,11 @@ void WorldRenderer::Render()
 		float dot = glm::dot(chunkPosition - pPos, front);
 
 		// Chunk is in front of camera
-		if (dot > 0)
+		//if (dot > 0)
 		{
 			m_BlockShader.SetUniform("u_ChunkPosition", entry.second->GetWorldPosition());
+			m_BlockShader.SetUniform("u_Rebuilding", entry.second->m_IsRebuilding);
+			m_BlockShader.SetUniform("u_Generating", entry.second->m_IsGenerating);
 
 			entry.second->m_OpaqueMesh.Render();
 			//entry.second->m_WaterMesh.Render();
@@ -56,9 +58,11 @@ void WorldRenderer::Render()
 		float dot = glm::dot(chunkPosition - pPos, front);
 
 		// Chunk is in front of camera
-		if (dot > 0)
+		//if (dot > 0)
 		{
 			m_BlockShader.SetUniform("u_ChunkPosition", entry.second->GetWorldPosition());
+			m_BlockShader.SetUniform("u_Rebuilding", entry.second->m_IsRebuilding);
+			m_BlockShader.SetUniform("u_Generating", entry.second->m_IsGenerating);
 
 			entry.second->m_WaterMesh.Render();
 		}

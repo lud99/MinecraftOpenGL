@@ -32,6 +32,10 @@ namespace World
 	Chunk* CreateChunk(glm::ivec2 position);
 	Chunk* CreateChunk(glm::ivec3 position);
 
+	void RemoveChunk(Chunk* chunk);
+	void RemoveChunk(glm::ivec2 position);
+	void RemoveChunk(glm::ivec3 position);
+
 	Chunk* GetChunkAt(glm::ivec2 position);
 	Chunk* GetChunkAt(glm::ivec3 position);
 

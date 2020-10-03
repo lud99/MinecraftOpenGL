@@ -9,8 +9,6 @@
 #include "../../Utils.h"
 #include "../../Graphics/Textures/TextureAtlas.h"
 
-AdjacentChunks::AdjacentChunks() { }
-
 ChunkBlock::ChunkBlock()
 {
 }
@@ -84,6 +82,9 @@ bool ChunkBlock::ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk)
 		// Check if the block adjacent to this one (in the adjacent chunk) is enabled
 
 		ChunkBlock* adjacentBlock = adjacentChunk->GetBlockAt(((glm::ivec3) m_LocalPosition) + blockInAdjacentChunkOffset);
+
+		if (!adjacentBlock) return true;
+
 		Block* adjacentBlockType = adjacentBlock->GetBlockType();
 
 		// Return to prevent errors if the block doesn't have a valid block type
@@ -192,7 +193,7 @@ void ChunkBlock::AddBlockFaces()
 {
 	if (!m_Enabled || m_BlockId == BlockIds::Air) return;
 
-	AdjacentChunks adjacentChunks = GetAdjacentChunks();
+	AdjacentChunks adjacentChunks = GetChunk()->GetAdjacentChunks();
 	Block* blockType = GetBlockType();
 
 	// Check for chunks on the x axis
@@ -246,18 +247,6 @@ bool ChunkBlock::ChunkExistsAtRelativePosition(glm::i8vec3 offset)
 bool ChunkBlock::BlockExistsAtRelativePosition(glm::u8vec3 offset)
 {
 	return GetChunk()->BlockExistsAt(m_LocalPosition + offset);
-}
-
-AdjacentChunks ChunkBlock::GetAdjacentChunks()
-{
-	AdjacentChunks chunks;
-
-	chunks.Left = GetChunkAtRelativePosition(glm::i8vec2(-1, 0));
-	chunks.Right = GetChunkAtRelativePosition(glm::i8vec2(1, 0));
-	chunks.Back = GetChunkAtRelativePosition(glm::i8vec2(0, -1));
-	chunks.Front = GetChunkAtRelativePosition(glm::i8vec2(0, 1));
-
-	return chunks;
 }
 
 ChunkBlock::~ChunkBlock()

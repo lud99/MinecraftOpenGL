@@ -12,23 +12,33 @@
 class Chunk;
 class ChunkBuilder;
 
+typedef struct ChunkAction ChunkAction;
+
 struct ChunkAction
 {
-	enum ActionType {
+	enum class ActionType {
 		Rebuild,
+		RebuildAdjacentChunks,
 		Generate,
 		Save
 	};
 
 	ChunkAction() {};
-	ChunkAction(ActionType type, Chunk* chunk) :
-		type(type), chunk(chunk) {};
+	ChunkAction(ActionType type, Chunk* chunk, ChunkAction* nextAction = nullptr) : 
+		type(type), chunk(chunk), nextAction(nextAction) { SetTimestamp(); };
 
-	ActionType type = Rebuild;
-	unsigned long long timestamp;
+	void SetTimestamp()
+	{
+		using namespace std::chrono;
 
-	Chunk* chunk;
-	ChunkBuilder* chunkBuilder;
+		timestamp = duration_cast<std::chrono::microseconds>(system_clock::now().time_since_epoch()).count();
+	}
+
+	ActionType type = ActionType::Rebuild;
+	unsigned long long timestamp = 0;
+
+	Chunk* chunk = nullptr;
+	ChunkAction* nextAction = nullptr;
 };
 
 class ThreadPool {

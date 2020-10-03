@@ -57,7 +57,7 @@ void ThreadPool::QueueWork(ChunkAction action)
 			// If so, then remove the older one from the queue
 			if (action.timestamp > m_WorkQueue[i].timestamp) // The entry is older than the action specified
 			{
-				//std::cout << "Removing queue entry " << m_WorkQueue[i].timestamp << "\n";
+				std::cout << "Removing queue entry " << m_WorkQueue[i].timestamp << "\n";
 
 				m_WorkQueue.erase(m_WorkQueue.begin() + i);
 				
@@ -97,6 +97,7 @@ void ThreadPool::DoWork()
 			m_WorkQueue.pop_front();
 		};
 
+		// Perform the requested action
 		switch (action.type)
 		{
 		case ChunkAction::ActionType::Rebuild:
@@ -105,13 +106,41 @@ void ThreadPool::DoWork()
 
 			break;
 
+		case ChunkAction::ActionType::RebuildAdjacentChunks: {
+
+			// Rebuild the 'center' chunk
+			action.chunk->RebuildMesh();
+
+			AdjacentChunks chunks = action.chunk->GetAdjacentChunks();
+
+			Chunk* westChunkEast = chunks.Left ? chunks.Left->m_AdjacentChunksWhenLastRebuilt.Right : nullptr;
+			Chunk* eastChunkWest = chunks.Right ? chunks.Right->m_AdjacentChunksWhenLastRebuilt.Left : nullptr;
+			Chunk* northChunkSouth = chunks.Front ? chunks.Front->m_AdjacentChunksWhenLastRebuilt.Back : nullptr;
+			Chunk* southChunkNorth = chunks.Back ? chunks.Back->m_AdjacentChunksWhenLastRebuilt.Front : nullptr;
+
+			// Check that the chunk exists before adding it to the work queue
+			if (chunks.Left && chunks.Left->m_HasGenerated)// && (!westChunkEast || !westChunkEast->m_HasGenerated))
+				QueueWork(ChunkAction(ChunkAction::ActionType::Rebuild, chunks.Left));
+			if (chunks.Right && chunks.Right->m_HasGenerated)// && (!eastChunkWest || !eastChunkWest->m_HasGenerated))
+				QueueWork(ChunkAction(ChunkAction::ActionType::Rebuild, chunks.Right));
+			if (chunks.Front && chunks.Front->m_HasGenerated)// && (!northChunkSouth || !northChunkSouth->m_HasGenerated))
+				QueueWork(ChunkAction(ChunkAction::ActionType::Rebuild, chunks.Front));
+			if (chunks.Back && chunks.Back->m_HasGenerated)//&& (!southChunkNorth || !southChunkNorth->m_HasGenerated))
+				QueueWork(ChunkAction(ChunkAction::ActionType::Rebuild, chunks.Back));
+
+			break;
+		}
+
 		case ChunkAction::ActionType::Generate:
 			action.chunk->GenerateTerrain();
 
 			break;
-
 		}
 
-		action.chunkBuilder->AddToRebuiltChunks(action);
+		// Check if there's a next action specified
+		if (action.nextAction)
+			QueueWork(*action.nextAction);
+		
+		World::m_ChunkBuilder.AddToProcessedChunks(action);
 	}
 };

@@ -14,17 +14,15 @@ public:
 	void ProcessQueue();
 
 	void AddToQueue(ChunkAction action);
-	void AddToRebuiltChunks(ChunkAction action);
+	void AddToProcessedChunks(ChunkAction action);
 
 	~ChunkBuilder();
 
 protected:
-	std::vector<ChunkAction> m_RebuiltChunks;
+	std::vector<ChunkAction> m_ProcessedChunks;
 	std::vector<ChunkAction> m_UpdateQueue;
 
 	std::mutex m_UpdateQueueMutex;
-
-	std::vector<std::thread> m_Threads;
 
 	ThreadPool m_ThreadPool;
 };

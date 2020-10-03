@@ -13,47 +13,44 @@ ChunkBuilder::ChunkBuilder()
 
 void ChunkBuilder::AddToQueue(ChunkAction action)
 {
-	using namespace std::chrono;
-
-	m_UpdateQueueMutex.lock();
-
-	action.chunkBuilder = this;
-	action.timestamp = duration_cast<std::chrono::microseconds>(system_clock::now().time_since_epoch()).count();
-
-	m_UpdateQueue.push_back(action);
-
-	m_UpdateQueueMutex.unlock();
+	m_ThreadPool.QueueWork(action);
 }
 
-void ChunkBuilder::AddToRebuiltChunks(ChunkAction action)
+void ChunkBuilder::AddToProcessedChunks(ChunkAction action)
 {
 	m_UpdateQueueMutex.lock();
 
-	m_RebuiltChunks.push_back(action);
+	m_ProcessedChunks.push_back(action);
 
 	m_UpdateQueueMutex.unlock();
 }
 
 void ChunkBuilder::ProcessQueue()
 {
-	// Check for chunks that should be updated
-	for (unsigned int i = 0; i < m_UpdateQueue.size(); i++)
+	// Check for chunks that have finished processing in the threadpool
+	for (unsigned int i = 0; i < m_ProcessedChunks.size(); i++)
 	{
-		m_ThreadPool.QueueWork(m_UpdateQueue[i]);
+		ChunkAction action = m_ProcessedChunks[i];
+
+		switch (action.type)
+		{
+		case ChunkAction::ActionType::Rebuild:
+			action.chunk->m_OpaqueMesh.Update();
+			action.chunk->m_WaterMesh.Update();
+
+			break;
+		case ChunkAction::ActionType::RebuildAdjacentChunks:
+			action.chunk->m_OpaqueMesh.Update();
+			action.chunk->m_WaterMesh.Update();
+
+			break;
+		case ChunkAction::ActionType::Generate:
+
+			break;
+		}
 	}
 
-	m_UpdateQueue.clear();
-
-	// Check for chunks that have finished rebuilding
-	for (unsigned int i = 0; i < m_RebuiltChunks.size(); i++)
-	{
-		Chunk* chunk = m_RebuiltChunks[i].chunk;
-
-		chunk->m_OpaqueMesh.Update();
-		chunk->m_WaterMesh.Update();
-	}
-
-	m_RebuiltChunks.clear();
+	m_ProcessedChunks.clear();
 }
 
 ChunkBuilder::~ChunkBuilder() { }

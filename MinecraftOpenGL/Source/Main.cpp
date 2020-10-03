@@ -59,7 +59,8 @@ void CreateChunks(int count)
 			Chunk* chunk = World::GetChunkAt(glm::ivec2(x, z));
 
 			// Create the block mesh
-			chunk->RebuildMeshThreaded();
+			if (chunk->m_ShouldRebuild)
+				chunk->RebuildMeshThreaded();
 		}
 	}
 }
@@ -82,7 +83,7 @@ int main()
  	if (!glfwInit()) return -1;
 
 	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(1920, 1080, "MinecraftOpenGL", NULL, NULL);
+	window = glfwCreateWindow(1280, 720, "MinecraftOpenGL", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
@@ -122,9 +123,9 @@ int main()
 
 	auto start = std::chrono::high_resolution_clock::now();
 
-	int count = 96;
+	int count = 2;
 
-	CreateChunks(count);
+	//CreateChunks(count);
 
 	/*auto stop = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);

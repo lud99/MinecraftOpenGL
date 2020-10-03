@@ -22,18 +22,6 @@ struct BlockFaceData
 	std::vector<unsigned int> waterIndices;
 };
 
-struct AdjacentChunks
-{
-	AdjacentChunks();
-
-	Chunk* Left = nullptr;
-	Chunk* Right = nullptr;
-	Chunk* Top = nullptr;
-	Chunk* Bottom = nullptr;
-	Chunk* Back = nullptr;
-	Chunk* Front = nullptr;
-};
-
 class ChunkBlock
 {
 public:
@@ -66,8 +54,6 @@ private:
 	bool BlockExistsAtRelativePosition(glm::u8vec3 offset);
 
 	bool ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk);
-
-	AdjacentChunks GetAdjacentChunks();
 
 public:
 	glm::ivec2 m_ChunkPosition;

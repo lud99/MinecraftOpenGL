@@ -13,14 +13,17 @@
 #include "../World.h"
 #include "../../Graphics/Mesh.h"
 #include "../../Noise/NoiseGenerator.h"
+#include "../../ThreadPool.h"
 
 Chunk::Chunk(glm::ivec2 position)
 {
-	// Generate vertex array object
+	// Generate vertex array objects
 	m_OpaqueMesh.CreateVao();
 	m_WaterMesh.CreateVao();
 
 	//m_OpaqueMesh.m_Vertices.reserve(11676);
+
+	m_AdjacentChunksWhenLastRebuilt = GetAdjacentChunks();
 	
 	SetPosition(position);
 
@@ -84,13 +87,10 @@ void Chunk::CreateSphere(const glm::vec4* colors)
 	}
 }
 
-void Chunk::GenerateTerrainThreaded()
-{
-	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::Generate, this));
-}
-
 void Chunk::GenerateTerrain()
 {
+	m_IsGenerating = true;
+
 	std::mutex mutex;
 	mutex.lock();
 
@@ -164,12 +164,18 @@ void Chunk::GenerateTerrain()
 	}
 
 	m_HasGenerated = true;
+	m_IsGenerating = false;
+	m_ShouldRebuild = true;
+
+	std::cout << "Terrain generatation done. " << m_Position.x << ", " << m_Position.y << "\n";
 
 	mutex.unlock();
 }
 
 void Chunk::RebuildMesh()
 {
+	m_IsRebuilding = true;
+
 	m_MeshMutex.lock();
 
 	m_TempOpaqueMesh.Clear();
@@ -197,14 +203,29 @@ void Chunk::RebuildMesh()
 	m_TempOpaqueMesh.Clear();
 	m_TempWaterMesh.Clear();
 
-	//std::cout << "Chunk mesh rebuilt. " << m_Position.x << ", " << m_Position.y << "\n";
+	// Set the adjacent chunks
+	m_AdjacentChunksWhenLastRebuilt = GetAdjacentChunks();
+
+	std::cout << "Chunk mesh rebuilt. " << m_Position.x << ", " << m_Position.y << "\n";
+
+	m_IsRebuilding = false;
+	m_ShouldRebuild = false;
 
 	m_MeshMutex.unlock();
 }
 
-void Chunk::RebuildMeshThreaded()
+void Chunk::RebuildMeshThreaded(ChunkAction* nextAction)
 {
-	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::Rebuild, this));
+	m_IsRebuilding = true;
+
+	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, this, nextAction));
+}
+
+void Chunk::GenerateTerrainThreaded(ChunkAction* nextAction)
+{
+	m_IsGenerating = true;
+
+	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Generate, this, nextAction));
 }
 
 void Chunk::Render()
@@ -248,8 +269,6 @@ bool Chunk::BlockExistsAt(glm::vec3 localPosition)
 
 	if (block->m_BlockId == BlockIds::Air) return false;
 
-	if (!block->IsEnabled()) return false;
-
 	return true;
 }
 
@@ -261,6 +280,18 @@ glm::ivec2 Chunk::GetWorldPosition()
 }
 
 void Chunk::SetPosition(glm::ivec2 position) { m_Position = position; }
+
+AdjacentChunks Chunk::GetAdjacentChunks()
+{
+	AdjacentChunks chunks;
+
+	chunks.Left = World::GetChunkAt(m_Position + glm::ivec2(-1, 0));
+	chunks.Right = World::GetChunkAt(m_Position + glm::ivec2(1, 0));
+	chunks.Back = World::GetChunkAt(m_Position + glm::ivec2(0, -1));
+	chunks.Front = World::GetChunkAt(m_Position + glm::ivec2(0, 1));
+
+	return chunks;
+}
 
 Chunk::~Chunk()
 {

@@ -50,11 +50,100 @@ void Player::Update()
 
 	// Increase and decrease movement speed
 	if (m_Input.IsKeyPressed(GLFW_KEY_E))
-		m_MovementSpeed += 0.0025f;
+		m_MovementSpeed += 0.025f;
 	if (m_Input.IsKeyPressed(GLFW_KEY_Q))
-		m_MovementSpeed -= 0.0025f;
+		m_MovementSpeed -= 0.025f;
 
 	UpdateCameraPosition();
+
+	// Chunk loading
+
+	int renderDistance = 2;
+
+	ChunkMap chunks = World::GetChunks();
+	for (auto entry : chunks) 
+	{
+		Chunk* chunk = entry.second;
+
+		float left = m_Position.x - renderDistance - 1;
+		float right = m_Position.x + renderDistance + 1;
+		float top = m_Position.z - renderDistance - 1;
+		float bottom = m_Position.z + renderDistance + 1;
+
+		glm::vec2 chunkPosition = chunk->GetPosition();
+
+		if (chunkPosition.x > left && chunkPosition.x < right && chunkPosition.y > top && chunkPosition.y < bottom)
+		{
+		}
+		else {
+			//std::cout << "removing chunk " << chunkPosition.x << ", " << chunkPosition.y << "\n";
+			//World::RemoveChunk(chunk);
+		}
+
+		// Check all the chunks in a box around the player
+		/*for (int x = m_Position.x - renderDistance * Chunk::Width; x < m_Position.x + renderDistance * Chunk::Width; x += Chunk::Width)
+		{
+			for (int z = m_Position.z - renderDistance * Chunk::Depth; z < m_Position.z + renderDistance * Chunk::Depth; z += Chunk::Depth)
+			{
+				glm::ivec2 chunkPosition = Utils::WorldPositionToChunkPosition(glm::vec3(x, 0, z) + 8.0f);
+			}
+		}
+
+		glm::ivec2 chunkPosition = chunk->GetWorldPosition() + Chunk::Width / 2;
+
+		glm::ivec2 delta = chunkPosition - glm::ivec2(m_Position.x, m_Position.z);
+		int distanceToChunk = std::abs(delta.x) + std::abs(delta.y);
+
+		if (distanceToChunk > renderDistance * 2 * Chunk::Width)
+		{
+			World::RemoveChunk(chunk);
+		}*/
+	}
+
+	// Check all the chunks in a box around the player
+	for (int x = m_Position.x - renderDistance * Chunk::Width; x < m_Position.x + renderDistance * Chunk::Width; x += Chunk::Width)
+	{
+		for (int z = m_Position.z - renderDistance * Chunk::Depth; z < m_Position.z + renderDistance * Chunk::Depth; z += Chunk::Depth)
+		{
+			glm::ivec2 chunkPos = Utils::WorldPositionToChunkPosition(glm::vec3(x, 0, z) + 8.0f);
+
+			// Create the chunk here if a chunk at this position doesn't exist
+			if (!World::ChunkExistsAt(chunkPos))
+				World::CreateChunk(chunkPos);
+		}
+	}
+
+	// Check all the chunks in a box around the player
+	/*for (int x = origin.x - renderDistance; x < origin.x + renderDistance; x++)
+	{
+		for (int z = origin.y - renderDistance; z < origin.y + renderDistance; z++)
+		{
+			// Create the chunk here if a chunk at this position doesn't exist
+			if (!World::ChunkExistsAt(glm::ivec2(x, z)))
+				World::CreateChunk(glm::ivec2(x, z));
+		}
+	}*/
+
+	// Generate the terrain
+	for (int x = m_Position.x - renderDistance * Chunk::Width; x < m_Position.x + renderDistance * Chunk::Width; x += Chunk::Width)
+	{
+		for (int z = m_Position.z - renderDistance * Chunk::Depth; z < m_Position.z + renderDistance * Chunk::Depth; z += Chunk::Depth)
+		{
+			glm::ivec2 chunkPos = Utils::WorldPositionToChunkPosition(glm::vec3(x, 0, z) + 8.0f);
+
+			Chunk* chunk = World::GetChunkAt(chunkPos);
+
+			if (chunk->m_HasGenerated || chunk->m_IsGenerating) // Don't generate the terrain twice
+				continue;
+
+			ChunkAction* nextAction = new ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk);
+			nextAction->type = ChunkAction::ActionType::RebuildAdjacentChunks;
+			nextAction->chunk = chunk;
+			nextAction->SetTimestamp();
+
+			chunk->GenerateTerrainThreaded(nextAction);
+		}
+	}
 
 	// Raycast
 	float maxDistance = 7.0f;
@@ -172,7 +261,7 @@ void Player::MouseButtonCallback(GLFWwindow* window, int button, int action, int
 		ChunkBlock* block = chunk->GetBlockAt(m_HighlightedBlock->GetLocalPosition());
 		block->m_BlockId = BlockIds::Air;
 
-		World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::Rebuild, chunk));
+		World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, chunk));
 
 		//m_HighlightedBlock->m_BlockId = BlockIds::Air;
 

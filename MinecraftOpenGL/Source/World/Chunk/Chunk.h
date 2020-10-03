@@ -13,20 +13,33 @@
 class ChunkBlock;
 class ChunkMesh;
 
+struct ChunkAction;
+class Chunk;
+
+struct AdjacentChunks
+{
+	Chunk* Left = nullptr;
+	Chunk* Right = nullptr;
+	Chunk* Top = nullptr;
+	Chunk* Bottom = nullptr;
+	Chunk* Back = nullptr;
+	Chunk* Front = nullptr;
+};
+
 class Chunk
 {
 public:
 	Chunk(glm::ivec2 position);
 
 	void RebuildMesh();
-	void RebuildMeshThreaded();
-
-	void Render();
+	void RebuildMeshThreaded(ChunkAction* nextAction = nullptr);
+	void GenerateTerrain();
+	void GenerateTerrainThreaded(ChunkAction* nextAction = nullptr);
 
 	void Fill(const glm::vec4* colors);
 	void CreateSphere(const glm::vec4* colors);
-	void GenerateTerrain();
-	void GenerateTerrainThreaded();
+
+	void Render();
 
 	void SetBlockAt(glm::ivec3 position, ChunkBlock* newBlock);
 	void SetBlockAt(glm::vec3 position, ChunkBlock* newBlock);
@@ -42,6 +55,8 @@ public:
 	glm::ivec2 GetWorldPosition();
 	void SetPosition(glm::ivec2 position);
 
+	AdjacentChunks GetAdjacentChunks();
+
 	~Chunk();
 
 public:
@@ -52,6 +67,11 @@ public:
 	static const int BlockCount = Width * Height * Depth;
 
 	bool m_HasGenerated = false;
+	bool m_IsGenerating = false;
+	bool m_ShouldRebuild = false;
+	bool m_IsRebuilding = false;
+
+	AdjacentChunks m_AdjacentChunksWhenLastRebuilt;
 
 	ChunkBlock*** m_Blocks;
 
