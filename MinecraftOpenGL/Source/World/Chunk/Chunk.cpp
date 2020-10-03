@@ -8,12 +8,11 @@
 
 #include "../../Noise/FastNoise.h"
 #include "ChunkBlock.h"
-#include "../../Utils.h"
 #include "../../Blocks/BlockTypes.h"
 #include "../World.h"
 #include "../../Graphics/Mesh.h"
 #include "../../Noise/NoiseGenerator.h"
-#include "../../ThreadPool.h"
+#include "../../Utils/ThreadPool.h"
 
 Chunk::Chunk(glm::ivec2 position)
 {

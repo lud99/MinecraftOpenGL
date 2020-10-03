@@ -21,8 +21,8 @@
 #include "Graphics/Textures/TextureAtlas.h"
 #include "InputHandler.h"
 #include "World/WorldRenderer.h"
-#include "World/Player.h"
-#include "ThreadPool.h"
+#include "World/Player/Player.h"
+#include "Utils/ThreadPool.h"
 #include "World/Chunk/Chunk.h"
 
 void CreateChunks(int count)

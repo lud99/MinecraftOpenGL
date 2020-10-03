@@ -1,8 +1,8 @@
 #include "Crosshair.h"
 
-#include "Graphics/Shaders/ShaderLoader.h"
+#include "../../Graphics/Shaders/ShaderLoader.h"
 
-#include "World/World.h"
+#include "../World.h"
 
 Crosshair::Crosshair()
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../ThreadPool.h"
+#include "../../Utils/ThreadPool.h"
 
 class Chunk;
 

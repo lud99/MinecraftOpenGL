@@ -2,9 +2,9 @@
 
 #include <iostream>
 
-#include "World/Chunk/Chunk.h"
-#include "World/Chunk/ChunkBlock.h"
-#include "World/Chunk/ChunkBuilder.h"
+#include "../World/Chunk/Chunk.h"
+#include "../World/Chunk/ChunkBlock.h"
+#include "../World/Chunk/ChunkBuilder.h"
 
 ThreadPool::ThreadPool()
 {

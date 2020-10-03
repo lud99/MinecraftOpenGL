@@ -150,15 +150,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Crosshair.cpp" />
+    <ClCompile Include="Source\World\Player\Crosshair.cpp" />
     <ClCompile Include="Source\Graphics\Vertex.cpp" />
     <ClCompile Include="Source\Noise\NoiseGenerator.cpp" />
-    <ClCompile Include="Source\ThreadPool.cpp" />
-    <ClCompile Include="Source\World\Camera.cpp" />
-    <ClCompile Include="Source\Collider.cpp" />
+    <ClCompile Include="Source\Utils\ThreadPool.cpp" />
+    <ClCompile Include="Source\World\Player\Camera.cpp" />
+    <ClCompile Include="Source\World\Collider.cpp" />
     <ClCompile Include="Source\InputHandler.cpp" />
     <ClCompile Include="Source\World\Chunk\ChunkBuilder.cpp" />
-    <ClCompile Include="Source\World\Player.cpp" />
+    <ClCompile Include="Source\World\Player\Player.cpp" />
     <ClCompile Include="Source\Blocks\BlockTypes.cpp" />
     <ClCompile Include="Source\World\Chunk\ChunkBlock.cpp" />
     <ClCompile Include="Source\Noise\FastNoise.cpp" />
@@ -168,19 +168,19 @@
     <ClCompile Include="Source\Graphics\Shaders\ShaderLoader.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Graphics\Textures\TextureAtlas.cpp" />
-    <ClCompile Include="Source\Utils.cpp" />
+    <ClCompile Include="Source\Utils\Utils.cpp" />
     <ClCompile Include="Source\World\World.cpp" />
     <ClCompile Include="Source\Graphics\Textures\Texture2D.cpp" />
     <ClCompile Include="Source\World\WorldRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Crosshair.h" />
-    <ClInclude Include="Source\ThreadPool.h" />
-    <ClInclude Include="Source\World\Camera.h" />
-    <ClInclude Include="Source\Collider.h" />
+    <ClInclude Include="Source\World\Player\Crosshair.h" />
+    <ClInclude Include="Source\Utils\ThreadPool.h" />
+    <ClInclude Include="Source\World\Player\Camera.h" />
+    <ClInclude Include="Source\World\Collider.h" />
     <ClInclude Include="Source\InputHandler.h" />
     <ClInclude Include="Source\World\Chunk\ChunkBuilder.h" />
-    <ClInclude Include="Source\World\Player.h" />
+    <ClInclude Include="Source\World\Player\Player.h" />
     <ClInclude Include="Source\Blocks\Block.h" />
     <ClInclude Include="Source\Blocks\BlockIds.h" />
     <ClInclude Include="Source\Blocks\BlockTypes.h" />
@@ -192,7 +192,7 @@
     <ClInclude Include="Source\Graphics\Shaders\ShaderLoader.h" />
     <ClInclude Include="Source\Graphics\Textures\TextureIds.h" />
     <ClInclude Include="Source\Graphics\Textures\TextureAtlas.h" />
-    <ClInclude Include="Source\Utils.h" />
+    <ClInclude Include="Source\Utils\Utils.h" />
     <ClInclude Include="Source\Graphics\Vertex.h" />
     <ClInclude Include="Source\World\World.h" />
     <ClInclude Include="Source\Graphics\Textures\Texture2D.h" />

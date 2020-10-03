@@ -15,9 +15,9 @@ void main()
 
 	if (u_Rebuilding == 1)
 		color = vec4(1, 0, 0, 1);
-	else if (u_Generating == 1)
+	if (u_Generating == 1)
 		color = vec4(0, 1, 0, 1);
-	else
+	if (u_Rebuilding == 0 && u_Generating == 0)
 		color = textureColor * vec4(passLightLevel, passLightLevel, passLightLevel, 1);
 
 	if (color.a == 0.0)

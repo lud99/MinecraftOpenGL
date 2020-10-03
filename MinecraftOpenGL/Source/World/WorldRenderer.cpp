@@ -2,14 +2,14 @@
 
 #include <map>
 
-#include "Player.h"
+#include "Player/Player.h"
 #include "World.h"
 #include "Chunk/Chunk.h"
-#include "../Crosshair.h"
+#include "Player/Crosshair.h"
 
 WorldRenderer::WorldRenderer()
 {
-	m_BlockShader = ShaderLoader::CreateShader("Resources/Shaders/Basic.vert", "Resources/Shaders/Basic.frag");
+	m_ChunkShader = ShaderLoader::CreateShader("Resources/Shaders/Chunk.vert", "Resources/Shaders/Chunk.frag");
 }
 
 void WorldRenderer::Render()
@@ -19,10 +19,10 @@ void WorldRenderer::Render()
 	// Update the view matrix
 	UpdateViewMatrix();
 
-	m_BlockShader.Bind();
+	m_ChunkShader.Bind();
 
-	m_BlockShader.SetUniform("u_ProjectionMatrix", m_ProjectionMatrix);
-	m_BlockShader.SetUniform("u_ViewMatrix", m_ViewMatrix);
+	m_ChunkShader.SetUniform("u_ProjectionMatrix", m_ProjectionMatrix);
+	m_ChunkShader.SetUniform("u_ViewMatrix", m_ViewMatrix);
 
 	ChunkMap& chunks = World::GetChunks();
 	for (auto const& entry : chunks)
@@ -38,9 +38,9 @@ void WorldRenderer::Render()
 		// Chunk is in front of camera
 		//if (dot > 0)
 		{
-			m_BlockShader.SetUniform("u_ChunkPosition", entry.second->GetWorldPosition());
-			m_BlockShader.SetUniform("u_Rebuilding", entry.second->m_IsRebuilding);
-			m_BlockShader.SetUniform("u_Generating", entry.second->m_IsGenerating);
+			m_ChunkShader.SetUniform("u_ChunkPosition", entry.second->GetWorldPosition());
+			m_ChunkShader.SetUniform("u_Rebuilding", entry.second->m_IsRebuilding);
+			m_ChunkShader.SetUniform("u_Generating", entry.second->m_IsGenerating);
 
 			entry.second->m_OpaqueMesh.Render();
 			//entry.second->m_WaterMesh.Render();
@@ -60,9 +60,9 @@ void WorldRenderer::Render()
 		// Chunk is in front of camera
 		//if (dot > 0)
 		{
-			m_BlockShader.SetUniform("u_ChunkPosition", entry.second->GetWorldPosition());
-			m_BlockShader.SetUniform("u_Rebuilding", entry.second->m_IsRebuilding);
-			m_BlockShader.SetUniform("u_Generating", entry.second->m_IsGenerating);
+			m_ChunkShader.SetUniform("u_ChunkPosition", entry.second->GetWorldPosition());
+			m_ChunkShader.SetUniform("u_Rebuilding", entry.second->m_IsRebuilding);
+			m_ChunkShader.SetUniform("u_Generating", entry.second->m_IsGenerating);
 
 			entry.second->m_WaterMesh.Render();
 		}
@@ -73,15 +73,6 @@ void WorldRenderer::Render()
 	auto stop = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 	//std::cout << "Render took " << duration.count() << " ms\n";
-
-	// takes 40 ms, should take 16 ms
-
-	//World::GetPlayer().GetCrosshair()->Render();
-
-	/*glVertex3f(World::GetPlayer().m_LookingAtPosition.x, World::GetPlayer().m_LookingAtPosition.y, World::GetPlayer().m_LookingAtPosition.z);
-	glVertex3f(World::GetPlayer().m_Position.x, World::GetPlayer().m_Position.y, World::GetPlayer().m_Position.z);
-	
-	glEnd();*/
 }
 
 void WorldRenderer::UpdateViewMatrix()

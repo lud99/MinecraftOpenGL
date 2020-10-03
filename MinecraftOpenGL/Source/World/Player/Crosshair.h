@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Graphics/Mesh.h"
-#include "Graphics/Shaders/Shader.h"
+#include "../../Graphics/Mesh.h"
+#include "../../Graphics/Shaders/Shader.h"
 
 class Crosshair
 {

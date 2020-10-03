@@ -2,9 +2,9 @@
 
 #include <GL/glew.h>
 
-#include "Graphics/Shaders/ShaderLoader.h"
+#include "../Graphics/Shaders/ShaderLoader.h"
 
-#include "World/World.h"
+#include "World.h"
 
 Collider::Collider()
 {

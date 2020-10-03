@@ -9,12 +9,12 @@
 
 #include <mutex>
 
-#include "../Utils.h"
+#include "../Utils/Utils.h"
 #include "../Graphics/Textures/TextureAtlas.h"
 #include "../Graphics/Mesh.h"
-#include "../Collider.h"
+#include "Collider.h"
 #include "WorldRenderer.h"
-#include "Player.h"
+#include "Player/Player.h"
 #include "Chunk/ChunkBuilder.h"
 
 typedef Faces Directions;

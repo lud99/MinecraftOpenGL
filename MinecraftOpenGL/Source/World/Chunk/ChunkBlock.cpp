@@ -6,7 +6,6 @@
 #include "Chunk.h"
 #include "../World.h"
 #include "../../Graphics/Mesh.h"
-#include "../../Utils.h"
 #include "../../Graphics/Textures/TextureAtlas.h"
 
 ChunkBlock::ChunkBlock()

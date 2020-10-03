@@ -10,7 +10,7 @@
 #include "../World.h"
 #include "../../Blocks/BlockTypes.h"
 
-#include "../../Collider.h"
+#include "../Collider.h"
 
 class Chunk;
 

@@ -8,10 +8,10 @@
 
 #include <glm/gtc/matrix_transform.hpp> 
 
-#include "World.h"
-#include "Chunk/Chunk.h"
-#include "Chunk/ChunkBlock.h"
-#include "../Crosshair.h"
+#include "../World.h"
+#include "../Chunk/Chunk.h"
+#include "../Chunk/ChunkBlock.h"
+#include "Crosshair.h"
 
 Player::Player()
 {
@@ -100,10 +100,12 @@ void Player::Update()
 		}*/
 	}
 
+	glm::ivec3 position = glm::floor(m_Position);
+
 	// Check all the chunks in a box around the player
-	for (int x = m_Position.x - renderDistance * Chunk::Width; x < m_Position.x + renderDistance * Chunk::Width; x += Chunk::Width)
+	for (int x = position.x - renderDistance * Chunk::Width; x < position.x + renderDistance * Chunk::Width; x += Chunk::Width)
 	{
-		for (int z = m_Position.z - renderDistance * Chunk::Depth; z < m_Position.z + renderDistance * Chunk::Depth; z += Chunk::Depth)
+		for (int z = position.z - renderDistance * Chunk::Depth; z < position.z + renderDistance * Chunk::Depth; z += Chunk::Depth)
 		{
 			glm::ivec2 chunkPos = Utils::WorldPositionToChunkPosition(glm::vec3(x, 0, z) + 8.0f);
 
@@ -125,9 +127,9 @@ void Player::Update()
 	}*/
 
 	// Generate the terrain
-	for (int x = m_Position.x - renderDistance * Chunk::Width; x < m_Position.x + renderDistance * Chunk::Width; x += Chunk::Width)
+	for (int x = position.x - renderDistance * Chunk::Width; x < position.x + renderDistance * Chunk::Width; x += Chunk::Width)
 	{
-		for (int z = m_Position.z - renderDistance * Chunk::Depth; z < m_Position.z + renderDistance * Chunk::Depth; z += Chunk::Depth)
+		for (int z = position.z - renderDistance * Chunk::Depth; z < position.z + renderDistance * Chunk::Depth; z += Chunk::Depth)
 		{
 			glm::ivec2 chunkPos = Utils::WorldPositionToChunkPosition(glm::vec3(x, 0, z) + 8.0f);
 

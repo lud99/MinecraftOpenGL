@@ -4,7 +4,7 @@
 
 #include <glm/vec3.hpp>
 
-#include "../InputHandler.h"
+#include "../../InputHandler.h"
 
 #include "Camera.h"
 
@@ -33,16 +33,17 @@ public:
 	~Player();
 public:
 	glm::vec3 m_Position = glm::vec3(0.0f, 70.0f, 0.0f);
-	glm::vec3 m_LookingAtPosition, m_LastLookingAtPosition;
+	glm::vec3 m_LookingAtPosition = glm::vec3(0); 
+	glm::vec3 m_LastLookingAtPosition = glm::vec3(0);
 
-	GLFWwindow* m_Window;
+	GLFWwindow* m_Window = nullptr;
 
 private:
 	InputHandler m_Input;
 	Camera m_Camera;
-	Crosshair* m_Crosshair;
+	Crosshair* m_Crosshair = nullptr;
 
-	ChunkBlock* m_HighlightedBlock;
+	ChunkBlock* m_HighlightedBlock = nullptr;
 
 	float m_MovementSpeed = 0.05f;
 

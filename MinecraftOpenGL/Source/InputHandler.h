@@ -15,5 +15,5 @@ public:
 
 	~InputHandler();
 public:
-	GLFWwindow* m_Window;
+	GLFWwindow* m_Window = nullptr;
 };

@@ -7,7 +7,7 @@
 #include <condition_variable>
 #include <chrono>
 
-#include "Noise/FastNoise.h"
+#include "../Noise/FastNoise.h"
 
 class Chunk;
 class ChunkBuilder;

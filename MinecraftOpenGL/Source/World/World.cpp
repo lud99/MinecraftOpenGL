@@ -4,11 +4,11 @@
 
 #include <glm/vec3.hpp>
 
-#include "Player.h"
+#include "Player/Player.h"
 #include "Chunk/Chunk.h"
-#include "../Utils.h"
+#include "../Utils/Utils.h"
 #include "../Blocks/BlockTypes.h"
-#include "../Collider.h"
+#include "Collider.h"
 
 void World::Init(GLFWwindow* window)
 {
