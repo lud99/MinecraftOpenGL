@@ -7,7 +7,9 @@ namespace TextureIds {
 		Dirt = 2,
 		Stone = 3,
 		Water = 4,
+		Gravel = 5,
+		Sand = 6,
 
-		Count = 5
+		Count = 7
 	};
 }

@@ -4,7 +4,7 @@
 #include "BlockIds.h"
 
 namespace BlockTypes {
-	extern Block Blocks[BlockIds::Count];
+	extern Block Blocks[BlockIds::BlockIds::Count];
 
 	void CreateBlocks();
 }

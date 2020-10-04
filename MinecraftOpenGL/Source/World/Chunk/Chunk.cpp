@@ -13,6 +13,7 @@
 #include "../../Graphics/Mesh.h"
 #include "../../Noise/NoiseGenerator.h"
 #include "../../Utils/ThreadPool.h"
+#include "../../Blocks/BlockIds.h"
 
 Chunk::Chunk(glm::ivec2 position)
 {
@@ -93,11 +94,12 @@ void Chunk::GenerateTerrain()
 	std::mutex mutex;
 	mutex.lock();
 
-	int waterLevel = 32;
+	int offset = 32 * 2;
+	int waterLevel = 27 * 2;
 
 	NoiseGenerator noise;
-	noise.SetSeed(112);
-	noise.SetNoiseType(FastNoise::Simplex);
+	noise.SetSeed(123456789);
+	noise.SetNoiseType(FastNoise::Perlin);
 
 	for (int x = 0; x < Chunk::Width; x++)
 	{
@@ -105,41 +107,110 @@ void Chunk::GenerateTerrain()
 		{
 			glm::vec3 worldPosition = GetBlockAt(glm::vec3(x, 0, z))->GetWorldPosition();
 
-			float scale1 = 5.0f;
-			float scale2 = 12.0f;
-			float scale3 = 20.0f;
+			float scale1 = 7.5f, scale2 = 0.25, scale3 = 10.0f, scale4 = 7.0f;
+			float holesScale = 20.0f;
 
-			float noise1 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale1, worldPosition.z * scale1, 5)) / 1.75f - 2.f;
-			float noise2 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale2, worldPosition.z * scale2, 2)) / 2.f + 0.25f;
-			float noise3 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale3, worldPosition.z * scale3, 6)); // Holes
+			float noise1 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale1, worldPosition.z * scale1, 4)) * 1.125f;
+			float noise2 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale2, worldPosition.z * scale2, 3)) * 2.5f;
+			float noise3 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale2 * 3, worldPosition.z * scale2 * 3, 3)) * 0.5f;
+			float noise4 = noise.Normalize(noise.GetCombinedNoise(worldPosition.x * scale3, worldPosition.z * scale3, 3, 3)) * .25f;
+			float noise5 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale4, worldPosition.z * scale4, 3)) * 2.0f + 10; // small holes in ground
+			float holesNoise = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * holesScale + 12345, worldPosition.z * holesScale - 12345, 6)); // Holes
 
-			float height = noise1 + noise2;
-
+			float height = noise1 + (noise2 * noise3) - (noise4) - noise5;
 			bool setWater = false;
 
-			if (noise3 > 36) {
+			if (holesNoise > 26) {
 				float s = 5.0f;
 
-				height = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * s, worldPosition.z * s, 3)) / 2.f;
+				float h = (noise.Normalize(noise.GetOctaveNoise(worldPosition.x * s, worldPosition.z * s, 3)) * 0.5f) - 0.25f;
+
+				if (h < 0) h = 0;
+
+				height *= h;
 			}
 
-			if (height < 1.0f) {
+			height += offset;
+
+			if (height < waterLevel) {
 				setWater = true;
-
-				height = 0;
 			}
 
-			int finalHeight = (int)floor(height) + waterLevel;
+			//float scale1 = 5.0f;
+			//float scale2 = 12.0f;
+			//float scale3 = 20.0f;
 
-			for (int y = 0; y < Chunk::Height / 2; y++)
+			//float noise1 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale1, worldPosition.z * scale1, 5)) / 1.75f - 2.f;
+			//float noise2 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale2, worldPosition.z * scale2, 2)) / 2.f + 0.25f;
+			//float noise3 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale3, worldPosition.z * scale3, 6)); // Holes
+
+			//float height = noise1 + noise2;
+
+			//bool setWater = false;
+
+			//if (noise3 > 36) {
+			//	float s = 5.0f;
+
+			//	height = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * s, worldPosition.z * s, 3)) / 2.f;
+			//}
+
+			//if (height < 1.0f) {
+			//	setWater = true;
+
+			//	height = 0;
+			//}
+
+			int finalHeight = (int)floor(height);
+
+			float dirtThickness = noise.GetOctaveNoise(worldPosition.x, worldPosition.z, 8) / 24 - 2;
+			float dirtTransition = finalHeight;
+			float stoneTransition = dirtTransition + dirtThickness;
+
+			bool sandChance = (noise.Normalize(noise.GetOctaveNoise(worldPosition.x, worldPosition.z, 8)) > 0.5f);
+			bool gravelChance = (noise.Normalize(noise.GetOctaveNoise(worldPosition.x, worldPosition.z, 8)) > 4.f);
+
+			for (int y = 0; y < Chunk::Height; y++)
 			{
 				ChunkBlock* block = GetBlockAt(glm::vec3(x, y, z));
+				ChunkBlock* blockAbove = GetBlockAt(glm::vec3(x, y + 1, z));
 
-				if (y < finalHeight)
+				BlockIds::BlockIds blockId = BlockIds::Air;
+
+				if (y <= stoneTransition) blockId = BlockIds::Stone;
+				else if (y <= dirtTransition) blockId = BlockIds::Dirt;
+
+				if (y >= finalHeight)
+				{
+					if (setWater && y <= waterLevel)
+						blockId = BlockIds::Water;
+				}
+
+				block->m_BlockId = blockId;
+			}
+
+			{
+				float y = finalHeight;
+
+				ChunkBlock* block = GetBlockAt(glm::vec3(x, y, z));
+				ChunkBlock* blockAbove = GetBlockAt(glm::vec3(x, y + 1, z));
+
+				if (blockAbove->m_BlockId == BlockIds::Water && gravelChance) {
+					block->m_BlockId = BlockIds::Gravel;
+				}
+
+				if (blockAbove->m_BlockId == BlockIds::Air) {
+					if (y <= waterLevel && sandChance)
+						block->m_BlockId = BlockIds::Sand;
+					else
+						block->m_BlockId = BlockIds::Grass;
+				}
+			}
+
+				/*if (y < finalHeight)
 				{
 					block->SetEnabled(true);
 
-					if (y < finalHeight - 2)
+					if (y < finalHeight - (noise1 * 0.25f))
 						block->m_BlockId = BlockIds::Stone;
 					else
 						block->m_BlockId = BlockIds::Dirt;
@@ -155,10 +226,16 @@ void Chunk::GenerateTerrain()
 				}
 				else if (y > finalHeight)
 				{
-					block->SetEnabled(false);
-					block->m_BlockId = BlockIds::Air;
-				}
-			}
+					if (setWater && y <= (waterLevel)) {
+						block->m_BlockId = BlockIds::Water;
+					}
+					else {
+						block->SetEnabled(false);
+						block->m_BlockId = BlockIds::Air;
+					}
+
+				}*/
+			
 		}
 	}
 

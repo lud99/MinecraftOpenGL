@@ -61,7 +61,7 @@ public:
 
 public:
 	static const int Width = 16;
-	static const int Height = 128;
+	static const int Height = 256;
 	static const int Depth = 16;
 
 	static const int BlockCount = Width * Height * Depth;
@@ -69,6 +69,7 @@ public:
 	bool m_HasGenerated = false;
 	bool m_IsGenerating = false;
 	bool m_ShouldRebuild = false;
+	bool m_ShouldBeRemoved = false;
 	bool m_IsRebuilding = false;
 
 	AdjacentChunks m_AdjacentChunksWhenLastRebuilt;

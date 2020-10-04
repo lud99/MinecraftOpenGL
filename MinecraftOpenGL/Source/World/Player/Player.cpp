@@ -58,17 +58,22 @@ void Player::Update()
 
 	// Chunk loading
 
-	int renderDistance = 2;
+	int renderDistance = 8;
 
 	ChunkMap chunks = World::GetChunks();
+
+	//std::cout << "Loaded chunks: " << chunks.size() << "\n";
+
 	for (auto entry : chunks) 
 	{
 		Chunk* chunk = entry.second;
 
-		float left = m_Position.x - renderDistance - 1;
-		float right = m_Position.x + renderDistance + 1;
-		float top = m_Position.z - renderDistance - 1;
-		float bottom = m_Position.z + renderDistance + 1;
+		glm::vec2 pos = Utils::WorldPositionToChunkPosition(m_Position + 8.0f);
+
+		float left = pos.x - renderDistance - 1;
+		float right = pos.x + renderDistance;
+		float top = pos.y - renderDistance - 1;
+		float bottom = pos.y + renderDistance;
 
 		glm::vec2 chunkPosition = chunk->GetPosition();
 
@@ -76,6 +81,7 @@ void Player::Update()
 		{
 		}
 		else {
+			//chunk->m_ShouldBeRemoved = true;
 			//std::cout << "removing chunk " << chunkPosition.x << ", " << chunkPosition.y << "\n";
 			//World::RemoveChunk(chunk);
 		}
@@ -125,6 +131,8 @@ void Player::Update()
 				World::CreateChunk(glm::ivec2(x, z));
 		}
 	}*/
+
+	std::cout << "Y: " << m_Position.y << "\n";
 
 	// Generate the terrain
 	for (int x = position.x - renderDistance * Chunk::Width; x < position.x + renderDistance * Chunk::Width; x += Chunk::Width)

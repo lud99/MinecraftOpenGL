@@ -40,7 +40,7 @@ void WorldRenderer::Render()
 		{
 			m_ChunkShader.SetUniform("u_ChunkPosition", entry.second->GetWorldPosition());
 			m_ChunkShader.SetUniform("u_Rebuilding", entry.second->m_IsRebuilding);
-			m_ChunkShader.SetUniform("u_Generating", entry.second->m_IsGenerating);
+			m_ChunkShader.SetUniform("u_ShouldBeRemoved", entry.second->m_ShouldBeRemoved);
 
 			entry.second->m_OpaqueMesh.Render();
 			//entry.second->m_WaterMesh.Render();
@@ -62,7 +62,7 @@ void WorldRenderer::Render()
 		{
 			m_ChunkShader.SetUniform("u_ChunkPosition", entry.second->GetWorldPosition());
 			m_ChunkShader.SetUniform("u_Rebuilding", entry.second->m_IsRebuilding);
-			m_ChunkShader.SetUniform("u_Generating", entry.second->m_IsGenerating);
+			m_ChunkShader.SetUniform("u_ShouldBeRemoved", entry.second->m_ShouldBeRemoved);
 
 			entry.second->m_WaterMesh.Render();
 		}

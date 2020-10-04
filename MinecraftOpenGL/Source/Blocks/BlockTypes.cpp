@@ -18,11 +18,20 @@ namespace BlockTypes {
 		}
 
 		// Set all sides to the same texture as the default
+
+		// Dirt
 		Blocks[Dirt].SetTexture(TextureIds::Dirt);
+		// Stone
 		Blocks[Stone].SetTexture(TextureIds::Stone);
+		// Water
 		Blocks[Water].SetTexture(TextureIds::Water);
 		Blocks[Water].isTransparent = true;
+		// Gravel
+		Blocks[Gravel].SetTexture(TextureIds::Gravel);
+		// Sand
+		Blocks[Sand].SetTexture(TextureIds::Sand);
 
+		// Set all the textures for the grass block
 		Blocks[Grass].faces[Left].textureId = TextureIds::GrassSide;
 		Blocks[Grass].faces[Right].textureId = TextureIds::GrassSide;
 		Blocks[Grass].faces[Bottom].textureId = TextureIds::Dirt;

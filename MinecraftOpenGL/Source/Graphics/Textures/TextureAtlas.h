@@ -29,7 +29,7 @@ struct TextureAtlas {
 	const static int BlockSize = 16;
 	const static int BlockCountRow = Size / BlockSize;
 
-	static BlockTexture BlockTextures[TextureIds::Count];
+	static BlockTexture BlockTextures[TextureIds::TextureIds::Count];
 
 	static void Load();
 	

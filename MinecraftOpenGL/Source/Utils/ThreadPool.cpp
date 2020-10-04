@@ -57,7 +57,7 @@ void ThreadPool::QueueWork(ChunkAction action)
 			// If so, then remove the older one from the queue
 			if (action.timestamp > m_WorkQueue[i].timestamp) // The entry is older than the action specified
 			{
-				std::cout << "Removing queue entry " << m_WorkQueue[i].timestamp << "\n";
+				//std::cout << "Removing queue entry " << m_WorkQueue[i].timestamp << "\n";
 
 				m_WorkQueue.erase(m_WorkQueue.begin() + i);
 				

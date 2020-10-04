@@ -41,6 +41,14 @@ void TextureAtlas::Load()
 	// Water
 	BlockTextures[Water].SetTextureAtlasOffset(glm::ivec2(4, 0));
 	BlockTextures[Water].CalculateCoordinates();
+
+	// Gravel
+	BlockTextures[Gravel].SetTextureAtlasOffset(glm::ivec2(5, 0));
+	BlockTextures[Gravel].CalculateCoordinates();
+
+	// Sand
+	BlockTextures[Sand].SetTextureAtlasOffset(glm::ivec2(6, 0));
+	BlockTextures[Sand].CalculateCoordinates();
 }
 
 BlockTexture& TextureAtlas::operator[] (int id)
