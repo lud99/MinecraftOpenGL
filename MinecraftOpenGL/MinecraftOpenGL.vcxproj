@@ -150,6 +150,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Utils\Raycast.cpp" />
+    <ClCompile Include="Source\World\Fog.cpp" />
     <ClCompile Include="Source\World\Player\Crosshair.cpp" />
     <ClCompile Include="Source\Graphics\Vertex.cpp" />
     <ClCompile Include="Source\Noise\NoiseGenerator.cpp" />
@@ -165,7 +167,6 @@
     <ClCompile Include="Source\Graphics\Mesh.cpp" />
     <ClCompile Include="Source\World\Chunk\Chunk.cpp" />
     <ClCompile Include="Source\Graphics\Shaders\Shader.cpp" />
-    <ClCompile Include="Source\Graphics\Shaders\ShaderLoader.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Graphics\Textures\TextureAtlas.cpp" />
     <ClCompile Include="Source\Utils\Utils.cpp" />
@@ -174,6 +175,8 @@
     <ClCompile Include="Source\World\WorldRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Utils\Raycast.h" />
+    <ClInclude Include="Source\World\Fog.h" />
     <ClInclude Include="Source\World\Player\Crosshair.h" />
     <ClInclude Include="Source\Utils\ThreadPool.h" />
     <ClInclude Include="Source\World\Player\Camera.h" />
@@ -189,7 +192,6 @@
     <ClInclude Include="Source\Graphics\Mesh.h" />
     <ClInclude Include="Source\World\Chunk\Chunk.h" />
     <ClInclude Include="Source\Graphics\Shaders\Shader.h" />
-    <ClInclude Include="Source\Graphics\Shaders\ShaderLoader.h" />
     <ClInclude Include="Source\Graphics\Textures\TextureIds.h" />
     <ClInclude Include="Source\Graphics\Textures\TextureAtlas.h" />
     <ClInclude Include="Source\Utils\Utils.h" />
@@ -199,6 +201,8 @@
     <ClInclude Include="Source\World\WorldRenderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Shaders\Fog.frag" />
+    <None Include="Resources\Shaders\Fog.vert" />
     <None Include="Source\Noise\NoiseGenerator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

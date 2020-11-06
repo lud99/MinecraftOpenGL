@@ -28,9 +28,16 @@ public:
 	~Shader();
 
 public:
-	unsigned int m_id;
+	unsigned int m_id = 0;
 
 private:
 	std::unordered_map<std::string, int> m_UniformLocations;
 };
 
+namespace ShaderLoader
+{
+	std::string ParseShader(const std::string& filepath);
+	unsigned int CompileShader(unsigned int type, const std::string& source);
+
+	Shader CreateShader(const std::string& vertexPath, const std::string& fragmentPath);
+};

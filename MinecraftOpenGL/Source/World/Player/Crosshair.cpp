@@ -1,6 +1,6 @@
 #include "Crosshair.h"
 
-#include "../../Graphics/Shaders/ShaderLoader.h"
+#include "../../Graphics/Shaders/Shader.h"
 
 #include "../World.h"
 

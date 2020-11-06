@@ -243,7 +243,7 @@ void Chunk::GenerateTerrain()
 	m_IsGenerating = false;
 	m_ShouldRebuild = true;
 
-	std::cout << "Terrain generatation done. " << m_Position.x << ", " << m_Position.y << "\n";
+	//std::cout << "Terrain generatation done. " << m_Position.x << ", " << m_Position.y << "\n";
 
 	mutex.unlock();
 }
@@ -282,7 +282,7 @@ void Chunk::RebuildMesh()
 	// Set the adjacent chunks
 	m_AdjacentChunksWhenLastRebuilt = GetAdjacentChunks();
 
-	std::cout << "Chunk mesh rebuilt. " << m_Position.x << ", " << m_Position.y << "\n";
+	//std::cout << "Chunk mesh rebuilt. " << m_Position.x << ", " << m_Position.y << "\n";
 
 	m_IsRebuilding = false;
 	m_ShouldRebuild = false;

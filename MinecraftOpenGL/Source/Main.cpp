@@ -13,7 +13,7 @@
 #include <glm/gtc/matrix_transform.hpp> 
 #include <glm/gtx/hash.hpp>
 
-#include "Graphics/Shaders/ShaderLoader.h"
+#include "Graphics/Shaders/Shader.h"
 
 #include "World/Chunk/Chunk.h"
 #include "World/Chunk/ChunkBlock.h"
@@ -24,46 +24,6 @@
 #include "World/Player/Player.h"
 #include "Utils/ThreadPool.h"
 #include "World/Chunk/Chunk.h"
-
-void CreateChunks(int count)
-{
-	for (int x = -count / 2; x < count / 2; x++)
-	{
-		for (int z = -count / 2; z < count / 2; z++)
-		{
-			if (World::ChunkExistsAt(glm::ivec2(x, z)))
-				continue;
-
-			Chunk* chunk = World::CreateChunk(glm::ivec2(x, z));
-		}
-	}
-
-	for (int x = -count / 2; x < count / 2; x++)
-	{
-		for (int z = -count / 2; z < count / 2; z++)
-		{
-			Chunk* chunk = World::GetChunkAt(glm::ivec2(x, z));
-
-			if (chunk->m_HasGenerated)
-				continue;
-
-			// Fill the chunk with blocks
-			chunk->GenerateTerrainThreaded();
-		}
-	}
-
-	for (int x = -count / 2; x < count / 2; x++)
-	{
-		for (int z = -count / 2; z < count / 2; z++)
-		{
-			Chunk* chunk = World::GetChunkAt(glm::ivec2(x, z));
-
-			// Create the block mesh
-			if (chunk->m_ShouldRebuild)
-				chunk->RebuildMeshThreaded();
-		}
-	}
-}
 
 void MouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
@@ -121,22 +81,9 @@ int main()
 
 	InputHandler input(window);
 
-	auto start = std::chrono::high_resolution_clock::now();
-
-	int count = 2;
-
-	//CreateChunks(count);
-
-	/*auto stop = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
-	std::cout << "Chunk generation took " << duration.count() << " seconds\n";*/
-
 	double previousTime = glfwGetTime();
+	double prevTime = glfwGetTime();
 	int frameCount = 0;
-
-	/*std::map<int, Chunk*>& chunks = World::GetChunks();
-	for (auto const& entry : chunks)
-		std::cout << entry.second->m_OpaqueMesh.m_Vertices.size() << ", " << entry.second->m_WaterMesh.m_Vertices.size() << "\n";*/
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -165,14 +112,11 @@ int main()
 			previousTime = currentTime;
 		}
 
-		if (input.IsKeyPressed(GLFW_KEY_R)) {
-			count += 2;
-
-			CreateChunks(count);
-		}
+		float deltaTime = glfwGetTime() - prevTime;
+		prevTime = glfwGetTime();
 
 		// Update everything in the world
-		World::Update();
+		World::Update(deltaTime);
 
 		World::Render();
 
@@ -180,7 +124,7 @@ int main()
 		GLenum err;
 		while ((err = glGetError()) != GL_NO_ERROR)
 		{
-			std::cout << "err\n";
+			std::cout << err << "\n";
 		}
 
 		/* Swap front and back buffers */

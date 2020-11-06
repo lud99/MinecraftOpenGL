@@ -114,9 +114,9 @@ protected:
 	std::vector<Vertex> m_Vertices;
 	std::vector<uint16_t> m_Indices;
 
-	unsigned int m_Vao;
-	unsigned int m_Vbo;
-	unsigned int m_Ebo;
+	unsigned int m_Vao = 0;
+	unsigned int m_Vbo = 0;
+	unsigned int m_Ebo = 0;
 
 private:
 	std::mutex m_VerticesMutex;

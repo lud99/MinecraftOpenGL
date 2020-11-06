@@ -10,6 +10,14 @@
 WorldRenderer::WorldRenderer()
 {
 	m_ChunkShader = ShaderLoader::CreateShader("Resources/Shaders/Chunk.vert", "Resources/Shaders/Chunk.frag");
+	m_Fog.Init();
+}
+
+WorldRenderer::WorldRenderer(GLFWwindow* window)
+{
+	m_Window = window;
+
+	WorldRenderer();
 }
 
 void WorldRenderer::Render()
@@ -69,6 +77,8 @@ void WorldRenderer::Render()
 	}
 
 	if (World::m_LookingAtCollider.m_Enabled) World::m_LookingAtCollider.RenderHitbox();
+
+	//m_Fog.Render(this);
 
 	auto stop = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);

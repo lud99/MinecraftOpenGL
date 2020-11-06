@@ -25,9 +25,9 @@ void World::Init(GLFWwindow* window)
 	m_LookingAtCollider.Init();
 }
 
-void World::Update()
+void World::Update(float deltaTime)
 {
-	m_Player.Update();
+	m_Player.Update(deltaTime);
 
 	m_ChunkBuilder.ProcessQueue();
 }

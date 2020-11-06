@@ -39,9 +39,6 @@
     <ClCompile Include="Source\Graphics\Shaders\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\Shaders\ShaderLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Graphics\Textures\Texture2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -81,6 +78,12 @@
     <ClCompile Include="Source\InputHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\World\Fog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utils\Raycast.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Noise\FastNoise.h">
@@ -111,9 +114,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Graphics\Shaders\Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Graphics\Shaders\ShaderLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Graphics\Textures\Texture2D.h">
@@ -152,8 +152,16 @@
     <ClInclude Include="Source\InputHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\World\Fog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Utils\Raycast.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Noise\NoiseGenerator.h" />
+    <None Include="Resources\Shaders\Fog.frag" />
+    <None Include="Resources\Shaders\Fog.vert" />
   </ItemGroup>
 </Project>

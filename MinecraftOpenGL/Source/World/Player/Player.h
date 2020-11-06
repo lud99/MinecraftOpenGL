@@ -19,7 +19,7 @@ public:
 
 	void Init();
 
-	void Update();
+	void Update(float deltaTime);
 	void UpdateCameraPosition();
 
 	void MouseCallback(GLFWwindow* window, double xpos, double ypos);
@@ -31,6 +31,12 @@ public:
 	inline Crosshair* GetCrosshair() { return m_Crosshair; }
 
 	~Player();
+
+private:
+	void HandleMovement(float deltaTime);
+	void HandleCollision(float deltaTime);
+	void HandleBlockBreak(float deltaTime);
+
 public:
 	glm::vec3 m_Position = glm::vec3(0.0f, 70.0f, 0.0f);
 	glm::vec3 m_LookingAtPosition = glm::vec3(0); 
@@ -45,10 +51,14 @@ private:
 
 	ChunkBlock* m_HighlightedBlock = nullptr;
 
-	float m_MovementSpeed = 0.05f;
+	float m_MovementSpeed = 0.0f;
+	glm::vec3 m_Velocity;
 
 	float lastX = 400, lastY = 300;
 	float yaw = 0, pitch = 0;
+
+	float m_Acceleration = 2.0f;
+	float m_MaxVelocity = 0.5f;
 
 	bool firstMouse = true;
 };

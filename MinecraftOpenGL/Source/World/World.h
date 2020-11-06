@@ -26,7 +26,7 @@ typedef std::unordered_map<glm::ivec2, Chunk*> ChunkMap;
 namespace World
 {
 	void Init(GLFWwindow* window);
-	void Update();
+	void Update(float deltaTime);
 	void Render();
 
 	Chunk* CreateChunk(glm::ivec2 position);
