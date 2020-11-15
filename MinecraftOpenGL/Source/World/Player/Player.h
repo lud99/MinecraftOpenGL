@@ -1,7 +1,5 @@
 #pragma once
 
-#include <GLFW/glfw3.h>
-
 #include <glm/vec3.hpp>
 
 #include "../../InputHandler.h"
@@ -9,7 +7,7 @@
 #include "Camera.h"
 
 class ChunkBlock;
-class Crosshair;
+struct GLFWwindow;
 
 class Player
 {
@@ -28,7 +26,6 @@ public:
 	void SetWindow(GLFWwindow* window);
 
 	Camera& GetCamera();
-	inline Crosshair* GetCrosshair() { return m_Crosshair; }
 
 	~Player();
 
@@ -47,7 +44,6 @@ public:
 private:
 	InputHandler m_Input;
 	Camera m_Camera;
-	Crosshair* m_Crosshair = nullptr;
 
 	ChunkBlock* m_HighlightedBlock = nullptr;
 

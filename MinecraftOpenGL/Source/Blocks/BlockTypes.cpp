@@ -1,18 +1,20 @@
 #include "BlockTypes.h"
 
 #include "BlockIds.h"
+#include "../Graphics/Mesh.hpp"
+#include "../Graphics/BasicVertices.h"
 #include "../Graphics/Textures/TextureIds.h"
-
-using namespace BlockIds;
 
 namespace BlockTypes {
 	void CreateBlocks()
 	{
+		using namespace BasicVertices;
+
 		for (int i = 0; i < Count; i++) {
 			Blocks[i].id = i;
 			
 			for (int j = 0; j < Block::facesCount; j++) {
-				Blocks[i].faces[j].positions = CubeFaces::GetFace(j);
+				Blocks[i].faces[j].positions = Cube::GetFace(j);
 				Blocks[i].faces[j].direction = j;
 			}
 		}
@@ -32,12 +34,12 @@ namespace BlockTypes {
 		Blocks[Sand].SetTexture(TextureIds::Sand);
 
 		// Set all the textures for the grass block
-		Blocks[Grass].faces[Left].textureId = TextureIds::GrassSide;
-		Blocks[Grass].faces[Right].textureId = TextureIds::GrassSide;
-		Blocks[Grass].faces[Bottom].textureId = TextureIds::Dirt;
-		Blocks[Grass].faces[Top].textureId = TextureIds::GrassTop;
-		Blocks[Grass].faces[Front].textureId = TextureIds::GrassSide;
-		Blocks[Grass].faces[Back].textureId = TextureIds::GrassSide;
+		Blocks[Grass].faces[Cube::Faces::Left].textureId = TextureIds::GrassSide;
+		Blocks[Grass].faces[Cube::Faces::Right].textureId = TextureIds::GrassSide;
+		Blocks[Grass].faces[Cube::Faces::Bottom].textureId = TextureIds::Dirt;
+		Blocks[Grass].faces[Cube::Faces::Top].textureId = TextureIds::GrassTop;
+		Blocks[Grass].faces[Cube::Faces::Front].textureId = TextureIds::GrassSide;
+		Blocks[Grass].faces[Cube::Faces::Back].textureId = TextureIds::GrassSide;
 	}
 }
 

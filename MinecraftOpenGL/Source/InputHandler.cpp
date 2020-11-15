@@ -1,5 +1,7 @@
 #include "InputHandler.h"
 
+#include <GLFW/glfw3.h>
+
 InputHandler::InputHandler()
 {
 

@@ -5,7 +5,7 @@
 
 #include "Chunk.h"
 #include "../World.h"
-#include "../../Graphics/Mesh.h"
+#include "../../Graphics/Mesh.hpp"
 #include "../../Graphics/Textures/TextureAtlas.h"
 
 ChunkBlock::ChunkBlock()
@@ -22,7 +22,7 @@ bool ChunkBlock::ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk)
 	// Check if at a chunk border
 	switch (direction)
 	{
-	case Left:
+	case Directions::West:
 		if (m_LocalPosition.x - 1 < 0)
 			isAtChunkBorder = true;
 
@@ -30,7 +30,7 @@ bool ChunkBlock::ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk)
 		blockInAdjacentChunkOffset = glm::ivec3(Chunk::Width - 1, 0, 0);
 
 		break;
-	case Right:
+	case Directions::East:
 		if (m_LocalPosition.x + 1 >= Chunk::Width)
 			isAtChunkBorder = true;
 
@@ -38,21 +38,21 @@ bool ChunkBlock::ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk)
 		blockInAdjacentChunkOffset = glm::ivec3(-Chunk::Width + 1, 0, 0);
 
 		break;
-	case Bottom:
+	case Directions::Bottom:
 		if (m_LocalPosition.y - 1 < 0)
 			isAtChunkBorder = true;
 
 		offset = glm::ivec3(0, -1, 0);
 
 		break;
-	case Top:
+	case Directions::Top:
 		if (m_LocalPosition.y + 1 >= Chunk::Height)
 			isAtChunkBorder = true;
 
 		offset = glm::ivec3(0, 1, 0);
 
 		break;
-	case Back:
+	case Directions::South:
 		if (m_LocalPosition.z - 1 < 0)
 			isAtChunkBorder = true;
 
@@ -60,7 +60,7 @@ bool ChunkBlock::ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk)
 		blockInAdjacentChunkOffset = glm::ivec3(0, 0, Chunk::Depth - 1);
 
 		break;
-	case Front:
+	case Directions::North:
 		if (m_LocalPosition.z + 1 >= Chunk::Depth)
 			isAtChunkBorder = true;
 
@@ -128,8 +128,8 @@ void ChunkBlock::AddBlockFace(BlockFace& face)
 	Chunk* chunk = GetChunk();
 	glm::vec3 worldPosition = GetWorldPosition();
 
-	Mesh& opaqueMesh = chunk->m_TempOpaqueMesh; 
-	Mesh& waterMesh = chunk->m_TempWaterMesh;
+	Mesh<PackedVertex>& opaqueMesh = chunk->m_TempOpaqueMesh;
+	Mesh<PackedVertex>& waterMesh = chunk->m_TempWaterMesh;
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -141,36 +141,33 @@ void ChunkBlock::AddBlockFace(BlockFace& face)
 
 		switch (face.direction)
 		{
-		case Top: lightLevel = 15; break;
-		case Left: lightLevel = 12; break;
-		case Right: lightLevel = 12; break;
-		case Front: lightLevel = 9; break;
-		case Back: lightLevel = 9; break;
-		case Bottom: lightLevel = 6; break;
+		case Directions::Top: lightLevel = 15; break;
+		case Directions::West: lightLevel = 12; break;
+		case Directions::East: lightLevel = 12; break;
+		case Directions::North: lightLevel = 9; break;
+		case Directions::South: lightLevel = 9; break;
+		case Directions::Bottom: lightLevel = 6; break;
 		}
+		
+		BlockVertex vertex;
 
-		Vertex vertex;
-		VertexData vertexData;
-
-		vertexData.position = position;
-		vertexData.index = i;
-		vertexData.texture = face.textureId;
-		vertexData.lightLevel = lightLevel;
-
-		vertex.SetData(vertexData);
+		vertex.position = position;
+		vertex.index = i;
+		vertex.texture = face.textureId;
+		vertex.lightLevel = lightLevel;
 
 		if (m_BlockId == BlockIds::Water)
-			waterMesh.AddVertex(vertex);
+			chunk->m_TempWaterMesh.AddVertex(vertex.CreatePackedVertex());
 		else
-			opaqueMesh.AddVertex(vertex);
+			chunk->m_TempOpaqueMesh.AddVertex(vertex.CreatePackedVertex());
 	}
 
 	for (int i = 0; i < 6; i++)
 	{
 		if (m_BlockId == BlockIds::Water)
-			waterMesh.AddIndex(CubeFaces::Indices[i] + (uint16_t) (waterMesh.GetVertices().size() - 4));
+			waterMesh.AddIndex(BasicVertices::Cube::Indices[i] + (uint16_t) (waterMesh.GetVertices().size() - 4));
 		else
-			opaqueMesh.AddIndex(CubeFaces::Indices[i] + (uint16_t) (opaqueMesh.GetVertices().size() - 4));
+			opaqueMesh.AddIndex(BasicVertices::Cube::Indices[i] + (uint16_t) (opaqueMesh.GetVertices().size() - 4));
 	}
 } 
 
@@ -180,12 +177,12 @@ void ChunkBlock::AddAllBlockFaces()
 
 	Block* blockType = GetBlockType();
 
-	AddBlockFace(blockType->faces[Left]);
-	AddBlockFace(blockType->faces[Right]);
-	AddBlockFace(blockType->faces[Top]);
-	AddBlockFace(blockType->faces[Bottom]);
-	AddBlockFace(blockType->faces[Back]);
-	AddBlockFace(blockType->faces[Front]);
+	AddBlockFace(blockType->faces[Directions::West]);
+	AddBlockFace(blockType->faces[Directions::East]);
+	AddBlockFace(blockType->faces[Directions::Top]);
+	AddBlockFace(blockType->faces[Directions::Bottom]);
+	AddBlockFace(blockType->faces[Directions::South]);
+	AddBlockFace(blockType->faces[Directions::North]);
 }
 
 void ChunkBlock::AddBlockFaces()
@@ -196,22 +193,22 @@ void ChunkBlock::AddBlockFaces()
 	Block* blockType = GetBlockType();
 
 	// Check for chunks on the x axis
-	if (ShouldAddBlockFace(Left, adjacentChunks.Left))
-		AddBlockFace(blockType->faces[Left]);
-	if (ShouldAddBlockFace(Right, adjacentChunks.Right))
-		AddBlockFace(blockType->faces[Right]);
+	if (ShouldAddBlockFace(Directions::West, adjacentChunks.West))
+		AddBlockFace(blockType->faces[Directions::West]);
+	if (ShouldAddBlockFace(Directions::East, adjacentChunks.East))
+		AddBlockFace(blockType->faces[Directions::East]);
 
 	// Check for chunks on the y axis
-	if (ShouldAddBlockFace(Top, adjacentChunks.Top))
-		AddBlockFace(blockType->faces[Top]);
-	if (ShouldAddBlockFace(Bottom, adjacentChunks.Bottom))
-		AddBlockFace(blockType->faces[Bottom]);
+	if (ShouldAddBlockFace(Directions::Top, adjacentChunks.Top))
+		AddBlockFace(blockType->faces[Directions::Top]);
+	if (ShouldAddBlockFace(Directions::Bottom, adjacentChunks.Bottom))
+		AddBlockFace(blockType->faces[Directions::Bottom]);
 
 	// Check for chunks on the z axis
-	if (ShouldAddBlockFace(Back, adjacentChunks.Back))
-		AddBlockFace(blockType->faces[Back]);
-	if (ShouldAddBlockFace(Front, adjacentChunks.Front))
-		AddBlockFace(blockType->faces[Front]);
+	if (ShouldAddBlockFace(Directions::South, adjacentChunks.South))
+		AddBlockFace(blockType->faces[Directions::South]);
+	if (ShouldAddBlockFace(Directions::North, adjacentChunks.North))
+		AddBlockFace(blockType->faces[Directions::North]);
 }
 
 Chunk* ChunkBlock::GetChunk()

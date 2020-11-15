@@ -5,23 +5,29 @@
 #include <glm/gtc/matrix_transform.hpp> 
 #include <glm/gtx/hash.hpp>
 
-#include <GLFW/glfw3.h>
-
 #include <mutex>
 
 #include "../Utils/Utils.h"
 #include "../Graphics/Textures/TextureAtlas.h"
-#include "../Graphics/Mesh.h"
+#include "../Graphics/Mesh.hpp"
+#include "../Graphics/BasicVertices.h"
 #include "Collider.h"
-#include "WorldRenderer.h"
 #include "Player/Player.h"
 #include "Chunk/ChunkBuilder.h"
 
-typedef Faces Directions;
-
 class Chunk;
+class WorldRenderer;
 
 typedef std::unordered_map<glm::ivec2, Chunk*> ChunkMap;
+
+enum Directions {
+	West,
+	East,
+	Bottom,
+	Top,
+	South,
+	North
+};
 
 namespace World
 {
@@ -29,8 +35,13 @@ namespace World
 	void Update(float deltaTime);
 	void Render();
 
+	void HandleCreatingNewChunks();
+	void UnloadChunksOutsideRenderDistance();
+
 	Chunk* CreateChunk(glm::ivec2 position);
 	Chunk* CreateChunk(glm::ivec3 position);
+
+	Chunk* LoadChunk(glm::ivec2 position);
 
 	void RemoveChunk(Chunk* chunk);
 	void RemoveChunk(glm::ivec2 position);
@@ -62,3 +73,8 @@ namespace World
 		std::mutex m_ChunkMutex;
 	}
 };
+
+namespace Settings 
+{
+	extern int RenderDistance;
+}

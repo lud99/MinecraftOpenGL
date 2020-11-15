@@ -1,10 +1,11 @@
 #include "Collider.h"
 
-#include <GL/glew.h>
+#include <GL/glewh.h>
 
 #include "../Graphics/Shaders/Shader.h"
 
 #include "World.h"
+#include "WorldRenderer.h"
 
 Collider::Collider()
 {

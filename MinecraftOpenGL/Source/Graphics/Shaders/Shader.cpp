@@ -1,6 +1,6 @@
 #include "Shader.h"
 
-#include <GL/glew.h>
+#include <GL/glewh.h>
 
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>

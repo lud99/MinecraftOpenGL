@@ -1,29 +1,19 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define GLM_ENABLE_EXPERIMENTAL // glm::vec3 hash for maps
 
-#include <GL/glew.h>
+#include <GL/glewh.h>
 #include <GLFW/glfw3.h>
 
 #include <iostream>
 #include <chrono> 
 #include <vector>
-#include <mutex>
 
 #include <glm/vec3.hpp>
-#include <glm/gtc/matrix_transform.hpp> 
-#include <glm/gtx/hash.hpp>
 
-#include "Graphics/Shaders/Shader.h"
-
-#include "World/Chunk/Chunk.h"
-#include "World/Chunk/ChunkBlock.h"
 #include "World/World.h"
-#include "Graphics/Textures/TextureAtlas.h"
 #include "InputHandler.h"
 #include "World/WorldRenderer.h"
 #include "World/Player/Player.h"
-#include "Utils/ThreadPool.h"
-#include "World/Chunk/Chunk.h"
 
 void MouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
@@ -89,6 +79,7 @@ int main()
 	while (!glfwWindowShouldClose(window))
 	{
 		/* Render here */
+		glClearColor(1, 1, 1, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 
 		// Close the window if escape is pressed

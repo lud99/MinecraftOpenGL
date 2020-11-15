@@ -93,6 +93,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glfw-3.3.2.Win32\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\Win32;$(SolutionDir)Dependencies\glfw-3.3.2.Win32\lib-vc2017;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -107,6 +108,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glfw-3.3.2.Win64\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\x64;$(SolutionDir)Dependencies\glfw-3.3.2.Win64\lib-vc2017;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -123,6 +125,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glfw-3.3.2.Win32\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -141,6 +144,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\glfw-3.3.2.Win64\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -150,9 +154,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Graphics\Textures\Cubemap.cpp" />
     <ClCompile Include="Source\Utils\Raycast.cpp" />
-    <ClCompile Include="Source\World\Fog.cpp" />
-    <ClCompile Include="Source\World\Player\Crosshair.cpp" />
+    <ClCompile Include="Source\World\Chunk\ChunkIO.cpp" />
     <ClCompile Include="Source\Graphics\Vertex.cpp" />
     <ClCompile Include="Source\Noise\NoiseGenerator.cpp" />
     <ClCompile Include="Source\Utils\ThreadPool.cpp" />
@@ -164,20 +168,22 @@
     <ClCompile Include="Source\Blocks\BlockTypes.cpp" />
     <ClCompile Include="Source\World\Chunk\ChunkBlock.cpp" />
     <ClCompile Include="Source\Noise\FastNoise.cpp" />
-    <ClCompile Include="Source\Graphics\Mesh.cpp" />
     <ClCompile Include="Source\World\Chunk\Chunk.cpp" />
     <ClCompile Include="Source\Graphics\Shaders\Shader.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Graphics\Textures\TextureAtlas.cpp" />
     <ClCompile Include="Source\Utils\Utils.cpp" />
+    <ClCompile Include="Source\World\Skybox.cpp" />
     <ClCompile Include="Source\World\World.cpp" />
     <ClCompile Include="Source\Graphics\Textures\Texture2D.cpp" />
     <ClCompile Include="Source\World\WorldRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Graphics\BasicVertices.h" />
+    <ClInclude Include="Source\Graphics\Mesh.hpp" />
+    <ClInclude Include="Source\Graphics\Textures\Cubemap.h" />
     <ClInclude Include="Source\Utils\Raycast.h" />
-    <ClInclude Include="Source\World\Fog.h" />
-    <ClInclude Include="Source\World\Player\Crosshair.h" />
+    <ClInclude Include="Source\World\Chunk\ChunkIO.h" />
     <ClInclude Include="Source\Utils\ThreadPool.h" />
     <ClInclude Include="Source\World\Player\Camera.h" />
     <ClInclude Include="Source\World\Collider.h" />
@@ -189,13 +195,13 @@
     <ClInclude Include="Source\Blocks\BlockTypes.h" />
     <ClInclude Include="Source\World\Chunk\ChunkBlock.h" />
     <ClInclude Include="Source\Noise\FastNoise.h" />
-    <ClInclude Include="Source\Graphics\Mesh.h" />
     <ClInclude Include="Source\World\Chunk\Chunk.h" />
     <ClInclude Include="Source\Graphics\Shaders\Shader.h" />
     <ClInclude Include="Source\Graphics\Textures\TextureIds.h" />
     <ClInclude Include="Source\Graphics\Textures\TextureAtlas.h" />
     <ClInclude Include="Source\Utils\Utils.h" />
     <ClInclude Include="Source\Graphics\Vertex.h" />
+    <ClInclude Include="Source\World\Skybox.h" />
     <ClInclude Include="Source\World\World.h" />
     <ClInclude Include="Source\Graphics\Textures\Texture2D.h" />
     <ClInclude Include="Source\World\WorldRenderer.h" />

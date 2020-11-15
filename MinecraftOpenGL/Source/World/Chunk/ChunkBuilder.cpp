@@ -4,6 +4,7 @@
 #include <queue>
 
 #include "Chunk.h"
+#include "ChunkIO.h"
 #include "ChunkBlock.h"
 
 ChunkBuilder::ChunkBuilder() 
@@ -37,6 +38,8 @@ void ChunkBuilder::ProcessQueue()
 		case ChunkAction::ActionType::Rebuild:
 			action.chunk->m_OpaqueMesh.Update();
 			action.chunk->m_WaterMesh.Update();
+
+			//ChunkIO::WriteFile("test.txt", action.chunk);
 
 			break;
 		case ChunkAction::ActionType::RebuildAdjacentChunks:

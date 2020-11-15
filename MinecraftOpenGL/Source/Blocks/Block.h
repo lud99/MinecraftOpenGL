@@ -4,8 +4,6 @@
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 
-#include "../Graphics/Mesh.h"
-
 #include "../Graphics/Textures/Texture2D.h"
 
 struct BlockFace

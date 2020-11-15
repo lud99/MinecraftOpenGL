@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Graphics/Mesh.h"
+#include "../Graphics/Mesh.hpp"
 #include "../Graphics/Shaders/Shader.h"
 
 #include <glm/vec3.hpp>
@@ -38,7 +38,7 @@ public:
 
 	void RenderHitbox();
 
-	inline Mesh& GetMesh() { return m_Mesh; };
+	inline Mesh<BasicVertex>& GetMesh() { return m_Mesh; };
 	inline Shader& GetShader() { return m_Shader; }
 
 	~Collider();
@@ -49,7 +49,7 @@ public:
 	bool m_Enabled = false;
 
 private:
-	Mesh m_Mesh;
+	Mesh<BasicVertex> m_Mesh;
 	Shader m_Shader;
 
 	const glm::vec3* m_Corners = BasicColliders::Box;

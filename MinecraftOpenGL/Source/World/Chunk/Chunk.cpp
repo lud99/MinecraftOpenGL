@@ -1,16 +1,14 @@
 #include "Chunk.h"
 
-#include <GL/glew.h>
-
 #include <iostream>
 #include <algorithm>
 #include <thread>
 
 #include "../../Noise/FastNoise.h"
 #include "ChunkBlock.h"
+#include "ChunkIO.h"
 #include "../../Blocks/BlockTypes.h"
 #include "../World.h"
-#include "../../Graphics/Mesh.h"
 #include "../../Noise/NoiseGenerator.h"
 #include "../../Utils/ThreadPool.h"
 #include "../../Blocks/BlockIds.h"
@@ -174,7 +172,7 @@ void Chunk::GenerateTerrain()
 				ChunkBlock* block = GetBlockAt(glm::vec3(x, y, z));
 				ChunkBlock* blockAbove = GetBlockAt(glm::vec3(x, y + 1, z));
 
-				BlockIds::BlockIds blockId = BlockIds::Air;
+				BlockIds blockId = BlockIds::Air;
 
 				if (y <= stoneTransition) blockId = BlockIds::Stone;
 				else if (y <= dirtTransition) blockId = BlockIds::Dirt;
@@ -361,10 +359,10 @@ AdjacentChunks Chunk::GetAdjacentChunks()
 {
 	AdjacentChunks chunks;
 
-	chunks.Left = World::GetChunkAt(m_Position + glm::ivec2(-1, 0));
-	chunks.Right = World::GetChunkAt(m_Position + glm::ivec2(1, 0));
-	chunks.Back = World::GetChunkAt(m_Position + glm::ivec2(0, -1));
-	chunks.Front = World::GetChunkAt(m_Position + glm::ivec2(0, 1));
+	chunks.West = World::GetChunkAt(m_Position + glm::ivec2(-1, 0));
+	chunks.East = World::GetChunkAt(m_Position + glm::ivec2(1, 0));
+	chunks.South = World::GetChunkAt(m_Position + glm::ivec2(0, -1));
+	chunks.North = World::GetChunkAt(m_Position + glm::ivec2(0, 1));
 
 	return chunks;
 }

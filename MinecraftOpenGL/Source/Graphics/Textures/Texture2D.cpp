@@ -1,12 +1,12 @@
 #include "Texture2D.h"
 
-#include <GL/glew.h>
+#include <GL/glewh.h>
 
 #include <iostream>
 
 Texture2D::Texture2D()
 {
-	
+
 }
 
 Texture2D::Texture2D(const std::string& filepath)
@@ -29,10 +29,10 @@ void Texture2D::Load(const std::string& filepath)
 	stbi_set_flip_vertically_on_load(true);
 
 	// load and generate the texture
-	m_Data = stbi_load(filepath.c_str(), &m_Width, &m_Height, &m_NrChannels, 0);
-	if (m_Data)
+	unsigned char* data = stbi_load(filepath.c_str(), &m_Width, &m_Height, &m_NrChannels, 0);
+	if (data)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_Data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else
@@ -40,7 +40,7 @@ void Texture2D::Load(const std::string& filepath)
 		std::cout << "Failed to load texture" << std::endl;
 	}
 
-	//stbi_image_free(data);
+	stbi_image_free(data);
 }
 
 void Texture2D::Bind()
@@ -56,6 +56,5 @@ void Texture2D::Unbind()
 
 Texture2D::~Texture2D()
 {
-	std::cout << "destroy\n";
 
 }

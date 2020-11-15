@@ -4,8 +4,8 @@
 #include <glm/gtc/matrix_transform.hpp> 
 
 #include "../Graphics/Shaders/Shader.h"
-#include "Fog.h"
 
+class Skybox;
 struct GLFWwindow;
 
 class WorldRenderer 
@@ -28,5 +28,5 @@ public:
 
 	Shader m_ChunkShader;
 
-	Fog m_Fog;
+	Skybox* m_Skybox;
 };

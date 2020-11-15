@@ -1,7 +1,5 @@
 #include "Player.h"
 
-#include <GLFW/glfw3.h>
-
 #include <glm/vec3.hpp>
 
 #include <iostream>
@@ -12,9 +10,10 @@
 #include "../World.h"
 #include "../Chunk/Chunk.h"
 #include "../Chunk/ChunkBlock.h"
-#include "Crosshair.h"
 #include "../../Utils/Raycast.h"
 #include "../../Utils/Utils.h"
+
+#include <GLFW/glfw3.h>
 
 Player::Player()
 {
@@ -28,7 +27,7 @@ Player::Player(GLFWwindow* window)
 
 void Player::Init()
 {
-	m_Crosshair = new Crosshair();
+
 }
 
 void Player::Update(float deltaTime)
@@ -36,117 +35,9 @@ void Player::Update(float deltaTime)
 	HandleMovement(deltaTime);
 	HandleCollision(deltaTime);
 
-		//ChunkBlock* blockBelow = inChunk->GetBlockAt(positionInChunk - glm::vec3(0, 1 + camHeight, 0));
-		//glm::vec3 blockInFrontPos = glm::clamp(glm::floor(positionInChunk + m_Velocity), glm::vec3(0), glm::vec3(Chunk::Width, Chunk::Height, Chunk::Depth) - 1.0f);
-
-		//ChunkBlock* blockInFront = inChunk->GetBlockAt(blockInFrontPos);
-
-		//if (blockBelow)
-		//{
-		//	//std::cout << (int)blockBelow->m_BlockId << "\n";
-
-		//	if (blockBelow->m_BlockId == BlockIds::Air)
-		//	{
-		//		m_Velocity.y += gravity;
-		//	}
-		//}
-
-		//if (blockInFront) 
-		//{
-		//	if (blockInFront->m_BlockId != BlockIds::Air)
-		//	{
-		//		//m_Velocity = glm::vec3(0);
-		//	}
-		//}
-
-	//}
-	
 	UpdateCameraPosition();
 
-	// Chunk loading
-
-	int renderDistance = 8;
-
-	ChunkMap chunks = World::GetChunks();
-
-	for (auto entry : chunks) 
-	{
-		Chunk* chunk = entry.second;
-
-		glm::vec2 pos = Utils::WorldPositionToChunkPosition(m_Position + 8.0f);
-
-		float left = pos.x - renderDistance - 1;
-		float right = pos.x + renderDistance;
-		float top = pos.y - renderDistance - 1;
-		float bottom = pos.y + renderDistance;
-
-		glm::vec2 chunkPosition = chunk->GetPosition();
-
-		if (chunkPosition.x > left && chunkPosition.x < right && chunkPosition.y > top && chunkPosition.y < bottom)
-		{
-		}
-		else {
-			//chunk->m_ShouldBeRemoved = true;
-			//std::cout << "removing chunk " << chunkPosition.x << ", " << chunkPosition.y << "\n";
-			//World::RemoveChunk(chunk);
-		}
-
-		// Check all the chunks in a box around the player
-		/*for (int x = m_Position.x - renderDistance * Chunk::Width; x < m_Position.x + renderDistance * Chunk::Width; x += Chunk::Width)
-		{
-			for (int z = m_Position.z - renderDistance * Chunk::Depth; z < m_Position.z + renderDistance * Chunk::Depth; z += Chunk::Depth)
-			{
-				glm::ivec2 chunkPosition = Utils::WorldPositionToChunkPosition(glm::vec3(x, 0, z) + 8.0f);
-			}
-		}
-
-		glm::ivec2 chunkPosition = chunk->GetWorldPosition() + Chunk::Width / 2;
-
-		glm::ivec2 delta = chunkPosition - glm::ivec2(m_Position.x, m_Position.z);
-		int distanceToChunk = std::abs(delta.x) + std::abs(delta.y);
-
-		if (distanceToChunk > renderDistance * 2 * Chunk::Width)
-		{
-			World::RemoveChunk(chunk);
-		}*/
-	}
-
-	glm::ivec3 position = glm::floor(m_Position);
-
-	// Check all the chunks in a box around the player
-	for (int x = position.x - renderDistance * Chunk::Width; x < position.x + renderDistance * Chunk::Width; x += Chunk::Width)
-	{
-		for (int z = position.z - renderDistance * Chunk::Depth; z < position.z + renderDistance * Chunk::Depth; z += Chunk::Depth)
-		{
-			glm::ivec2 chunkPos = Utils::WorldPositionToChunkPosition(glm::vec3(x, 0, z) + 8.0f);
-
-			// Create the chunk here if a chunk at this position doesn't exist
-			if (!World::ChunkExistsAt(chunkPos))
-				World::CreateChunk(chunkPos);
-		}
-	}
-
-	// Generate the terrain
-	for (int x = position.x - renderDistance * Chunk::Width; x < position.x + renderDistance * Chunk::Width; x += Chunk::Width)
-	{
-		for (int z = position.z - renderDistance * Chunk::Depth; z < position.z + renderDistance * Chunk::Depth; z += Chunk::Depth)
-		{
-			glm::ivec2 chunkPos = Utils::WorldPositionToChunkPosition(glm::vec3(x, 0, z) + 8.0f);
-
-			Chunk* chunk = World::GetChunkAt(chunkPos);
-
-			if (chunk->m_HasGenerated || chunk->m_IsGenerating) // Don't generate the terrain twice
-				continue;
-
-			ChunkAction* nextAction = new ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk);
-			nextAction->type = ChunkAction::ActionType::RebuildAdjacentChunks;
-			nextAction->chunk = chunk;
-			nextAction->SetTimestamp();
-
-			chunk->GenerateTerrainThreaded(nextAction);
-		}
-	}
-
+	// Block breaking
 	Raycast raycast(m_Position, m_Camera.m_Front);
 	raycast.m_MaxDistance = 7.0f;
 

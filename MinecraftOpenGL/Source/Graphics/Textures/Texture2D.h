@@ -18,11 +18,10 @@ public:
 	~Texture2D();
 
 public:
-	unsigned int m_Texture;
+	unsigned int m_Texture = 0;
 
-	int m_Width;
-	int m_Height;
-	int m_NrChannels;
-	unsigned char* m_Data;
+	int m_Width = 0;
+	int m_Height = 0;
+	int m_NrChannels = 0;
 };
 

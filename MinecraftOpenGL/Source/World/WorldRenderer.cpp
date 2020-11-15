@@ -4,20 +4,21 @@
 
 #include "Player/Player.h"
 #include "World.h"
+#include "Skybox.h"
 #include "Chunk/Chunk.h"
-#include "Player/Crosshair.h"
 
 WorldRenderer::WorldRenderer()
 {
 	m_ChunkShader = ShaderLoader::CreateShader("Resources/Shaders/Chunk.vert", "Resources/Shaders/Chunk.frag");
-	m_Fog.Init();
+	//m_Fog.Init();
+
+	m_Skybox = new Skybox();
+	m_Skybox->Init();
 }
 
 WorldRenderer::WorldRenderer(GLFWwindow* window)
 {
 	m_Window = window;
-
-	WorldRenderer();
 }
 
 void WorldRenderer::Render()
@@ -26,6 +27,9 @@ void WorldRenderer::Render()
 
 	// Update the view matrix
 	UpdateViewMatrix();
+
+	// Draw the skybox first
+
 
 	m_ChunkShader.Bind();
 
@@ -76,9 +80,11 @@ void WorldRenderer::Render()
 		}
 	}
 
-	if (World::m_LookingAtCollider.m_Enabled) World::m_LookingAtCollider.RenderHitbox();
+	//if (World::m_LookingAtCollider.m_Enabled) World::m_LookingAtCollider.RenderHitbox();
 
 	//m_Fog.Render(this);
+
+	m_Skybox->Render(this);
 
 	auto stop = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);

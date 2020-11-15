@@ -113,20 +113,20 @@ void ThreadPool::DoWork()
 
 			AdjacentChunks chunks = action.chunk->GetAdjacentChunks();
 
-			Chunk* westChunkEast = chunks.Left ? chunks.Left->m_AdjacentChunksWhenLastRebuilt.Right : nullptr;
-			Chunk* eastChunkWest = chunks.Right ? chunks.Right->m_AdjacentChunksWhenLastRebuilt.Left : nullptr;
-			Chunk* northChunkSouth = chunks.Front ? chunks.Front->m_AdjacentChunksWhenLastRebuilt.Back : nullptr;
-			Chunk* southChunkNorth = chunks.Back ? chunks.Back->m_AdjacentChunksWhenLastRebuilt.Front : nullptr;
+			Chunk* westChunkEast = chunks.West ? chunks.West->m_AdjacentChunksWhenLastRebuilt.East : nullptr;
+			Chunk* eastChunkWest = chunks.East ? chunks.East->m_AdjacentChunksWhenLastRebuilt.West : nullptr;
+			Chunk* northChunkSouth = chunks.North ? chunks.North->m_AdjacentChunksWhenLastRebuilt.South : nullptr;
+			Chunk* southChunkNorth = chunks.South ? chunks.South->m_AdjacentChunksWhenLastRebuilt.North : nullptr;
 
 			// Check that the chunk exists before adding it to the work queue
-			if (chunks.Left && chunks.Left->m_HasGenerated)// && (!westChunkEast || !westChunkEast->m_HasGenerated))
-				QueueWork(ChunkAction(ChunkAction::ActionType::Rebuild, chunks.Left));
-			if (chunks.Right && chunks.Right->m_HasGenerated)// && (!eastChunkWest || !eastChunkWest->m_HasGenerated))
-				QueueWork(ChunkAction(ChunkAction::ActionType::Rebuild, chunks.Right));
-			if (chunks.Front && chunks.Front->m_HasGenerated)// && (!northChunkSouth || !northChunkSouth->m_HasGenerated))
-				QueueWork(ChunkAction(ChunkAction::ActionType::Rebuild, chunks.Front));
-			if (chunks.Back && chunks.Back->m_HasGenerated)//&& (!southChunkNorth || !southChunkNorth->m_HasGenerated))
-				QueueWork(ChunkAction(ChunkAction::ActionType::Rebuild, chunks.Back));
+			if (chunks.West && chunks.West->m_HasGenerated)// && (!westChunkEast || !westChunkEast->m_HasGenerated))
+				QueueWork(ChunkAction(ChunkAction::ActionType::Rebuild, chunks.West));
+			if (chunks.East && chunks.East->m_HasGenerated)// && (!eastChunkWest || !eastChunkWest->m_HasGenerated))
+				QueueWork(ChunkAction(ChunkAction::ActionType::Rebuild, chunks.East));
+			if (chunks.North && chunks.North->m_HasGenerated)// && (!northChunkSouth || !northChunkSouth->m_HasGenerated))
+				QueueWork(ChunkAction(ChunkAction::ActionType::Rebuild, chunks.North));
+			if (chunks.South && chunks.South->m_HasGenerated)//&& (!southChunkNorth || !southChunkNorth->m_HasGenerated))
+				QueueWork(ChunkAction(ChunkAction::ActionType::Rebuild, chunks.South));
 
 			break;
 		}

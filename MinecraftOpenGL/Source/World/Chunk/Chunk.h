@@ -6,7 +6,7 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-#include "../../Graphics/Mesh.h"
+#include "../../Graphics/Mesh.hpp"
 
 #include <mutex>
 
@@ -18,12 +18,12 @@ class Chunk;
 
 struct AdjacentChunks
 {
-	Chunk* Left = nullptr;
-	Chunk* Right = nullptr;
+	Chunk* West = nullptr;
+	Chunk* East = nullptr;
 	Chunk* Top = nullptr;
 	Chunk* Bottom = nullptr;
-	Chunk* Back = nullptr;
-	Chunk* Front = nullptr;
+	Chunk* South = nullptr;
+	Chunk* North = nullptr;
 };
 
 class Chunk
@@ -76,11 +76,11 @@ public:
 
 	ChunkBlock*** m_Blocks;
 
-	Mesh m_OpaqueMesh;
-	Mesh m_WaterMesh;
+	Mesh<PackedVertex> m_OpaqueMesh;
+	Mesh<PackedVertex> m_WaterMesh;
 
-	Mesh m_TempOpaqueMesh;
-	Mesh m_TempWaterMesh;
+	Mesh<PackedVertex> m_TempOpaqueMesh;
+	Mesh<PackedVertex> m_TempWaterMesh;
 
 	std::mutex m_MeshMutex;
 
