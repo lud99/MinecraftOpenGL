@@ -17,6 +17,7 @@ namespace Utils
 	glm::vec3 ChunkIndexToPosition(int index);
 
 	glm::ivec2 WorldPositionToChunkPosition(glm::vec3 position);
+	glm::u8vec3 WorldBlockPositionToLocalBlockPosition(glm::ivec3 blockPosition, glm::ivec2 chunkPosition);
 
 	inline void PrintVector(glm::vec3 vector) { std::cout << "x: " << vector.x << ", y: " << vector.y << ", z: " << vector.z << "\n"; }
 

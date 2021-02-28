@@ -52,3 +52,12 @@ glm::ivec2 Utils::WorldPositionToChunkPosition(glm::vec3 position)
 		floor(position.z / Chunk::Depth)
 	);
 }
+
+glm::u8vec3 Utils::WorldBlockPositionToLocalBlockPosition(glm::ivec3 blockPosition, glm::ivec2 chunkPosition)
+{
+	return glm::u8vec3(
+		blockPosition.x - (chunkPosition.x * Chunk::Width),
+		blockPosition.y,
+		blockPosition.z - (chunkPosition.y * Chunk::Depth)
+	);
+}

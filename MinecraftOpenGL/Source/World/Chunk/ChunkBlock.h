@@ -56,6 +56,8 @@ private:
 	bool ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk);
 
 public:
+	static const int Size = 1;
+
 	glm::ivec2 m_ChunkPosition;
 
 	uint8_t m_BlockId = BlockIds::Air;

@@ -55,6 +55,9 @@ namespace World
 	bool ChunkExistsAt(glm::ivec2 position);
 	bool ChunkExistsAt(glm::ivec3 position);
 
+	ChunkBlock* GetBlockAt(glm::ivec3 position);
+	ChunkBlock* GetBlockAt(glm::vec3 position);
+
 	Player& GetPlayer();
 
 	extern unsigned int m_ChunkCount;

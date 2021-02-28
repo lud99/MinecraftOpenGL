@@ -95,8 +95,10 @@ void WorldRenderer::Render()
 void WorldRenderer::UpdateViewMatrix()
 {
 	Player& player = World::GetPlayer();
+	Camera& camera = player.GetCamera();
+	glm::vec3 cameraPosition = camera.m_Position;
 
-	m_ViewMatrix = glm::lookAt(player.m_Position, player.m_Position + player.GetCamera().m_Front, player.GetCamera().m_Up);
+	m_ViewMatrix = glm::lookAt(cameraPosition, cameraPosition + camera.m_Front, camera.m_Up);
 }
 
 WorldRenderer::~WorldRenderer()

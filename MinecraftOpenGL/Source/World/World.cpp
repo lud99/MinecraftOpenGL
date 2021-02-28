@@ -208,15 +208,29 @@ Chunk* World::GetChunkAt(glm::ivec2 position)
 
 Chunk* World::GetChunkAt(glm::ivec3 position) { return GetChunkAt(glm::ivec2(position.x, position.z)); }
 
-bool World::ChunkExistsAt(glm::ivec2 position) { 
-	if (m_Chunks.size() == 0)
-	{
-		int a = 0;
-	}
-
+bool World::ChunkExistsAt(glm::ivec2 position) 
+{ 
 	return m_Chunks.count(position) == 1; 
 }
-bool World::ChunkExistsAt(glm::ivec3 position) { return m_Chunks.size() > 0 ? m_Chunks.count(glm::ivec2(position.x, position.z)) > 0 : false; }
+bool World::ChunkExistsAt(glm::ivec3 position) 
+{ 
+	return m_Chunks.size() > 0 ? m_Chunks.count(glm::ivec2(position.x, position.z)) > 0 : false; 
+}
+
+ChunkBlock* World::GetBlockAt(glm::ivec3 position)
+{
+	glm::ivec2 chunkPosition = Utils::WorldPositionToChunkPosition(position);
+	Chunk* chunk = GetChunkAt(chunkPosition);
+
+	glm::u8vec3 blockPosition = Utils::WorldBlockPositionToLocalBlockPosition(position, chunk->GetPosition());
+	ChunkBlock* block = chunk->GetBlockAt(blockPosition);
+
+	return block;
+}
+ChunkBlock* World::GetBlockAt(glm::vec3 position)
+{
+	return GetBlockAt((glm::ivec3) position);
+}
 
 Player& World::GetPlayer() { return m_Player; };
 
