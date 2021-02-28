@@ -80,7 +80,8 @@ void WorldRenderer::Render()
 		}
 	}
 
-	//if (World::m_LookingAtCollider.m_Enabled) World::m_LookingAtCollider.RenderHitbox();
+	if (World::m_LookingAtCollider.m_Enabled) 
+		World::m_LookingAtCollider.RenderHitbox();
 
 	//m_Fog.Render(this);
 

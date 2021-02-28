@@ -207,8 +207,6 @@
     <ClInclude Include="Source\World\WorldRenderer.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Shaders\Fog.frag" />
-    <None Include="Resources\Shaders\Fog.vert" />
     <None Include="Source\Noise\NoiseGenerator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -3,6 +3,7 @@
 #include <GL/glewh.h>
 
 #include "../Graphics/Shaders/Shader.h"
+#include "../Graphics/BasicVertices.h"
 
 #include "World.h"
 #include "WorldRenderer.h"
@@ -16,11 +17,15 @@ void Collider::Init()
 {
 	m_Shader = ShaderLoader::CreateShader("Resources/Shaders/Collider.vert", "Resources/Shaders/Collider.frag");
 
-	/*for (int i = 0; i < 8; i++)
-		m_Mesh.AddVertex(Vertex(BasicColliders::Box[i] * 1.00625f));
+	for (int i = 0; i < 36; i++)
+	{
+		BasicVertex vertex;
+		vertex.position = BasicColliders::Box[i] * 1.00625f;
+		m_Mesh.AddVertex(vertex);
+	}
 
 	for (int i = 0; i < 36; i++)
-		m_Mesh.AddIndex(BasicColliders::BoxIndices[i]);*/
+		m_Mesh.AddIndex(BasicColliders::BoxIndices[i]);
 
 	m_Mesh.Update(); 
 }

@@ -50,7 +50,7 @@ public:
 	~Mesh();
 
 public:
-	Texture2D* m_Texture;
+	Texture2D* m_Texture = nullptr;
 
 protected:
 	std::vector<VertexT> m_Vertices;
@@ -98,6 +98,10 @@ void Mesh<VertexT>::UpdateVertices(const std::vector<VertexT>& vertices)
 		return;
 
 	m_Vertices = vertices;
+
+	// Generate a vertex array object if none has been created before
+	if (m_Vao == 0)
+		CreateVao();
 
 	BindVao();
 

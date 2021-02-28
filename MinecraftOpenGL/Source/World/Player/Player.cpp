@@ -228,9 +228,35 @@ void Player::MouseButtonCallback(GLFWwindow* window, int button, int action, int
 		//glm::vec3 blockPos = glm::round(m_LastLookingAtPosition);
 
 		ChunkBlock* block = chunk->GetBlockAt(m_HighlightedBlock->GetLocalPosition());
-		block->m_BlockId = BlockIds::Air;
+		
+		// Don't update the block if it's already air
+		if (block->m_BlockId != BlockIds::Air)
+		{
+			block->m_BlockId = BlockIds::Air;
 
-		World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, chunk));
+			World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, chunk));
+
+			// Rebuild the adjacent chunk if it exists
+			glm::u8vec3 blockPosition = block->GetLocalPosition();
+			glm::ivec2 chunkPosition = chunk->GetPosition();
+			Chunk* adjacentChunk = nullptr;
+
+			if (blockPosition.x == 0)
+				adjacentChunk = World::GetChunkAt(chunkPosition + glm::ivec2(-1, 0));
+			if (blockPosition.x == Chunk::Width - 1)
+				adjacentChunk = World::GetChunkAt(chunkPosition + glm::ivec2(1, 0));
+			if (blockPosition.z == 0)
+				adjacentChunk = World::GetChunkAt(chunkPosition + glm::ivec2(0, -1));
+			if (blockPosition.z == Chunk::Depth - 1)
+				adjacentChunk = World::GetChunkAt(chunkPosition + glm::ivec2(0, 1));
+
+			std::cout << (int)blockPosition.x << ", " << (int)blockPosition.z << "\n";
+
+			// Add to rebuild queue
+			if (adjacentChunk)
+				World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, adjacentChunk));
+		}
+		
 
 		//m_HighlightedBlock->m_BlockId = BlockIds::Air;
 
