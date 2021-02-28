@@ -85,6 +85,8 @@ void WorldRenderer::Render()
 
 	//m_Fog.Render(this);
 
+	World::GetPlayer().m_Crosshair.Render(this);
+
 	m_Skybox->Render(this);
 
 	auto stop = std::chrono::high_resolution_clock::now();

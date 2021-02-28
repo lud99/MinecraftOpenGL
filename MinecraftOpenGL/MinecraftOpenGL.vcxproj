@@ -164,6 +164,7 @@
     <ClCompile Include="Source\World\Collider.cpp" />
     <ClCompile Include="Source\InputHandler.cpp" />
     <ClCompile Include="Source\World\Chunk\ChunkBuilder.cpp" />
+    <ClCompile Include="Source\World\Player\Crosshair.cpp" />
     <ClCompile Include="Source\World\Player\Player.cpp" />
     <ClCompile Include="Source\Blocks\BlockTypes.cpp" />
     <ClCompile Include="Source\World\Chunk\ChunkBlock.cpp" />
@@ -189,6 +190,7 @@
     <ClInclude Include="Source\World\Collider.h" />
     <ClInclude Include="Source\InputHandler.h" />
     <ClInclude Include="Source\World\Chunk\ChunkBuilder.h" />
+    <ClInclude Include="Source\World\Player\Crosshair.h" />
     <ClInclude Include="Source\World\Player\Player.h" />
     <ClInclude Include="Source\Blocks\Block.h" />
     <ClInclude Include="Source\Blocks\BlockIds.h" />

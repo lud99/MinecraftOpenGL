@@ -5,6 +5,7 @@
 #include "../../InputHandler.h"
 
 #include "Camera.h"
+#include "Crosshair.h"
 
 class ChunkBlock;
 struct GLFWwindow;
@@ -41,6 +42,7 @@ public:
 	glm::vec3 m_LastLookingAtPosition = glm::vec3(0);
 
 	GLFWwindow* m_Window = nullptr;
+	Crosshair m_Crosshair;
 
 private:
 	InputHandler m_Input;

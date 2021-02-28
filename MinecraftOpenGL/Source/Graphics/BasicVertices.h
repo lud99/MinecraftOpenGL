@@ -121,4 +121,44 @@ namespace BasicVertices {
 			glm::vec3(1.0f, -1.0f, 1.0)
 		};
 	};
+
+	namespace Quad {
+		const static glm::vec3 Face[4] = {
+			glm::vec3(-0.5f, -0.5f, 0),
+			glm::vec3(0.5f, -0.5f, 0),
+			glm::vec3(0.5f, 0.5f, 0),
+			glm::vec3(-0.5f, 0.5f, 0),
+		};
+
+		const static uint16_t Indices[6] = {
+			0, 1, 2,
+			2, 3, 0
+		};
+
+		const static glm::vec2 TextureCoordinates[4] = {
+			glm::vec2(0.0f, 0.0f),
+			glm::vec2(1.0f, 0.0f),
+			glm::vec2(1.0f, 1.0f),
+			glm::vec2(0.0f, 1.0f),
+		};
+
+		inline void Construct(glm::vec3 positions[4], float width, float height, float z = 0.0f, bool center = true)
+		{
+			if (center)
+			{
+				positions[0] = glm::vec3(-width / 2, -height / 2, z);
+				positions[1] = glm::vec3(width / 2, -height / 2, z);
+				positions[2] = glm::vec3(width / 2, height / 2, z);
+				positions[3] = glm::vec3(-width / 2, height / 2, z);
+			}
+			else
+			{
+				positions[0] = glm::vec3(0.0f, 0.0f, z);
+				positions[1] = glm::vec3(width, 0.0f, z);
+				positions[2] = glm::vec3(width, height, z);
+				positions[3] = glm::vec3(0.0f, height, z);
+			}
+
+		}
+	}
 };

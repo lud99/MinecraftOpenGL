@@ -27,7 +27,7 @@ Player::Player(GLFWwindow* window)
 
 void Player::Init()
 {
-
+	m_Crosshair.Init();
 }
 
 void Player::Update(float deltaTime)
