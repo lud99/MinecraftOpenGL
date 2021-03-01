@@ -56,6 +56,7 @@ private:
 	float m_MaxVelocity = 0.5f;
 
 	float m_EyeOffset = 1.62f;
+	float m_Height = 1.85f;
 
 	// Mouse variables
 	// TODO: seperate class

@@ -101,6 +101,8 @@ void Player::HandleMovement(float deltaTime)
 
 	if (m_Input.IsKeyPressed(GLFW_KEY_SPACE))
 		m_Velocity.y = 10 * deltaTime;
+	if (m_Input.IsKeyPressed(GLFW_KEY_LEFT_SHIFT))
+		m_Velocity.y = -10 * deltaTime;
 
 	// Increase and decrease movement speed
 	if (m_Input.IsKeyPressed(GLFW_KEY_E))
@@ -119,67 +121,41 @@ void Player::HandleCollision(float deltaTime)
 	float gravity = -1.0f * deltaTime;
 
 	// Apply gravity and collision detection
-	Chunk* chunk = World::GetChunkAt(Utils::WorldPositionToChunkPosition(m_Position));
+	m_Velocity.y += gravity;
 
-	if (chunk)
+	// Check for collision with block below
+	if (m_Velocity.y < 0)
 	{
-		// Cast a ray downwards to look for a block
-		// Downwards if the velocity is negative, and upwards if the velocity is positive
-		glm::vec3 rayDirection(glm::vec3(0, Utils::Math::Sign(m_Velocity.y), 0));
+		ChunkBlock* blockBelow = World::GetBlockAt(glm::floor(m_Position - glm::vec3(0.0f, ChunkBlock::Size, 0.0f)));
 
-		Raycast raycast(m_Position, rayDirection);
-		raycast.m_MaxDistance = 2.0f;
-
-		while (raycast.Step(0.01f))
+		// Only check collision with solid blocks
+		if (blockBelow && blockBelow->m_BlockId != BlockIds::Air)
 		{
-			if (raycast.m_HasReachedMaxDistance)
-				raycast.Stop();
+			// Calculate the distance between the feet and top of the block below
+			float distanceToBlock = m_Position.y - (blockBelow->GetLocalPosition().y + ChunkBlock::Size);
 
-			ChunkBlock* blockBelow = World::GetBlockAt(glm::floor(raycast.m_CurrentPosition));
+			// Check if the player will be inside the top block after the velocity (aka the velocity is larger than the distance to the block above)
+			if (std::abs(m_Velocity.y) > distanceToBlock)
+				m_Velocity.y = -distanceToBlock;
+		}
+	}
 
-			if (blockBelow)
-			{
-				if (blockBelow->m_BlockId == BlockIds::Air)
-				{
-					// Calculate where the position would be next frame
-					glm::vec3 newPosition = m_Position + glm::vec3(0.0f, m_Velocity.y + gravity, 0.0f);
+	// Check for collision with block above
+	if (m_Velocity.y > 0)
+	{
+		// A margin so that when the block pos is floored, it always rounds to the block directly above and never 2 blocks above when exactly below it
+		float smallMargin = 0.1f;
+		ChunkBlock* blockAbove = World::GetBlockAt(glm::floor(m_Position + glm::vec3(0.0f, m_Height + ChunkBlock::Size - smallMargin, 0.0f)));
 
-					ChunkBlock* potentialBlockBelow = World::GetBlockAt(glm::floor(newPosition));
-					if (potentialBlockBelow && potentialBlockBelow->m_BlockId != BlockIds::Air)
-					{
-						// Calculate the distance between the feet and top of the block below
-						float distanceToBlock = m_Position.y - (potentialBlockBelow->GetLocalPosition().y + ChunkBlock::Size);
+		// Only check collision with solid blocks
+		if (blockAbove && blockAbove->m_BlockId != BlockIds::Air)
+		{
+			// Calculate the distance between the head and bottom of the block above
+			float distanceToBlock = blockAbove->GetLocalPosition().y - (m_Position.y + m_Height);
 
-						m_Velocity.y = -distanceToBlock;
-					}
-					else
-					{
-						m_Velocity.y += gravity;
-					}
-				}
-				else
-				{
-					// Calculate the distance between the feet and top of the block below
-					float distanceToBlockBelow = m_Position.y - (blockBelow->GetLocalPosition().y + ChunkBlock::Size);
-
-					// Check if the player will be inside a block after applying gravity (aka the gravity is larger than the distance to the block below)
-					if (gravity > distanceToBlockBelow)
-					{
-						// If too far above block
-						if (distanceToBlockBelow > 0)
-							m_Velocity.y = -distanceToBlockBelow;
-						// If inside block (update the position directly like an impulse instead of force over time)
-						else if (distanceToBlockBelow < 0)
-							m_Position.y -= distanceToBlockBelow;
-					}
-					else
-					{
-						m_Velocity.y = 0.0f;
-					}
-				}
-					
-				raycast.Stop();
-			}
+			// Check if the player will be inside the top block after the velocity (aka the velocity is larger than the distance to the block above)
+			if (std::abs(m_Velocity.y) > distanceToBlock)
+				m_Velocity.y = distanceToBlock;
 		}
 	}
 
