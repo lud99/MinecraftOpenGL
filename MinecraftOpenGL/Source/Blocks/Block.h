@@ -19,7 +19,9 @@ struct Block
 {
 	const std::string name;
 	int id;
-	bool isTransparent = false;
+	bool isTranslucent = false; // For example water. Has opacity but not no parts with 0 opacity
+	bool isTransparent = false; // For example leaves. Has some parts which are fully see-through
+	bool isOpaque = true; // Solid blocks. Neither transparent or translucent
 
 	BlockFace faces[6];
 

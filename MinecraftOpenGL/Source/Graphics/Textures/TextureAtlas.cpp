@@ -1,5 +1,6 @@
 #include "TextureAtlas.h"
 
+#include <iostream>
 using namespace TextureIds;
 
 void BlockTexture::SetTextureAtlasOffset(glm::vec2 offset)
@@ -49,6 +50,16 @@ void TextureAtlas::Load()
 	// Sand
 	BlockTextures[Sand].SetTextureAtlasOffset(glm::ivec2(6, 0));
 	BlockTextures[Sand].CalculateCoordinates();
+
+	// Oak log
+	BlockTextures[OakLogSide].SetTextureAtlasOffset(glm::ivec2(7, 0));
+	//BlockTextures[OakLogSide].CalculateCoordinates();
+	BlockTextures[OakLogTop].SetTextureAtlasOffset(glm::ivec2(0, 1));
+	//BlockTextures[OakLogTop].CalculateCoordinates();
+
+	// Oak leaves
+	BlockTextures[OakLeaves].SetTextureAtlasOffset(glm::ivec2(1, 1));
+	BlockTextures[OakLeaves].CalculateCoordinates();
 }
 
 BlockTexture& TextureAtlas::operator[] (int id)

@@ -28,9 +28,6 @@ void WorldRenderer::Render()
 	// Update the view matrix
 	UpdateViewMatrix();
 
-	// Draw the skybox first
-
-
 	m_ChunkShader.Bind();
 
 	m_ChunkShader.SetUniform("u_ProjectionMatrix", m_ProjectionMatrix);

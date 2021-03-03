@@ -9,7 +9,10 @@ namespace TextureIds {
 		Water = 4,
 		Gravel = 5,
 		Sand = 6,
+		OakLogSide = 7,
+		OakLogTop = 8,
+		OakLeaves = 9,
 
-		Count = 7
+		Count = 10
 	};
 }

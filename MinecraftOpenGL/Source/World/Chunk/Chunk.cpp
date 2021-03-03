@@ -19,8 +19,6 @@ Chunk::Chunk(glm::ivec2 position)
 	m_OpaqueMesh.CreateVao();
 	m_WaterMesh.CreateVao();
 
-	//m_OpaqueMesh.m_Vertices.reserve(11676);
-
 	m_AdjacentChunksWhenLastRebuilt = GetAdjacentChunks();
 	
 	SetPosition(position);
@@ -108,14 +106,23 @@ void Chunk::GenerateTerrain()
 			float scale1 = 7.5f, scale2 = 0.25, scale3 = 10.0f, scale4 = 7.0f;
 			float holesScale = 20.0f;
 
-			float noise1 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale1, worldPosition.z * scale1, 4)) * 1.125f;
+			float noise1 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale1, worldPosition.z * scale1, 4)) * 2.125f;
 			float noise2 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale2, worldPosition.z * scale2, 3)) * 2.5f;
 			float noise3 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale2 * 3, worldPosition.z * scale2 * 3, 3)) * 0.5f;
-			float noise4 = noise.Normalize(noise.GetCombinedNoise(worldPosition.x * scale3, worldPosition.z * scale3, 3, 3)) * .25f;
+			float noise4 = noise.Normalize(noise.GetCombinedNoise(worldPosition.x * scale3, worldPosition.z * scale3, 3, 3)) * .025f;
 			float noise5 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale4, worldPosition.z * scale4, 3)) * 2.0f + 10; // small holes in ground
 			float holesNoise = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * holesScale + 12345, worldPosition.z * holesScale - 12345, 6)); // Holes
 
 			float height = noise1 + (noise2 * noise3) - (noise4) - noise5;
+
+			/*float noise1 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale1, worldPosition.z * scale1, 4)) * 3.125f;
+			float noise2 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale2, worldPosition.z * scale2, 3)) * 2.5f;
+			float noise3 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale2 * 3, worldPosition.z * scale2 * 3, 3)) * 2.5f;
+			float noise4 = noise.Normalize(noise.GetCombinedNoise(worldPosition.x * scale3, worldPosition.z * scale3, 3, 3)) * .025f;
+			float noise5 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale4, worldPosition.z * scale4, 3)) * 2.0f + 10; // small holes in ground
+			float holesNoise = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * holesScale + 12345, worldPosition.z * holesScale - 12345, 6)); // Holes
+
+			float height = noise1 + (2*noise2 * noise3) + (noise4) - noise5;*/
 			bool setWater = false;
 
 			if (holesNoise > 26) {
@@ -204,6 +211,12 @@ void Chunk::GenerateTerrain()
 				}
 			}
 
+			m_HeightMap[x][z] = (uint8_t)finalHeight;
+
+			
+
+			}
+
 				/*if (y < finalHeight)
 				{
 					block->SetEnabled(true);
@@ -234,6 +247,51 @@ void Chunk::GenerateTerrain()
 
 				}*/
 			
+		}
+
+	// Tree generation
+	for (int x = 0; x < Chunk::Width; x++)
+	{
+		for (int z = 0; z < Chunk::Depth; z++)
+		{
+			uint8_t finalHeight = m_HeightMap[x][z];
+
+			if (x == 8 && z == 8)
+			{
+				glm::vec3 treeTrunk(8, finalHeight + 1, 8);
+				int treeTrunkHeight = 6;
+				int treeTopHeight = 4;
+				int treeTopOffset = 3;
+				int treeHeight = treeTrunkHeight + (treeTopHeight - treeTopOffset);
+				int treeRadius = 3;
+
+				for (int y = 0; y < treeTrunkHeight; y++)
+				{
+					ChunkBlock* block = GetBlockAt(glm::vec3(x, finalHeight + y + 1, z));
+					block->m_BlockId = BlockIds::OakLog;
+				}
+
+				for (int y = treeTrunk.y + treeTopOffset; y < treeTrunk.y + treeHeight; y++)
+				{
+					for (int rx = treeTrunk.x - treeRadius; rx <= treeTrunk.x + treeRadius; rx++)
+					{
+						for (int rz = treeTrunk.z - treeRadius; rz <= treeTrunk.z + treeRadius; rz++)
+						{
+							if ((treeTrunk.x != rx || treeTrunk.z != rz) || y >= treeTrunk.y + treeTrunkHeight)
+							{
+								float dist = glm::distance(glm::vec2(rx, rz), glm::vec2(treeTrunk.x, treeTrunk.z));
+								if (dist < treeRadius * 0.75f)
+								{
+									ChunkBlock* block = GetBlockAt(glm::vec3(rx, y, rz));
+									block->m_BlockId = BlockIds::OakLeaves;
+								}
+							}
+						}
+					}
+					
+					if (y == treeTrunk.y + treeHeight - 2) treeRadius -= 1;
+				}
+			}
 		}
 	}
 

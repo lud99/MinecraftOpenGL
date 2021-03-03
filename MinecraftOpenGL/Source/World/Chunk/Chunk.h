@@ -75,6 +75,7 @@ public:
 	AdjacentChunks m_AdjacentChunksWhenLastRebuilt;
 
 	ChunkBlock*** m_Blocks;
+	uint8_t m_HeightMap[Width][Depth];
 
 	Mesh<PackedVertex> m_OpaqueMesh;
 	Mesh<PackedVertex> m_WaterMesh;

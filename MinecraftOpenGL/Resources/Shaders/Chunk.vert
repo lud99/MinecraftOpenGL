@@ -5,6 +5,7 @@ layout(location = 0) in uint packedData;
 out vec4 gl_Position;
 out vec2 passTextureCoord;
 out float passLightLevel;
+out float chunk;
 
 uniform mat4 u_ProjectionMatrix;
 uniform mat4 u_ViewMatrix;
@@ -19,7 +20,7 @@ const float BlockSize = 1.0 / TextureAtlasBlockCountRow;
 
 vec2 CalculateTextureCoordinates(uint textureIndex, uint index)
 {
-	vec2 offset = vec2(textureIndex, 0);
+	vec2 offset = vec2(textureIndex % 8, floor(textureIndex / 8));
 
 	vec2 textureAtlasOffset = vec2(offset.x * BlockSize, 1.0 - BlockSize - (BlockSize * offset.y));
 
@@ -46,4 +47,5 @@ void main() {
 
 	passTextureCoord = CalculateTextureCoordinates(textureIndex, index);
 	passLightLevel = float(lightLevel) / 15;
+	chunk = float(u_ChunkPosition.x * u_ChunkPosition.y);
 }

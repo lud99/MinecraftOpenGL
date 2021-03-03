@@ -241,4 +241,4 @@ ChunkBuilder World::m_ChunkBuilder;
 
 unsigned int World::m_ChunkCount = 0;
 
-int Settings::RenderDistance = 1;
+int Settings::RenderDistance = 8;

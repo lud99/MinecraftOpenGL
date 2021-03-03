@@ -69,57 +69,65 @@ bool ChunkBlock::ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk)
 
 		break;
 	}
+
+	ChunkBlock* adjacentBlock = nullptr;
+	Block* adjacentBlockType = nullptr;
 	
 	if (isAtChunkBorder)
 	{
+		// TODO: Might be neqqessary
 		// Because chunks don't stack vertically, nothing can occlude the top or bottom blocks
-		if (direction == Bottom || direction == Top) return true;
-
+		//if (direction == Bottom || direction == Top)
+			//return true;
+		
 		if (!adjacentChunk)
 			return true;
 
-		// Check if the block adjacent to this one (in the adjacent chunk) is enabled
-
-		ChunkBlock* adjacentBlock = adjacentChunk->GetBlockAt(((glm::ivec3) m_LocalPosition) + blockInAdjacentChunkOffset);
-
+		// Check if the block adjacent to this one exists
+		adjacentBlock = adjacentChunk->GetBlockAt(((glm::ivec3) m_LocalPosition) + blockInAdjacentChunkOffset);
 		if (!adjacentBlock) return true;
 
-		Block* adjacentBlockType = adjacentBlock->GetBlockType();
-
-		// Return to prevent errors if the block doesn't have a valid block type
-		if (!adjacentBlockType)
-			return true;
-
-		// Don't render air blocks
-		if (adjacentBlock->m_BlockId == BlockIds::Air)			
-			return true;
-
-		// If the adjacent block is transparent and this block is opaque
-		// This is to prevent seeing a side of for example water inside other water blocks, which you wouldn't expect
-		if (adjacentBlockType->isTransparent && !GetBlockType()->isTransparent)
-			return true;
-
-		return false;
+		adjacentBlockType = adjacentBlock->GetBlockType();
 	}
-	else if (m_LocalPosition.y + offset.y >= 0 && m_LocalPosition.y + offset.y <= Chunk::Height - 1) {
-		
-		ChunkBlock* adjacentBlock = GetBlockAtRelativePosition(offset);
-		Block* adjacentBlockType = adjacentBlock->GetBlockType();
+	// If inside chunk
+	else if (m_LocalPosition.y + offset.y >= 0 && m_LocalPosition.y + offset.y <= Chunk::Height - 1)
+	{
+		adjacentBlock = GetBlockAtRelativePosition(offset);
+		if (!adjacentBlock) return true;
 
-		// Return to prevent errors if the block doesn't have a valid block type
-		if (!adjacentBlockType)
-			return true;
-
-		// Don't render air blocks
-		if (adjacentBlock->m_BlockId == BlockIds::Air)
-			return true;
-
-		// If the adjacent block is transparent and this block is opaque
-		// This is to prevent seeing a side of for example water inside other water blocks, which you wouldn't expect
-		if (adjacentBlockType->isTransparent && !GetBlockType()->isTransparent)
-			return true;
+		adjacentBlockType = adjacentBlock->GetBlockType();
 	}
+	else return false;
 
+	// Return to prevent errors if the block doesn't have a valid block type
+	if (!adjacentBlockType)
+		return true;
+
+	// Don't render air blocks
+	if (adjacentBlock->m_BlockId == BlockIds::Air)			
+		return true;
+
+	if (adjacentBlockType->isTransparent)
+		return true;
+
+	// Render all sides of fully transparent blocks
+	if (!adjacentBlockType->isOpaque && GetBlockType()->isTransparent)
+		return true;
+
+	// If the adjacent block is translucent and this block is transparent or opaque
+	// This is to prevent seeing a side of for example water inside other water blocks, which you wouldn't expect
+	if (adjacentBlockType->isTranslucent && !GetBlockType()->isTranslucent)
+		return true;
+
+	// If the other block is fully transparent and this block is translucent
+	// Then render this blockface aswell
+	if (adjacentBlockType->isTransparent && GetBlockType()->isTranslucent)
+		return true;
+
+	// If this block is opaque but the adjacent is transparent (ex: stone and leaves)
+	if (GetBlockType()->isOpaque && adjacentBlockType->isTransparent) 
+		return true;
+	
 	return false;
 }
  

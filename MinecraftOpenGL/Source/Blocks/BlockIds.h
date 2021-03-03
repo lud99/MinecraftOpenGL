@@ -8,6 +8,8 @@ enum BlockIds {
 	Water = 4,
 	Gravel = 5,
 	Sand = 6,
+	OakLog = 7,
+	OakLeaves = 8,
 
-	Count = 7
+	Count = 9
 };

@@ -279,7 +279,7 @@ void Player::HandleBlockPlacing()
 
 		if (blockToReplace)
 		{
-			blockToReplace->m_BlockId = BlockIds::Gravel;
+			blockToReplace->m_BlockId = BlockIds::OakLeaves;
 			World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, blockToReplace->GetChunk()));
 		}
 
