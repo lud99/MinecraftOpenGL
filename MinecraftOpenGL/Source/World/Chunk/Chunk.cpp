@@ -57,8 +57,9 @@ void Chunk::Fill(const glm::vec4* colors)
 			for (int z = 0; z < Width; z++)
 			{
 				ChunkBlock* block = GetBlockAt(glm::vec3(x, y, z));
+				block->m_BlockId = BlockIds::Stone;
 				
-				block->SetEnabled(true);
+				//block->SetEnabled(true);
 			}
 		}
 	}
@@ -75,8 +76,9 @@ void Chunk::CreateSphere(const glm::vec4* colors)
 				if (sqrt((float)(x - Chunk::Width / 2)*(x - Chunk::Width / 2) + (y - Chunk::Height / 2)*(y - Chunk::Height / 2) + (z - Chunk::Depth / 2)*(z - Chunk::Depth / 2)) <= Chunk::Width / 2)
 				{
 					ChunkBlock* block = GetBlockAt(glm::vec3(x, y, z));
+					block->m_BlockId = BlockIds::Stone;
 
-					block->SetEnabled(true);
+					//block->SetEnabled(true);
 				}
 			}
 		}

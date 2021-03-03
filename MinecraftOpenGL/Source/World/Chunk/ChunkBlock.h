@@ -34,15 +34,12 @@ public:
 
 	Chunk* GetChunk();
 
-	inline const glm::u8vec3 GetLocalPosition() { return m_LocalPosition; };
+	const glm::u8vec3 GetLocalPosition();
 	const glm::ivec3 GetWorldPosition();
 
-	inline void SetLocalPosition(glm::u8vec3 position) { m_LocalPosition = position; }
+	void SetLocalPosition(glm::u8vec3 position);
 
-	inline void SetEnabled(bool flag) { m_Enabled = flag; };
-	inline bool IsEnabled() { return m_Enabled; }
-
-	inline Block* GetBlockType() { return &BlockTypes::Blocks[m_BlockId]; }
+	Block* GetBlockType();
 
 	~ChunkBlock();
 
@@ -56,15 +53,15 @@ private:
 	bool ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk);
 
 public:
-	static const int Size = 1;
+	static const uint8_t Size = 1;
 
-	glm::ivec2 m_ChunkPosition;
+	glm::ivec2 m_ChunkPosition; // 8 bytes
 
-	uint8_t m_BlockId = BlockIds::Air;
+	uint8_t m_BlockId = BlockIds::Air; // 1 byte
 
 private:
-	glm::u8vec3 m_LocalPosition;
+	uint16_t m_LocalPositionPacked = 0; // pack the 3 component position into 2 bytes instead of 3 bytes to save space
 
-	bool m_Enabled = true;
-	bool m_Highlighted = false;
+	//bool m_Enabled = true; // 1 byte
+	//bool m_Highlighted = false; // 1 byte
 };
