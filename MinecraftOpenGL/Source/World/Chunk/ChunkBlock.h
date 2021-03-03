@@ -60,8 +60,7 @@ public:
 	uint8_t m_BlockId = BlockIds::Air; // 1 byte
 
 private:
-	uint16_t m_LocalPositionPacked = 0; // pack the 3 component position into 2 bytes instead of 3 bytes to save space
+	uint16_t m_LocalPositionPacked = 0; // pack the 3 component position into 2 bytes instead of 3 to save space
 
-	//bool m_Enabled = true; // 1 byte
 	//bool m_Highlighted = false; // 1 byte
 };
