@@ -9,8 +9,10 @@
 #include "../../Graphics/Mesh.hpp"
 
 #include <mutex>
+#include <unordered_map>
 
 class ChunkBlock;
+class BlockEntity;
 class ChunkMesh;
 
 struct ChunkAction;
@@ -25,6 +27,8 @@ struct AdjacentChunks
 	Chunk* South = nullptr;
 	Chunk* North = nullptr;
 };
+
+typedef std::unordered_map<uint16_t, BlockEntity*> BlockEntitiesMap;
 
 class Chunk
 {
@@ -75,6 +79,8 @@ public:
 	AdjacentChunks m_AdjacentChunksWhenLastRebuilt;
 
 	ChunkBlock*** m_Blocks;
+	BlockEntitiesMap m_BlockEntities;
+
 	uint8_t m_HeightMap[Width][Depth];
 
 	Mesh<PackedVertex> m_OpaqueMesh;

@@ -10,6 +10,7 @@ enum BlockIds {
 	Sand = 6,
 	OakLog = 7,
 	OakLeaves = 8,
+	Chest = 9,
 
-	Count = 9
+	Count = 10
 };

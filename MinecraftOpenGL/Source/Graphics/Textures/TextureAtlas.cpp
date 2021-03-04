@@ -25,7 +25,7 @@ void TextureAtlas::Load()
 	Texture = new Texture2D("Resources/Images/textures.png");
 
 	// Grass
-	BlockTextures[GrassSide].SetTextureAtlasOffset(glm::vec2(0, 0));
+	/*BlockTextures[GrassSide].SetTextureAtlasOffset(glm::vec2(0, 0));
 	BlockTextures[GrassSide].CalculateCoordinates();
 
 	BlockTextures[GrassTop].SetTextureAtlasOffset(glm::vec2(1, 0));
@@ -60,6 +60,9 @@ void TextureAtlas::Load()
 	// Oak leaves
 	BlockTextures[OakLeaves].SetTextureAtlasOffset(glm::ivec2(1, 1));
 	BlockTextures[OakLeaves].CalculateCoordinates();
+
+	BlockTextures[Chest].SetTextureAtlasOffset(glm::ivec2(0, 0));
+	BlockTextures[Chest].CalculateCoordinates();*/
 }
 
 BlockTexture& TextureAtlas::operator[] (int id)

@@ -6,7 +6,6 @@
 
 #include "../../Noise/FastNoise.h"
 #include "ChunkBlock.h"
-#include "BlockEntity.h"
 #include "ChunkIO.h"
 #include "../../Blocks/BlockTypes.h"
 #include "../World.h"
@@ -21,24 +20,36 @@ Chunk::Chunk(glm::ivec2 position)
 	m_WaterMesh.CreateVao();
 
 	m_AdjacentChunksWhenLastRebuilt = GetAdjacentChunks();
-
+	
 	SetPosition(position);
 
 	m_OpaqueMesh.m_Texture = World::m_TextureAtlas.Texture;
 	m_WaterMesh.m_Texture = World::m_TextureAtlas.Texture;
 
-	BlockEntity* chest = new BlockEntity();
-	chest->m_BlockId = BlockIds::Chest;
-	chest->SetLocalPosition(glm::u8vec3(0, 60, 0));
-	chest->m_ChunkPosition = m_Position;
-	
-	m_BlockEntities[Utils::BlockPositionToIndex(glm::u8vec3(0, 60, 0))] = chest;
-
 	// Fill the array with blocks
-	m_Blocks = new ChunkBlock**[Chunk::Width];
+	m_Blocks = new ChunkBlock*[Chunk::BlockCount];
+
+	for (int x = 0; x < Chunk::Width; x++)
+	{
+		for (int y = 0; y < Chunk::Height; y++)
+		{
+			for (int z = 0; z < Chunk::Depth; z++)
+			{
+				uint16_t index = Utils::BlockPositionToIndex(glm::u8vec3(x, y, z));
+				m_Blocks[index] = new ChunkBlock();
+
+				//if (index )
+
+				ChunkBlock* block = m_Blocks[index];
+				block->m_ChunkPosition = m_Position;
+				block->SetLocalPosition(glm::u8vec3(x, y, z));
+				block->m_BlockId = BlockIds::Air;
+			}
+		}
+	}
 
 	// Create the blocks on the x axis
-	for (int x = 0; x < Chunk::Width; x++)
+	/*for (int x = 0; x < Chunk::Width; x++)
 	{
 		m_Blocks[x] = new ChunkBlock*[Chunk::Height]; // Blocks on x reference an array of y blocks 
 
@@ -48,12 +59,15 @@ Chunk::Chunk(glm::ivec2 position)
 
 			for (int z = 0; z < Chunk::Depth; z++) // All blocks are already created. Iterate through each block to set some variables
 			{
+				//m_Blocks[x][y][z] = new ChunkBlock();
 				m_Blocks[x][y][z].m_ChunkPosition = m_Position;
 				m_Blocks[x][y][z].SetLocalPosition(glm::u8vec3(x, y, z));
 				m_Blocks[x][y][z].m_BlockId = BlockIds::Air;
+
+				//std::cout << sizeof(m_Blocks[x][y][z]) << ", ";
 			}
 		}
-	}
+	}*/
 }
 
 void Chunk::Fill(const glm::vec4* colors)
@@ -66,7 +80,7 @@ void Chunk::Fill(const glm::vec4* colors)
 			{
 				ChunkBlock* block = GetBlockAt(glm::vec3(x, y, z));
 				block->m_BlockId = BlockIds::Stone;
-
+				
 				//block->SetEnabled(true);
 			}
 		}
@@ -81,7 +95,7 @@ void Chunk::CreateSphere(const glm::vec4* colors)
 		{
 			for (int x = 0; x < Chunk::Depth; x++)
 			{
-				if (sqrt((float)(x - Chunk::Width / 2) * (x - Chunk::Width / 2) + (y - Chunk::Height / 2) * (y - Chunk::Height / 2) + (z - Chunk::Depth / 2) * (z - Chunk::Depth / 2)) <= Chunk::Width / 2)
+				if (sqrt((float)(x - Chunk::Width / 2)*(x - Chunk::Width / 2) + (y - Chunk::Height / 2)*(y - Chunk::Height / 2) + (z - Chunk::Depth / 2)*(z - Chunk::Depth / 2)) <= Chunk::Width / 2)
 				{
 					ChunkBlock* block = GetBlockAt(glm::vec3(x, y, z));
 					block->m_BlockId = BlockIds::Stone;
@@ -123,7 +137,7 @@ void Chunk::GenerateTerrain()
 			float noise5 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale4, worldPosition.z * scale4, 3)) * 2.0f + 10; // small holes in ground
 			float holesNoise = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * holesScale + 12345, worldPosition.z * holesScale - 12345, 6)); // Holes
 
-			float height = noise1 + (noise2 * noise3) - (noise4)-noise5;
+			float height = noise1 + (noise2 * noise3) - (noise4) - noise5;
 
 			/*float noise1 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale1, worldPosition.z * scale1, 4)) * 3.125f;
 			float noise2 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale2, worldPosition.z * scale2, 3)) * 2.5f;
@@ -223,41 +237,41 @@ void Chunk::GenerateTerrain()
 
 			m_HeightMap[x][z] = (uint8_t)finalHeight;
 
+			
 
-
-		}
-
-		/*if (y < finalHeight)
-		{
-			block->SetEnabled(true);
-
-			if (y < finalHeight - (noise1 * 0.25f))
-				block->m_BlockId = BlockIds::Stone;
-			else
-				block->m_BlockId = BlockIds::Dirt;
-		}
-		else if (y == finalHeight)
-		{
-			block->SetEnabled(true);
-
-			if (!setWater)
-				block->m_BlockId = BlockIds::Grass;
-			else
-				block->m_BlockId = BlockIds::Water;
-		}
-		else if (y > finalHeight)
-		{
-			if (setWater && y <= (waterLevel)) {
-				block->m_BlockId = BlockIds::Water;
-			}
-			else {
-				block->SetEnabled(false);
-				block->m_BlockId = BlockIds::Air;
 			}
 
-		}*/
+				/*if (y < finalHeight)
+				{
+					block->SetEnabled(true);
 
-	}
+					if (y < finalHeight - (noise1 * 0.25f))
+						block->m_BlockId = BlockIds::Stone;
+					else
+						block->m_BlockId = BlockIds::Dirt;
+				}
+				else if (y == finalHeight)
+				{
+					block->SetEnabled(true);
+
+					if (!setWater)
+						block->m_BlockId = BlockIds::Grass;
+					else
+						block->m_BlockId = BlockIds::Water;
+				}
+				else if (y > finalHeight)
+				{
+					if (setWater && y <= (waterLevel)) {
+						block->m_BlockId = BlockIds::Water;
+					}
+					else {
+						block->SetEnabled(false);
+						block->m_BlockId = BlockIds::Air;
+					}
+
+				}*/
+			
+		}
 
 	// Tree generation
 	for (int x = 0; x < Chunk::Width; x++)
@@ -298,7 +312,7 @@ void Chunk::GenerateTerrain()
 							}
 						}
 					}
-
+					
 					if (y == treeTrunk.y + treeHeight - 2) treeRadius -= 1;
 				}
 			}
@@ -335,15 +349,6 @@ void Chunk::RebuildMesh()
 				block->AddBlockFaces();
 			}
 		}
-	}
-
-	// Iterate through all block entities
-	for (auto entry : m_BlockEntities)
-	{
-		BlockEntity* entity = entry.second;
-
-		// Add all the faces on the cube
-		entity->AddBlockFaces();
 	}
 
 	m_OpaqueMesh.SetVertices(m_TempOpaqueMesh.GetVertices());
@@ -387,7 +392,8 @@ void Chunk::Render()
 
 void Chunk::SetBlockAt(glm::ivec3 position, ChunkBlock* newBlock)
 {
-	m_Blocks[position.x][position.y][position.z] = *newBlock;
+	//m_Blocks[position.x][position.y][position.z] = *newBlock;
+	m_Blocks[Utils::BlockPositionToIndex(position)] = newBlock;
 }
 
 void Chunk::SetBlockAt(glm::vec3 position, ChunkBlock* newBlock)
@@ -395,11 +401,12 @@ void Chunk::SetBlockAt(glm::vec3 position, ChunkBlock* newBlock)
 	SetBlockAt((glm::ivec3)position, newBlock);
 }
 
-ChunkBlock*** Chunk::GetAllBlocks() { return m_Blocks; }
+ChunkBlock** Chunk::GetAllBlocks() { return m_Blocks; }
 
 ChunkBlock* Chunk::GetBlockAt(glm::u8vec3 position)
 {
-	return &m_Blocks[position.x][position.y][position.z];
+	//return &m_Blocks[position.x][position.y][position.z];
+	return m_Blocks[Utils::BlockPositionToIndex(position)];
 }
 
 ChunkBlock* Chunk::GetBlockAt(glm::ivec3 position)
@@ -447,7 +454,7 @@ AdjacentChunks Chunk::GetAdjacentChunks()
 Chunk::~Chunk()
 {
 	// Delete the blocks
-	for (int i = 0; i < Width; ++i)
+	/*for (int i = 0; i < Width; ++i)
 	{
 		for (int j = 0; j < Width; ++j)
 		{
@@ -456,5 +463,5 @@ Chunk::~Chunk()
 
 		delete[] m_Blocks[i];
 	}
-	delete[] m_Blocks;
+	delete[] m_Blocks;*/
 }

@@ -87,6 +87,9 @@
     <ClCompile Include="Source\World\Player\Crosshair.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\World\Chunk\BlockEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Noise\FastNoise.h">
@@ -168,6 +171,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\World\Player\Crosshair.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\World\Chunk\BlockEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

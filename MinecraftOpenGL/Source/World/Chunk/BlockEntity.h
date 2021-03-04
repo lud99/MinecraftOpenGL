@@ -14,18 +14,12 @@
 
 class Chunk;
 
-struct BlockFaceData
-{
-	std::vector<Vertex> opaqueVertices;
-	std::vector<Vertex> waterVertices;
-	std::vector<unsigned int> opaqueIndices;
-	std::vector<unsigned int> waterIndices;
-};
+struct BlockFaceData;
 
-class ChunkBlock
+class BlockEntity
 {
 public:
-	ChunkBlock();
+	BlockEntity();
 
 	void AddBlockFace(BlockFace& face);
 
@@ -41,14 +35,14 @@ public:
 
 	Block* GetBlockType();
 
-	~ChunkBlock();
+	~BlockEntity();
 
 private:
-	Chunk* GetChunkAtRelativePosition(glm::i8vec2 offset);
+	//Chunk* GetChunkAtRelativePosition(glm::i8vec2 offset);
 	ChunkBlock* GetBlockAtRelativePosition(glm::u8vec3 offset);
 
-	bool ChunkExistsAtRelativePosition(glm::i8vec3 offset);
-	bool BlockExistsAtRelativePosition(glm::u8vec3 offset);
+	/*bool ChunkExistsAtRelativePosition(glm::i8vec3 offset);
+	bool BlockExistsAtRelativePosition(glm::u8vec3 offset);*/
 
 	bool ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk);
 

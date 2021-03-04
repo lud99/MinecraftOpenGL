@@ -16,6 +16,7 @@
 #include "World/Player/Player.h"
 #include "World/Chunk/ChunkBlock.h"
 #include "World/Chunk/Chunk.h"
+#include "World/Chunk/BlockEntity.h"
 
 void MouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
@@ -34,9 +35,6 @@ int main()
 	std::cout << "sizeof ivec2: " << sizeof(glm::ivec2) << "\n";
 	std::cout << "sizeof uint16: " << sizeof(uint16_t) << "\n";
 	std::cout << "sizeof Chunk: " << sizeof(Chunk) << "\n";
-
-	ChunkBlock* b = new ChunkBlock();
-	b->SetLocalPosition(glm::u8vec3(15, 127, 0));
 
 	GLFWwindow* window;
 

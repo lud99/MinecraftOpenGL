@@ -12,7 +12,8 @@ namespace TextureIds {
 		OakLogSide = 7,
 		OakLogTop = 8,
 		OakLeaves = 9,
+		Chest = 10,
 
-		Count = 10
+		Count = 11
 	};
 }

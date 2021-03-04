@@ -10,6 +10,7 @@
 #include "../World.h"
 #include "../Chunk/Chunk.h"
 #include "../Chunk/ChunkBlock.h"
+#include "../Chunk/BlockEntity.h"
 #include "../../Utils/Raycast.h"
 #include "../../Utils/Utils.h"
 
@@ -279,7 +280,24 @@ void Player::HandleBlockPlacing()
 
 		if (blockToReplace)
 		{
-			blockToReplace->m_BlockId = BlockIds::OakLeaves;
+			//blockToReplace->m_BlockId = BlockIds::OakLeaves;
+
+			BlockEntity* chest = new BlockEntity();
+			chest->m_BlockId = BlockIds::Chest;
+			chest->SetLocalPosition(blockToReplace->GetLocalPosition());
+			chest->m_ChunkPosition = blockToReplace->GetChunk()->GetPosition();
+
+			BlockEntitiesMap& entities = blockToReplace->GetChunk()->m_BlockEntities;
+			uint16_t index = Utils::BlockPositionToIndex(blockToReplace->GetLocalPosition());
+			entities[index] = chest;
+
+			/*ChunkChestBlock* chest = new ChunkChestBlock();
+			chest->m_BlockId = BlockIds::OakLeaves;
+			chest->SetLocalPosition(blockToReplace->GetLocalPosition());
+			chest->m_ChunkPosition = blockToReplace->GetChunk()->GetPosition();
+
+			blockToReplace->GetChunk()->SetBlockAt((glm::ivec3)blockToReplace->GetLocalPosition(), (ChunkBlock*)chest);
+			*/
 			World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, blockToReplace->GetChunk()));
 		}
 

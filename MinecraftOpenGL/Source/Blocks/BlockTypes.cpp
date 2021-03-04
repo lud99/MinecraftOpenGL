@@ -36,6 +36,8 @@ namespace BlockTypes {
 		Blocks[Gravel].SetTexture(TextureIds::Gravel);
 		// Sand
 		Blocks[Sand].SetTexture(TextureIds::Sand);
+		// Chest
+		Blocks[Chest].SetTexture(TextureIds::Chest);
 
 		// Set all the textures for the oak log
 		Blocks[OakLog].faces[Cube::Faces::Left].textureId = TextureIds::OakLogSide;

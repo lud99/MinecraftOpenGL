@@ -98,6 +98,7 @@
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\Win32;$(SolutionDir)Dependencies\glfw-3.3.2.Win32\lib-vc2017;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
+      <LargeAddressAware>true</LargeAddressAware>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -132,6 +133,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\Win32;$(SolutionDir)Dependencies\glfw-3.3.2.Win32\lib-vc2017;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
+      <LargeAddressAware>true</LargeAddressAware>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -156,6 +158,7 @@
   <ItemGroup>
     <ClCompile Include="Source\Graphics\Textures\Cubemap.cpp" />
     <ClCompile Include="Source\Utils\Raycast.cpp" />
+    <ClCompile Include="Source\World\Chunk\BlockEntity.cpp" />
     <ClCompile Include="Source\World\Chunk\ChunkIO.cpp" />
     <ClCompile Include="Source\Graphics\Vertex.cpp" />
     <ClCompile Include="Source\Noise\NoiseGenerator.cpp" />
@@ -184,6 +187,7 @@
     <ClInclude Include="Source\Graphics\Mesh.hpp" />
     <ClInclude Include="Source\Graphics\Textures\Cubemap.h" />
     <ClInclude Include="Source\Utils\Raycast.h" />
+    <ClInclude Include="Source\World\Chunk\BlockEntity.h" />
     <ClInclude Include="Source\World\Chunk\ChunkIO.h" />
     <ClInclude Include="Source\Utils\ThreadPool.h" />
     <ClInclude Include="Source\World\Player\Camera.h" />

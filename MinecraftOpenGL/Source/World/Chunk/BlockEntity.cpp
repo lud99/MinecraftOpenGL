@@ -1,19 +1,21 @@
-#include "ChunkBlock.h"
+#include "BlockEntity.h"
 
 #include <iostream>
 #include <math.h>
 
 #include "Chunk.h"
+#include "ChunkBlock.h"
 #include "../World.h"
 #include "../../Graphics/Mesh.hpp"
 #include "../../Graphics/Textures/TextureAtlas.h"
 
-ChunkBlock::ChunkBlock()
+BlockEntity::BlockEntity()
 {
 }
 
-bool ChunkBlock::ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk)
+bool BlockEntity::ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk)
 {
+	return true;
 	glm::ivec3 blockInAdjacentChunkOffset(0, 0, 0);
 	glm::ivec3 offset(0, 0, 0);
 	glm::u8vec3 localPosition = GetLocalPosition();
@@ -105,7 +107,7 @@ bool ChunkBlock::ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk)
 		return true;
 
 	// Don't render air blocks
-	if (adjacentBlock->m_BlockId == BlockIds::Air)			
+	if (adjacentBlock->m_BlockId == BlockIds::Air)
 		return true;
 
 	if (adjacentBlockType->isTransparent)
@@ -126,13 +128,13 @@ bool ChunkBlock::ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk)
 		return true;
 
 	// If this block is opaque but the adjacent is transparent (ex: stone and leaves)
-	if (GetBlockType()->isOpaque && adjacentBlockType->isTransparent) 
+	if (GetBlockType()->isOpaque && adjacentBlockType->isTransparent)
 		return true;
-	
+
 	return false;
 }
- 
-void ChunkBlock::AddBlockFace(BlockFace& face)
+
+void BlockEntity::AddBlockFace(BlockFace& face)
 {
 	Chunk* chunk = GetChunk();
 	glm::vec3 worldPosition = GetWorldPosition();
@@ -157,7 +159,7 @@ void ChunkBlock::AddBlockFace(BlockFace& face)
 		case Directions::South: lightLevel = 9; break;
 		case Directions::Bottom: lightLevel = 6; break;
 		}
-		
+
 		BlockVertex vertex;
 
 		vertex.position = position;
@@ -174,13 +176,13 @@ void ChunkBlock::AddBlockFace(BlockFace& face)
 	for (int i = 0; i < 6; i++)
 	{
 		if (m_BlockId == BlockIds::Water)
-			waterMesh.AddIndex(BasicVertices::Cube::Indices[i] + (uint16_t) (waterMesh.GetVertices().size() - 4));
+			waterMesh.AddIndex(BasicVertices::Cube::Indices[i] + (uint16_t)(waterMesh.GetVertices().size() - 4));
 		else
-			opaqueMesh.AddIndex(BasicVertices::Cube::Indices[i] + (uint16_t) (opaqueMesh.GetVertices().size() - 4));
+			opaqueMesh.AddIndex(BasicVertices::Cube::Indices[i] + (uint16_t)(opaqueMesh.GetVertices().size() - 4));
 	}
-} 
+}
 
-void ChunkBlock::AddAllBlockFaces()
+void BlockEntity::AddAllBlockFaces()
 {
 	if (m_BlockId == BlockIds::Air) return;
 
@@ -194,7 +196,7 @@ void ChunkBlock::AddAllBlockFaces()
 	AddBlockFace(blockType->faces[Directions::North]);
 }
 
-void ChunkBlock::AddBlockFaces()
+void BlockEntity::AddBlockFaces()
 {
 	if (m_BlockId == BlockIds::Air) return;
 
@@ -220,13 +222,13 @@ void ChunkBlock::AddBlockFaces()
 		AddBlockFace(blockType->faces[Directions::North]);
 }
 
-Chunk* ChunkBlock::GetChunk()
+Chunk* BlockEntity::GetChunk()
 {
 	return World::GetChunkAt(m_ChunkPosition);
 }
 
-const glm::u8vec3 ChunkBlock::GetLocalPosition() 
-{ 
+const glm::u8vec3 BlockEntity::GetLocalPosition()
+{
 	glm::u8vec3 position;
 
 	// Unpack the position
@@ -237,8 +239,8 @@ const glm::u8vec3 ChunkBlock::GetLocalPosition()
 	return position;
 }
 
-void ChunkBlock::SetLocalPosition(glm::u8vec3 position) 
-{ 
+void BlockEntity::SetLocalPosition(glm::u8vec3 position)
+{
 	// X will only ever be between 0 and 15 (4 bits)
 	// Y will only ever be between 0 and 255 (8 bits)
 	// Z will only ever be between 0 and 15 (4 bits)
@@ -248,8 +250,8 @@ void ChunkBlock::SetLocalPosition(glm::u8vec3 position)
 	m_LocalPositionPacked = (m_LocalPositionPacked << 4) | position.z;
 }
 
-const glm::ivec3 ChunkBlock::GetWorldPosition()
-{ 
+const glm::ivec3 BlockEntity::GetWorldPosition()
+{
 	Chunk* chunk = GetChunk();
 
 	glm::ivec2 chunkPosition = GetChunk()->GetWorldPosition();
@@ -257,31 +259,31 @@ const glm::ivec3 ChunkBlock::GetWorldPosition()
 	return (glm::ivec3) GetLocalPosition() + glm::ivec3(chunkPosition.x, 0, chunkPosition.y);
 }
 
-Block* ChunkBlock::GetBlockType() 
-{ 
-	return &BlockTypes::Blocks[m_BlockId]; 
+Block* BlockEntity::GetBlockType()
+{
+	return &BlockTypes::Blocks[m_BlockId];
 }
-
-Chunk* ChunkBlock::GetChunkAtRelativePosition(glm::i8vec2 offset)
+/*
+Chunk* BlockEntity::GetChunkAtRelativePosition(glm::i8vec2 offset)
 {
 	return World::GetChunkAt(m_ChunkPosition + (glm::ivec2) offset);
-}
+}*/
 
-ChunkBlock* ChunkBlock::GetBlockAtRelativePosition(glm::u8vec3 offset)
+ChunkBlock* BlockEntity::GetBlockAtRelativePosition(glm::u8vec3 offset)
 {
 	return GetChunk()->GetBlockAt(GetLocalPosition() + offset);
 }
 
-bool ChunkBlock::ChunkExistsAtRelativePosition(glm::i8vec3 offset)
+/*bool BlockEntity::ChunkExistsAtRelativePosition(glm::i8vec3 offset)
 {
 	return World::ChunkExistsAt(GetWorldPosition() + (glm::ivec3) offset);
 }
 
-bool ChunkBlock::BlockExistsAtRelativePosition(glm::u8vec3 offset)
+bool BlockEntity::BlockExistsAtRelativePosition(glm::u8vec3 offset)
 {
 	return GetChunk()->BlockExistsAt(GetLocalPosition() + offset);
-}
+}*/
 
-ChunkBlock::~ChunkBlock()
+BlockEntity::~BlockEntity()
 {
 }
