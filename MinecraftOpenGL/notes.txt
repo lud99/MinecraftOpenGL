@@ -6,3 +6,7 @@
 
 1.8gb x64
 1.6gb x86
+
+16 chunks, 1gb x64
+16 chunks 24 byte chunkblock, 1.8gb
+16 chunks 20 byte chunkblock, 1.4gb

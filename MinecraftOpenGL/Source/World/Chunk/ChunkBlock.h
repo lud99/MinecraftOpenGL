@@ -27,24 +27,22 @@ class ChunkBlock
 public:
 	ChunkBlock();
 
-	void AddBlockFace(BlockFace& face);
+	void AddBlockFace(Chunk* chunk, BlockFace& face);
 
-	void AddBlockFaces();
+	void AddBlockFaces(Chunk* chunk);
 	void AddAllBlockFaces();
 
-	Chunk* GetChunk();
-
 	const glm::u8vec3 GetLocalPosition();
-	const glm::ivec3 GetWorldPosition();
+	const glm::ivec3 GetWorldPosition(Chunk* chunk);
 
 	void SetLocalPosition(glm::u8vec3 position);
 
 	Block* GetBlockType();
 
-	void Break();
+	void Break(Chunk* chunk);
 
 	// For derived classes
-	void OnBlockClick(int button, int action, int mods);
+	void OnBlockClick(Chunk* chunk, int button, int action, int mods);
 	void OnBlockPlaced();
 	void OnBlockBroken();
 	void OnTick();
@@ -52,20 +50,14 @@ public:
 	~ChunkBlock();
 
 private:
-	Chunk* GetChunkAtRelativePosition(glm::i8vec2 offset);
-	ChunkBlock* GetBlockAtRelativePosition(glm::u8vec3 offset);
-
-	bool ChunkExistsAtRelativePosition(glm::i8vec3 offset);
-	bool BlockExistsAtRelativePosition(glm::u8vec3 offset);
-
-	bool ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk);
+	bool ShouldAddBlockFace(Chunk* chunk, Directions direction, Chunk* adjacentChunk);
 
 public:
 	static const uint8_t Size = 1;
 
 #pragma pack(push, 1) // To disable byte alignment. Could reduce performance
 
-	glm::ivec2 m_ChunkPosition; // 8 bytes
+	//glm::ivec2 m_ChunkPosition; // 8 bytes
 	uint16_t m_LocalPositionPacked = 0; // 2 bytes. pack the 3 component position into 2 bytes instead of 3 to save space
 
 	uint8_t m_BlockId = BlockIds::Air; // 1 byte

@@ -48,7 +48,7 @@ Chunk::Chunk(glm::ivec2 position)
 
 				ChunkBlock& block = m_Blocks[index];
 
-				block.m_ChunkPosition = m_Position;
+				//block.m_ChunkPosition = m_Position;
 				block.SetLocalPosition(glm::u8vec3(x, y, z));
 				block.m_BlockId = BlockIds::Air;
 			}
@@ -111,7 +111,7 @@ void Chunk::GenerateTerrain()
 	{
 		for (int z = 0; z < Chunk::Depth; z++)
 		{
-			glm::vec3 worldPosition = GetBlockAt(glm::vec3(x, 0, z))->GetWorldPosition();
+			glm::vec3 worldPosition = GetBlockAt(glm::vec3(x, 0, z))->GetWorldPosition(this);
 
 			float scale1 = 7.5f, scale2 = 0.25, scale3 = 10.0f, scale4 = 7.0f;
 			float holesScale = 20.0f;
@@ -332,7 +332,7 @@ void Chunk::RebuildMesh()
 				ChunkBlock* block = GetBlockAt(glm::ivec3(x, y, z));
 
 				// Add all the faces on the cube
-				block->AddBlockFaces();
+				block->AddBlockFaces(this);
 			}
 		}
 	}

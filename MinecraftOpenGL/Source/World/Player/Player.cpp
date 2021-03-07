@@ -216,7 +216,7 @@ void Player::HandleBlockBreaking()
 {
 	if (!m_HighlightedBlock) return;
 
-	Chunk* chunk = m_HighlightedBlock->GetChunk();
+	//Chunk* chunk = m_HighlightedBlock->GetChunk();
 
 	/*switch (m_HighlightedBlock->m_BlockId)
 	{
@@ -226,7 +226,7 @@ void Player::HandleBlockBreaking()
 		break;
 			
 	default:*/
-	m_HighlightedBlock->OnBlockClick(0, 0, 0);
+	//m_HighlightedBlock->OnBlockClick(0, 0, 0);
 	//}
 
 }
@@ -286,7 +286,7 @@ void Player::HandleBlockPlacing()
 			uint16_t index = Utils::BlockPositionToIndex(blockToReplace->GetLocalPosition());
 			entities[index] = chest;*/
 
-			ChunkChestBlock* chest = new ChunkChestBlock();
+			/*ChunkChestBlock* chest = new ChunkChestBlock();
 			chest->m_BlockId = BlockIds::OakLeaves;
 			chest->SetLocalPosition(blockToReplace->GetLocalPosition());
 			chest->m_ChunkPosition = blockToReplace->GetChunk()->GetPosition();
@@ -297,7 +297,7 @@ void Player::HandleBlockPlacing()
 			std::cout << b->AMethod() << "\n";
 			std::cout << (b->pos).x << "\n";
 			
-			World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, blockToReplace->GetChunk()));
+			World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, blockToReplace->GetChunk()));*/
 		}
 
 		raycast.Stop();

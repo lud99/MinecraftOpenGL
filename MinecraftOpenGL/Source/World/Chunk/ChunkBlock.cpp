@@ -13,7 +13,7 @@ ChunkBlock::ChunkBlock()
 {
 }
 
-bool ChunkBlock::ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk)
+bool ChunkBlock::ShouldAddBlockFace(Chunk* chunk, Directions direction, Chunk* adjacentChunk)
 {
 	glm::ivec3 blockInAdjacentChunkOffset(0, 0, 0);
 	glm::ivec3 offset(0, 0, 0);
@@ -86,7 +86,7 @@ bool ChunkBlock::ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk)
 			return true;
 
 		// Check if the block adjacent to this one exists
-		adjacentBlock = adjacentChunk->GetBlockAt(((glm::ivec3) localPosition) + blockInAdjacentChunkOffset);
+		adjacentBlock = adjacentChunk->GetBlockAt((glm::ivec3)localPosition + blockInAdjacentChunkOffset);
 		if (!adjacentBlock) return true;
 
 		adjacentBlockType = adjacentBlock->GetBlockType();
@@ -94,7 +94,7 @@ bool ChunkBlock::ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk)
 	// If inside chunk
 	else if (localPosition.y + offset.y >= 0 && localPosition.y + offset.y <= Chunk::Height - 1)
 	{
-		adjacentBlock = GetBlockAtRelativePosition(offset);
+		adjacentBlock = chunk->GetBlockAt((glm::ivec3)GetLocalPosition() + offset);
 		if (!adjacentBlock) return true;
 
 		adjacentBlockType = adjacentBlock->GetBlockType();
@@ -133,10 +133,9 @@ bool ChunkBlock::ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk)
 	return false;
 }
  
-void ChunkBlock::AddBlockFace(BlockFace& face)
+void ChunkBlock::AddBlockFace(Chunk* chunk, BlockFace& face)
 {
-	Chunk* chunk = GetChunk();
-	glm::vec3 worldPosition = GetWorldPosition();
+	glm::vec3 worldPosition = GetWorldPosition(chunk);
 
 	Mesh<PackedVertex>& opaqueMesh = chunk->m_TempOpaqueMesh;
 	Mesh<PackedVertex>& waterMesh = chunk->m_TempWaterMesh;
@@ -187,44 +186,44 @@ void ChunkBlock::AddAllBlockFaces()
 
 	Block* blockType = GetBlockType();
 
-	AddBlockFace(blockType->faces[Directions::West]);
+	/*AddBlockFace(blockType->faces[Directions::West]);
 	AddBlockFace(blockType->faces[Directions::East]);
 	AddBlockFace(blockType->faces[Directions::Top]);
 	AddBlockFace(blockType->faces[Directions::Bottom]);
 	AddBlockFace(blockType->faces[Directions::South]);
-	AddBlockFace(blockType->faces[Directions::North]);
+	AddBlockFace(blockType->faces[Directions::North]);*/
 }
 
-void ChunkBlock::AddBlockFaces()
+void ChunkBlock::AddBlockFaces(Chunk* chunk)
 {
 	if (m_BlockId == BlockIds::Air) return;
 
-	AdjacentChunks adjacentChunks = GetChunk()->GetAdjacentChunks();
+	AdjacentChunks adjacentChunks = chunk->GetAdjacentChunks();
 	Block* blockType = GetBlockType();
 
 	// Check for chunks on the x axis
-	if (ShouldAddBlockFace(Directions::West, adjacentChunks.West))
-		AddBlockFace(blockType->faces[Directions::West]);
-	if (ShouldAddBlockFace(Directions::East, adjacentChunks.East))
-		AddBlockFace(blockType->faces[Directions::East]);
+	if (ShouldAddBlockFace(chunk, Directions::West, adjacentChunks.West))
+		AddBlockFace(chunk, blockType->faces[Directions::West]);
+	if (ShouldAddBlockFace(chunk, Directions::East, adjacentChunks.East))
+		AddBlockFace(chunk, blockType->faces[Directions::East]);
 
 	// Check for chunks on the y axis
-	if (ShouldAddBlockFace(Directions::Top, adjacentChunks.Top))
-		AddBlockFace(blockType->faces[Directions::Top]);
-	if (ShouldAddBlockFace(Directions::Bottom, adjacentChunks.Bottom))
-		AddBlockFace(blockType->faces[Directions::Bottom]);
+	if (ShouldAddBlockFace(chunk, Directions::Top, adjacentChunks.Top))
+		AddBlockFace(chunk, blockType->faces[Directions::Top]);
+	if (ShouldAddBlockFace(chunk, Directions::Bottom, adjacentChunks.Bottom))
+		AddBlockFace(chunk, blockType->faces[Directions::Bottom]);
 
 	// Check for chunks on the z axis
-	if (ShouldAddBlockFace(Directions::South, adjacentChunks.South))
-		AddBlockFace(blockType->faces[Directions::South]);
-	if (ShouldAddBlockFace(Directions::North, adjacentChunks.North))
-		AddBlockFace(blockType->faces[Directions::North]);
+	if (ShouldAddBlockFace(chunk, Directions::South, adjacentChunks.South))
+		AddBlockFace(chunk, blockType->faces[Directions::South]);
+	if (ShouldAddBlockFace(chunk, Directions::North, adjacentChunks.North))
+		AddBlockFace(chunk, blockType->faces[Directions::North]);
 }
 
-Chunk* ChunkBlock::GetChunk()
+/*Chunk* ChunkBlock::GetChunk()
 {
 	return World::GetChunkAt(m_ChunkPosition);
-}
+}*/
 
 const glm::u8vec3 ChunkBlock::GetLocalPosition() 
 { 
@@ -249,11 +248,9 @@ void ChunkBlock::SetLocalPosition(glm::u8vec3 position)
 	m_LocalPositionPacked = (m_LocalPositionPacked << 4) | position.z;
 }
 
-const glm::ivec3 ChunkBlock::GetWorldPosition()
+const glm::ivec3 ChunkBlock::GetWorldPosition(Chunk* chunk)
 { 
-	Chunk* chunk = GetChunk();
-
-	glm::ivec2 chunkPosition = GetChunk()->GetWorldPosition();
+	glm::ivec2 chunkPosition = chunk->GetWorldPosition();
 
 	return (glm::ivec3) GetLocalPosition() + glm::ivec3(chunkPosition.x, 0, chunkPosition.y);
 }
@@ -263,17 +260,17 @@ Block* ChunkBlock::GetBlockType()
 	return &BlockTypes::Blocks[m_BlockId]; 
 }
 
-void ChunkBlock::Break()
+void ChunkBlock::Break(Chunk* chunk)
 {
 	if (m_BlockId == BlockIds::Air) return;
 
 	m_BlockId = BlockIds::Air;
 
-	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, GetChunk()));
+	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, chunk));
 
 	// Rebuild the adjacent chunk if it exists
 	glm::u8vec3 blockPosition = GetLocalPosition();
-	glm::ivec2 chunkPosition = GetChunk()->GetPosition();
+	glm::ivec2 chunkPosition = chunk->GetPosition();
 	std::vector<Chunk*> adjacentChunks;
 
 	// Logic to get the chunk at edge depending on the block position
@@ -291,7 +288,7 @@ void ChunkBlock::Break()
 		World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, adjacentChunks[i]));
 }
 
-Chunk* ChunkBlock::GetChunkAtRelativePosition(glm::i8vec2 offset)
+/*Chunk* ChunkBlock::GetChunkAtRelativePosition(glm::i8vec2 offset)
 {
 	return World::GetChunkAt(m_ChunkPosition + (glm::ivec2) offset);
 }
@@ -309,15 +306,15 @@ bool ChunkBlock::ChunkExistsAtRelativePosition(glm::i8vec3 offset)
 bool ChunkBlock::BlockExistsAtRelativePosition(glm::u8vec3 offset)
 {
 	return GetChunk()->BlockExistsAt(GetLocalPosition() + offset);
-}
+}*/
 
 ChunkBlock::~ChunkBlock()
 {
 }
 
-void ChunkBlock::OnBlockClick(int button, int action, int mods)
+void ChunkBlock::OnBlockClick(Chunk* chunk, int button, int action, int mods)
 {
-	Break();
+	Break(chunk);
 }
 
 void ChunkBlock::OnBlockPlaced() {};
