@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Graphics/Mesh.hpp"
-#include "../Graphics/Shaders/Shader.h"
+#include <Graphics/Mesh.hpp>
+#include <Graphics/Shader.h>
 
 #include <glm/vec3.hpp>
 

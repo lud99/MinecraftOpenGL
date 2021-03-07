@@ -13,6 +13,7 @@
 #include "../../Noise/NoiseGenerator.h"
 #include "../../Utils/ThreadPool.h"
 #include "../../Blocks/BlockIds.h"
+#include "../../Blocks/Blocks.h"
 
 Chunk::Chunk(glm::ivec2 position)
 {
@@ -34,23 +35,22 @@ Chunk::Chunk(glm::ivec2 position)
 	
 	m_BlockEntities[Utils::BlockPositionToIndex(glm::u8vec3(0, 60, 0))] = chest;
 
-	// Fill the array with blocks
-	m_Blocks = new ChunkBlock**[Chunk::Width];
+	m_Blocks = new ChunkBlock[Chunk::BlockCount];
 
-	// Create the blocks on the x axis
+	// Fill the array with blocks
 	for (int x = 0; x < Chunk::Width; x++)
 	{
-		m_Blocks[x] = new ChunkBlock*[Chunk::Height]; // Blocks on x reference an array of y blocks 
-
 		for (int y = 0; y < Chunk::Height; y++)
 		{
-			m_Blocks[x][y] = new ChunkBlock[Chunk::Depth]; // Blocks on xy reference array of z blocks
-
-			for (int z = 0; z < Chunk::Depth; z++) // All blocks are already created. Iterate through each block to set some variables
+			for (int z = 0; z < Chunk::Depth; z++)
 			{
-				m_Blocks[x][y][z].m_ChunkPosition = m_Position;
-				m_Blocks[x][y][z].SetLocalPosition(glm::u8vec3(x, y, z));
-				m_Blocks[x][y][z].m_BlockId = BlockIds::Air;
+				uint16_t index = Utils::BlockPositionToIndex(glm::u8vec3(x, y, z));
+
+				ChunkBlock& block = m_Blocks[index];
+
+				block.m_ChunkPosition = m_Position;
+				block.SetLocalPosition(glm::u8vec3(x, y, z));
+				block.m_BlockId = BlockIds::Air;
 			}
 		}
 	}
@@ -123,7 +123,7 @@ void Chunk::GenerateTerrain()
 			float noise5 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale4, worldPosition.z * scale4, 3)) * 2.0f + 10; // small holes in ground
 			float holesNoise = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * holesScale + 12345, worldPosition.z * holesScale - 12345, 6)); // Holes
 
-			float height = noise1 + (noise2 * noise3) - (noise4)-noise5;
+			float height = noise1 + (noise2 * noise3) - (noise4) - noise5;
 
 			/*float noise1 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale1, worldPosition.z * scale1, 4)) * 3.125f;
 			float noise2 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale2, worldPosition.z * scale2, 3)) * 2.5f;
@@ -387,7 +387,9 @@ void Chunk::Render()
 
 void Chunk::SetBlockAt(glm::ivec3 position, ChunkBlock* newBlock)
 {
-	m_Blocks[position.x][position.y][position.z] = *newBlock;
+	uint16_t index = Utils::BlockPositionToIndex(position);
+
+	m_Blocks[index] = *newBlock;
 }
 
 void Chunk::SetBlockAt(glm::vec3 position, ChunkBlock* newBlock)
@@ -395,11 +397,13 @@ void Chunk::SetBlockAt(glm::vec3 position, ChunkBlock* newBlock)
 	SetBlockAt((glm::ivec3)position, newBlock);
 }
 
-ChunkBlock*** Chunk::GetAllBlocks() { return m_Blocks; }
+ChunkBlock* Chunk::GetAllBlocks() { return m_Blocks; }
 
 ChunkBlock* Chunk::GetBlockAt(glm::u8vec3 position)
 {
-	return &m_Blocks[position.x][position.y][position.z];
+	uint16_t index = Utils::BlockPositionToIndex(position);
+
+	return &m_Blocks[index];
 }
 
 ChunkBlock* Chunk::GetBlockAt(glm::ivec3 position)
@@ -446,15 +450,8 @@ AdjacentChunks Chunk::GetAdjacentChunks()
 
 Chunk::~Chunk()
 {
-	// Delete the blocks
-	for (int i = 0; i < Width; ++i)
-	{
-		for (int j = 0; j < Width; ++j)
-		{
-			delete[] m_Blocks[i][j];
-		}
+	std::cout << "delete chunk\n";
 
-		delete[] m_Blocks[i];
-	}
+	// Delete the blocks
 	delete[] m_Blocks;
 }

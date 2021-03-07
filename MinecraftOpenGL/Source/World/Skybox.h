@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Graphics/Mesh.hpp"
-#include "../Graphics/Shaders/Shader.h"
-#include "../Graphics/Textures/Cubemap.h"
+#include <Graphics/Mesh.hpp>
+#include <Graphics/Shader.h>
+#include <Graphics/Textures/Cubemap.h>
 
 class WorldRenderer;
 

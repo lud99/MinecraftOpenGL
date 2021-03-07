@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../Graphics/Mesh.hpp"
-#include "../../Graphics/Shaders/Shader.h"
+#include <Graphics/Mesh.hpp>
+#include <Graphics/Shader.h>
 
 class WorldRenderer;
 class Texture2D;

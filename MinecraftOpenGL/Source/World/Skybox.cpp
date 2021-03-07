@@ -2,7 +2,7 @@
 
 #include "WorldRenderer.h"
 
-#include "../Graphics/BasicVertices.h"
+#include <Graphics/BasicVertices.h>
 
 #include "World.h"
 

@@ -5,8 +5,8 @@
 
 #include <cstdint>
 
-#include "../../Graphics/Textures/Texture2D.h"
-#include "../../Graphics/Textures/TextureAtlas.h"
+#include <Graphics/Textures/Texture2D.h>
+#include <Graphics/Textures/TextureAtlas.h>
 #include "../World.h"
 #include "../../Blocks/BlockTypes.h"
 
@@ -40,6 +40,14 @@ public:
 	void SetLocalPosition(glm::u8vec3 position);
 
 	Block* GetBlockType();
+
+	void Break();
+
+	// For derived classes
+	void OnBlockClick(int button, int action, int mods);
+	void OnBlockPlaced();
+	void OnBlockBroken();
+	void OnTick();
 
 	~ChunkBlock();
 

@@ -45,3 +45,9 @@ struct BlockVertex : public PackedVertexData
 	unsigned int Pack() override;
 	BlockVertex Unpack(unsigned int packedData);
 };
+
+struct DroppedItemVertex
+{
+	glm::vec3 position;
+	uint8_t texture;
+};

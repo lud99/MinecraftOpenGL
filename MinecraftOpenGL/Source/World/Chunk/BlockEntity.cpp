@@ -6,8 +6,8 @@
 #include "Chunk.h"
 #include "ChunkBlock.h"
 #include "../World.h"
-#include "../../Graphics/Mesh.hpp"
-#include "../../Graphics/Textures/TextureAtlas.h"
+#include <Graphics/Mesh.hpp>
+#include <Graphics/Textures/TextureAtlas.h>
 
 BlockEntity::BlockEntity()
 {

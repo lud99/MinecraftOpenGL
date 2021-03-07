@@ -5,8 +5,9 @@
 
 #include "Chunk.h"
 #include "../World.h"
-#include "../../Graphics/Mesh.hpp"
-#include "../../Graphics/Textures/TextureAtlas.h"
+#include "../../Blocks/BlockTypes.h"
+#include <Graphics/Mesh.hpp>
+#include <Graphics/Textures/TextureAtlas.h>
 
 ChunkBlock::ChunkBlock()
 {
@@ -262,6 +263,34 @@ Block* ChunkBlock::GetBlockType()
 	return &BlockTypes::Blocks[m_BlockId]; 
 }
 
+void ChunkBlock::Break()
+{
+	if (m_BlockId == BlockIds::Air) return;
+
+	m_BlockId = BlockIds::Air;
+
+	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, GetChunk()));
+
+	// Rebuild the adjacent chunk if it exists
+	glm::u8vec3 blockPosition = GetLocalPosition();
+	glm::ivec2 chunkPosition = GetChunk()->GetPosition();
+	std::vector<Chunk*> adjacentChunks;
+
+	// Logic to get the chunk at edge depending on the block position
+	if (blockPosition.x == 0)
+		adjacentChunks.push_back(World::GetChunkAt(chunkPosition + glm::ivec2(-1, 0)));
+	if (blockPosition.x == Chunk::Width - 1)
+		adjacentChunks.push_back(World::GetChunkAt(chunkPosition + glm::ivec2(1, 0)));
+	if (blockPosition.z == 0)
+		adjacentChunks.push_back(World::GetChunkAt(chunkPosition + glm::ivec2(0, -1)));
+	if (blockPosition.z == Chunk::Depth - 1)
+		adjacentChunks.push_back(World::GetChunkAt(chunkPosition + glm::ivec2(0, 1)));
+
+	// Add each of the adjacent chunks to the rebuild queue
+	for (unsigned int i = 0; i < adjacentChunks.size(); i++)
+		World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, adjacentChunks[i]));
+}
+
 Chunk* ChunkBlock::GetChunkAtRelativePosition(glm::i8vec2 offset)
 {
 	return World::GetChunkAt(m_ChunkPosition + (glm::ivec2) offset);
@@ -285,3 +314,12 @@ bool ChunkBlock::BlockExistsAtRelativePosition(glm::u8vec3 offset)
 ChunkBlock::~ChunkBlock()
 {
 }
+
+void ChunkBlock::OnBlockClick(int button, int action, int mods)
+{
+	Break();
+}
+
+void ChunkBlock::OnBlockPlaced() {};
+void ChunkBlock::OnBlockBroken() {};
+void ChunkBlock::OnTick() {};

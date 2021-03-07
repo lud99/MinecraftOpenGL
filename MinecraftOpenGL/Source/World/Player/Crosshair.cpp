@@ -2,8 +2,8 @@
 
 #include "../WorldRenderer.h"
 
-#include "../../Graphics/BasicVertices.h"
-#include "../../Graphics/Textures/Texture2D.h"
+#include <Graphics/BasicVertices.h>
+#include <Graphics/Textures/Texture2D.h>
 
 #include "../World.h"
 

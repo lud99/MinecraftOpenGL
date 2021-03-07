@@ -2,8 +2,8 @@
 
 #include <GL/glewh.h>
 
-#include "../Graphics/Shaders/Shader.h"
-#include "../Graphics/BasicVertices.h"
+#include <Graphics/Shader.h>
+#include <Graphics/BasicVertices.h>
 
 #include "World.h"
 #include "WorldRenderer.h"

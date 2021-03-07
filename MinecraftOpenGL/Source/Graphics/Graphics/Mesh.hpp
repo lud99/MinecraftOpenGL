@@ -160,6 +160,18 @@ inline void Mesh<TextureVertex>::SetVertexAttributes()
 	glVertexAttribPointer(1, 2 /* x, y */, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), (void*) offsetof(TextureVertex, textureCoord) /* Offset */);
 }
 
+template <>
+inline void Mesh<DroppedItemVertex>::SetVertexAttributes()
+{
+	// Position
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3 /* x, y, z */, GL_FLOAT, GL_FALSE, sizeof(DroppedItemVertex), (void*)offsetof(DroppedItemVertex, position));
+
+	// Texture id
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 1 /* int */, GL_FLOAT, GL_FALSE, sizeof(DroppedItemVertex), (void*)offsetof(DroppedItemVertex, texture) /* Offset */);
+}
+
 template <typename VertexT>
 void Mesh<VertexT>::BindVao() { glBindVertexArray(m_Vao); }
 

@@ -6,7 +6,7 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-#include "../../Graphics/Mesh.hpp"
+#include <Graphics/Mesh.hpp>
 
 #include <mutex>
 #include <unordered_map>
@@ -48,7 +48,7 @@ public:
 	void SetBlockAt(glm::ivec3 position, ChunkBlock* newBlock);
 	void SetBlockAt(glm::vec3 position, ChunkBlock* newBlock);
 
-	ChunkBlock*** GetAllBlocks();
+	ChunkBlock* GetAllBlocks();
 	ChunkBlock* GetBlockAt(glm::u8vec3 position);
 	ChunkBlock* GetBlockAt(glm::ivec3 position);
 	ChunkBlock* GetBlockAt(glm::vec3 position);
@@ -78,7 +78,7 @@ public:
 
 	AdjacentChunks m_AdjacentChunksWhenLastRebuilt;
 
-	ChunkBlock*** m_Blocks;
+	ChunkBlock* m_Blocks;
 	BlockEntitiesMap m_BlockEntities;
 
 	uint8_t m_HeightMap[Width][Depth];

@@ -1,9 +1,9 @@
 #include "BlockTypes.h"
 
 #include "BlockIds.h"
-#include "../Graphics/Mesh.hpp"
-#include "../Graphics/BasicVertices.h"
-#include "../Graphics/Textures/TextureIds.h"
+#include <Graphics/Mesh.hpp>
+#include <Graphics/BasicVertices.h>
+#include <Graphics/Textures/TextureIds.h>
 
 namespace BlockTypes {
 	void CreateBlocks()

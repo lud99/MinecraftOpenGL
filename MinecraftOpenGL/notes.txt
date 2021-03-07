@@ -1,2 +1,8 @@
 8 chunks, 530mb x86, sizeof chunk 892
 8 chunks, 720mb x64, sizeof chunk 1336
+
+300mb
+280mb
+
+1.8gb x64
+1.6gb x86

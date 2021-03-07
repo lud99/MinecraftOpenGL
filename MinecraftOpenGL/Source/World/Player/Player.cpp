@@ -7,6 +7,7 @@
 
 #include <glm/gtc/matrix_transform.hpp> 
 
+#include "../Blocks/Blocks.h"
 #include "../World.h"
 #include "../Chunk/Chunk.h"
 #include "../Chunk/ChunkBlock.h"
@@ -15,6 +16,15 @@
 #include "../../Utils/Utils.h"
 
 #include <GLFW/glfw3.h>
+
+class ChunkChestBlock : public ChunkBlock
+{
+public:
+	inline int AMethod() { return 42; }
+
+public:
+	glm::ivec2 pos;
+};
 
 Player::Player()
 {
@@ -208,32 +218,17 @@ void Player::HandleBlockBreaking()
 
 	Chunk* chunk = m_HighlightedBlock->GetChunk();
 
-	// Don't update the block if it's already air
-	if (m_HighlightedBlock->m_BlockId != BlockIds::Air)
+	/*switch (m_HighlightedBlock->m_BlockId)
 	{
-		m_HighlightedBlock->m_BlockId = BlockIds::Air;
+	case BlockIds::Stone: 
+		((Blocks::StoneBlock*) m_HighlightedBlock)->OnBlockClick(0, 0, 0);
 
-		World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, chunk));
+		break;
+			
+	default:*/
+	m_HighlightedBlock->OnBlockClick(0, 0, 0);
+	//}
 
-		// Rebuild the adjacent chunk if it exists
-		glm::u8vec3 blockPosition = m_HighlightedBlock->GetLocalPosition();
-		glm::ivec2 chunkPosition = chunk->GetPosition();
-		std::vector<Chunk*> adjacentChunks;
-
-		// Logic to get the chunk at edge depending on the block position
-		if (blockPosition.x == 0)
-			adjacentChunks.push_back(World::GetChunkAt(chunkPosition + glm::ivec2(-1, 0)));
-		if (blockPosition.x == Chunk::Width - 1)
-			adjacentChunks.push_back(World::GetChunkAt(chunkPosition + glm::ivec2(1, 0)));
-		if (blockPosition.z == 0)
-			adjacentChunks.push_back(World::GetChunkAt(chunkPosition + glm::ivec2(0, -1)));
-		if (blockPosition.z == Chunk::Depth - 1)
-			adjacentChunks.push_back(World::GetChunkAt(chunkPosition + glm::ivec2(0, 1)));
-
-		// Add each of the adjacent chunks to the rebuild queue
-		for (unsigned int i = 0; i < adjacentChunks.size(); i++)
-			World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, adjacentChunks[i]));
-	}
 }
 
 void Player::HandleBlockPlacing()
@@ -282,22 +277,26 @@ void Player::HandleBlockPlacing()
 		{
 			//blockToReplace->m_BlockId = BlockIds::OakLeaves;
 
-			BlockEntity* chest = new BlockEntity();
+			/*BlockEntity* chest = new BlockEntity();
 			chest->m_BlockId = BlockIds::Chest;
 			chest->SetLocalPosition(blockToReplace->GetLocalPosition());
 			chest->m_ChunkPosition = blockToReplace->GetChunk()->GetPosition();
 
 			BlockEntitiesMap& entities = blockToReplace->GetChunk()->m_BlockEntities;
 			uint16_t index = Utils::BlockPositionToIndex(blockToReplace->GetLocalPosition());
-			entities[index] = chest;
+			entities[index] = chest;*/
 
-			/*ChunkChestBlock* chest = new ChunkChestBlock();
+			ChunkChestBlock* chest = new ChunkChestBlock();
 			chest->m_BlockId = BlockIds::OakLeaves;
 			chest->SetLocalPosition(blockToReplace->GetLocalPosition());
 			chest->m_ChunkPosition = blockToReplace->GetChunk()->GetPosition();
 
 			blockToReplace->GetChunk()->SetBlockAt((glm::ivec3)blockToReplace->GetLocalPosition(), (ChunkBlock*)chest);
-			*/
+			ChunkChestBlock* b = (ChunkChestBlock*) blockToReplace->GetChunk()->GetBlockAt(blockToReplace->GetLocalPosition());
+
+			std::cout << b->AMethod() << "\n";
+			std::cout << (b->pos).x << "\n";
+			
 			World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, blockToReplace->GetChunk()));
 		}
 

@@ -8,9 +8,9 @@
 #include <mutex>
 
 #include "../Utils/Utils.h"
-#include "../Graphics/Textures/TextureAtlas.h"
-#include "../Graphics/Mesh.hpp"
-#include "../Graphics/BasicVertices.h"
+#include <Graphics/Textures/TextureAtlas.h>
+#include <Graphics/Mesh.hpp>
+#include <Graphics/BasicVertices.h>
 #include "Collider.h"
 #include "Player/Player.h"
 #include "Chunk/ChunkBuilder.h"
