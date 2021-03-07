@@ -116,7 +116,7 @@ void Chunk::GenerateTerrain()
 			float scale1 = 7.5f, scale2 = 0.25, scale3 = 10.0f, scale4 = 7.0f;
 			float holesScale = 20.0f;
 
-			float noise1 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale1, worldPosition.z * scale1, 4)) * 2.125f;
+			float noise1 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale1, worldPosition.z * scale1, 4)) * 4.125f;
 			float noise2 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale2, worldPosition.z * scale2, 3)) * 2.5f;
 			float noise3 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale2 * 3, worldPosition.z * scale2 * 3, 3)) * 0.5f;
 			float noise4 = noise.Normalize(noise.GetCombinedNoise(worldPosition.x * scale3, worldPosition.z * scale3, 3, 3)) * .025f;
@@ -325,7 +325,7 @@ void Chunk::RebuildMesh()
 
 	for (int x = 0; x < Chunk::Width; x++)
 	{
-		for (int y = 0; y < Chunk::Height / 2; y++)
+		for (int y = 0; y < Chunk::Height; y++)
 		{
 			for (int z = 0; z < Chunk::Depth; z++)
 			{
