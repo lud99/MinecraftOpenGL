@@ -6,6 +6,7 @@
 
 #include "../../Noise/FastNoise.h"
 #include "ChunkBlock.h"
+#include "../DroppedItem.h"
 #include "BlockEntity.h"
 #include "ChunkIO.h"
 #include "../../Blocks/BlockTypes.h"
@@ -21,9 +22,9 @@ Chunk::Chunk(glm::ivec2 position)
 	m_OpaqueMesh.CreateVao();
 	m_WaterMesh.CreateVao();
 
-	m_AdjacentChunksWhenLastRebuilt = GetAdjacentChunks();
-
 	SetPosition(position);
+
+	m_AdjacentChunksWhenLastRebuilt = GetAdjacentChunks();
 
 	m_OpaqueMesh.m_Texture = World::m_TextureAtlas.Texture;
 	m_WaterMesh.m_Texture = World::m_TextureAtlas.Texture;

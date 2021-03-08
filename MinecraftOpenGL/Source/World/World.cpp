@@ -11,8 +11,34 @@
 #include "../Utils/Utils.h"
 #include "../Blocks/BlockTypes.h"
 #include "Collider.h"
-
+#include <mutex>
 #include <GLFW/glfw3.h>
+
+
+/*
+size_t HashFn::operator()(glm::ivec2 const& k) const noexcept
+{
+	// Compute individual hash values for first,
+	// second and third and combine them using XOR
+	// and bit shifting:
+
+	// TODO: x and y can not be larger than 65535 (sizeof uint_16)
+
+	// Convert the positions to be positive
+	/*unsigned int x = vec.x + INT32_MAX;
+	unsigned int y = vec.y + INT32_MAX;
+
+	unsigned int key = x * UINT16_MAX + y;
+
+	return key;*/
+
+	/*return std::hash<int>()(k.x) ^ std::hash<int>()(k.y);
+}
+*/
+/*bool HashFn::operator()(const glm::ivec2& a, const glm::ivec2& b)const
+{
+	return a.x == b.x && a.y == b.y;
+}*/
 
 void World::Init(GLFWwindow* window)
 {
@@ -140,9 +166,11 @@ Chunk* World::CreateChunk(glm::ivec3 position)
 
 Chunk* World::CreateChunk(glm::ivec2 position)
 {
+	std::lock_guard<std::recursive_mutex> lk(m_ChunkMutex);
+
 	m_Chunks[position] = new Chunk(position);
 
-	return m_Chunks[position];
+	return GetChunkAt(position);
 }
 
 Chunk* World::LoadChunk(glm::ivec2 position)
@@ -185,6 +213,7 @@ void World::RemoveChunk(Chunk* chunk)
 
 void World::RemoveChunk(glm::ivec2 position)
 {
+	std::cout << "Remove chunk\n";
 	m_Chunks[position]->~Chunk(); // Call the destructor to free up memory
 
 	m_Chunks.erase(position);
@@ -199,8 +228,9 @@ ChunkMap& World::GetChunks() { return m_Chunks; }
 
 Chunk* World::GetChunkAt(glm::ivec2 position)
 {
-	// Check if it exists
-	if (ChunkExistsAt(position))
+	std::lock_guard<std::recursive_mutex> lk(m_ChunkMutex);
+
+	if (m_Chunks.count(position) == 1)
 		return m_Chunks.at(position);
 
 	return nullptr;
@@ -241,4 +271,4 @@ ChunkBuilder World::m_ChunkBuilder;
 
 unsigned int World::m_ChunkCount = 0;
 
-int Settings::RenderDistance = 16;
+int Settings::RenderDistance = 4;

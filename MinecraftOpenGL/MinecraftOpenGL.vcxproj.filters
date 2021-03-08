@@ -104,9 +104,6 @@
     <ClInclude Include="Source\World\World.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Blocks\Block.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Blocks\BlockIds.h">
       <Filter>Header Files</Filter>
     </ClInclude>

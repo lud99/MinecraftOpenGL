@@ -10,10 +10,12 @@
 
 #include <mutex>
 #include <unordered_map>
+#include <vector>
 
 class ChunkBlock;
 class BlockEntity;
 class ChunkMesh;
+class DroppedItem;
 
 struct ChunkAction;
 class Chunk;
@@ -80,6 +82,7 @@ public:
 
 	ChunkBlock* m_Blocks;
 	BlockEntitiesMap m_BlockEntities;
+	std::vector<DroppedItem*> m_DroppedItems;
 
 	uint8_t m_HeightMap[Width][Depth];
 

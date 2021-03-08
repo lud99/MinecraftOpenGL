@@ -64,12 +64,15 @@ void Player::Update(float deltaTime)
 			raycast.Stop();
 		}
 
-		m_HighlightedBlock = World::GetBlockAt(glm::floor(raycast.m_CurrentPosition));
+		glm::ivec3 flooredRayPos = glm::floor(raycast.m_CurrentPosition);
+
+		m_HighlightedBlock = World::GetBlockAt(flooredRayPos);
+		m_HighlightedBlockChunk = World::GetChunkAt(Utils::WorldPositionToChunkPosition(flooredRayPos));
 
 		if (m_HighlightedBlock && m_HighlightedBlock->m_BlockId != BlockIds::Air)
 		{
 			World::m_LookingAtCollider.m_Enabled = true;
-			World::m_LookingAtCollider.m_Position = glm::floor(raycast.m_CurrentPosition) + 0.5f;
+			World::m_LookingAtCollider.m_Position = (glm::vec3)flooredRayPos + 0.5f;
 
 			m_LookingAtPosition = raycast.m_CurrentPosition;
 
@@ -117,9 +120,9 @@ void Player::HandleMovement(float deltaTime)
 
 	// Increase and decrease movement speed
 	if (m_Input.IsKeyPressed(GLFW_KEY_E))
-		m_MaxVelocity += 0.025f;
+		m_MaxVelocity += 0.025f * 10;
 	if (m_Input.IsKeyPressed(GLFW_KEY_Q))
-		m_MaxVelocity -= 0.025f;
+		m_MaxVelocity -= 0.025f * 10;
 
 	// Lerp movement speed towards 0
 	m_Velocity.x = Utils::Math::Lerp(m_Velocity.x, 0, friction);
@@ -212,26 +215,22 @@ void Player::MouseCallback(GLFWwindow* window, double xpos, double ypos)
 	m_LastMouseY = y;
 }
 
-void Player::HandleBlockBreaking()
+void Player::HandleBlockBreaking(int button, int action, int mods)
 {
 	if (!m_HighlightedBlock) return;
 
-	//Chunk* chunk = m_HighlightedBlock->GetChunk();
+	// Remember to de-aloc when done!
+	Block* block = m_HighlightedBlock->GetBlock(m_HighlightedBlockChunk);
+	
+	if (!block) return;
 
-	/*switch (m_HighlightedBlock->m_BlockId)
-	{
-	case BlockIds::Stone: 
-		((Blocks::StoneBlock*) m_HighlightedBlock)->OnBlockClick(0, 0, 0);
+	bool doDefault = block->OnBlockClick(button, action, mods);
+	if (doDefault) block->Break();
 
-		break;
-			
-	default:*/
-	//m_HighlightedBlock->OnBlockClick(0, 0, 0);
-	//}
-
+	delete block;
 }
 
-void Player::HandleBlockPlacing()
+void Player::HandleBlockPlacing(int button, int action, int mods)
 {
 	Raycast raycast(m_Camera.m_Position, m_Camera.m_Front);
 	raycast.m_MaxDistance = 7.0f;
@@ -308,11 +307,11 @@ void Player::MouseButtonCallback(GLFWwindow* window, int button, int action, int
 {
 	// Block breaking
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-		HandleBlockBreaking();
+		HandleBlockBreaking(button, action, mods);
 
 	// Block placing
 	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
-		HandleBlockPlacing();
+		HandleBlockPlacing(button, action, mods);
 }
    
 void Player::SetWindow(GLFWwindow* window)

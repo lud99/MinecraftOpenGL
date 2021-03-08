@@ -2,12 +2,11 @@
 
 #include "World.h"
 #include "WorldRenderer.h"
-#include "../Blocks/Block.h"
 #include "../Blocks/BlockTypes.h"
 
 DroppedItem::DroppedItem()
 {
-	Block& blockType = BlockTypes::Blocks[m_BlockId];
+	BlockType& blockType = BlockTypes::Blocks[m_BlockId];
 
 	for (int f = 0; f < 6; f++)
 	{

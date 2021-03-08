@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Block.h"
+#include "Blocks.h"
 #include "BlockIds.h"
 
 namespace BlockTypes {
-	extern Block Blocks[BlockIds::Count];
+	extern BlockType Blocks[BlockIds::Count];
 
 	void CreateBlocks();
 }

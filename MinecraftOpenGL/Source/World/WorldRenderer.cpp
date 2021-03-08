@@ -6,6 +6,7 @@
 #include "World.h"
 #include "Skybox.h"
 #include "Chunk/Chunk.h"
+#include "DroppedItem.h"
 
 WorldRenderer::WorldRenderer()
 {
@@ -79,6 +80,12 @@ void WorldRenderer::Render()
 
 	if (World::m_LookingAtCollider.m_Enabled) 
 		World::m_LookingAtCollider.RenderHitbox();
+
+	for (auto const& entry : chunks)
+	{
+		for (unsigned int i = 0; i < entry.second->m_DroppedItems.size(); i++)
+			entry.second->m_DroppedItems[i]->Render();
+	}
 
 	//m_Fog.Render(this);
 

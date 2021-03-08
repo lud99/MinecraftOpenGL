@@ -18,6 +18,13 @@
 class Chunk;
 class WorldRenderer;
 
+/*
+class HashFn
+{
+	std::size_t operator()(glm::ivec2 const& k) const noexcept;
+	//bool operator()(const glm::ivec2& a, const glm::ivec2& b)const;
+};*/
+
 typedef std::unordered_map<glm::ivec2, Chunk*> ChunkMap;
 
 enum Directions {
@@ -73,7 +80,7 @@ namespace World
 
 		Player m_Player;
 
-		std::mutex m_ChunkMutex;
+		std::recursive_mutex m_ChunkMutex;
 	}
 };
 

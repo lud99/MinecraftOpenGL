@@ -73,15 +73,10 @@ bool ChunkBlock::ShouldAddBlockFace(Chunk* chunk, Directions direction, Chunk* a
 	}
 
 	ChunkBlock* adjacentBlock = nullptr;
-	Block* adjacentBlockType = nullptr;
+	BlockType* adjacentBlockType = nullptr;
 
 	if (isAtChunkBorder)
 	{
-		// TODO: Might be neqqessary
-		// Because chunks don't stack vertically, nothing can occlude the top or bottom blocks
-		//if (direction == Bottom || direction == Top)
-			//return true;
-
 		if (!adjacentChunk)
 			return true;
 
@@ -111,6 +106,10 @@ bool ChunkBlock::ShouldAddBlockFace(Chunk* chunk, Directions direction, Chunk* a
 
 	if (adjacentBlockType->isTransparent)
 		return true;
+
+	// Because chunks don't stack vertically, nothing can occlude the top or bottom blocks
+	//if (direction == Bottom || direction == Top)
+		//return true;
 
 	// Render all sides of fully transparent blocks
 	if (!adjacentBlockType->isOpaque && GetBlockType()->isTransparent)
@@ -184,7 +183,7 @@ void ChunkBlock::AddAllBlockFaces()
 {
 	if (m_BlockId == BlockIds::Air) return;
 
-	Block* blockType = GetBlockType();
+	BlockType* blockType = GetBlockType();
 
 	/*AddBlockFace(blockType->faces[Directions::West]);
 	AddBlockFace(blockType->faces[Directions::East]);
@@ -199,7 +198,7 @@ void ChunkBlock::AddBlockFaces(Chunk* chunk)
 	if (m_BlockId == BlockIds::Air) return;
 
 	AdjacentChunks adjacentChunks = chunk->GetAdjacentChunks();
-	Block* blockType = GetBlockType();
+	BlockType* blockType = GetBlockType();
 
 	// Check for chunks on the x axis
 	if (ShouldAddBlockFace(chunk, Directions::West, adjacentChunks.West))
@@ -255,9 +254,52 @@ const glm::ivec3 ChunkBlock::GetWorldPosition(Chunk* chunk)
 	return (glm::ivec3) GetLocalPosition() + glm::ivec3(chunkPosition.x, 0, chunkPosition.y);
 }
 
-Block* ChunkBlock::GetBlockType() 
+BlockType* ChunkBlock::GetBlockType() 
 { 
 	return &BlockTypes::Blocks[m_BlockId]; 
+}
+
+/**
+* Gets a block instance corresponding to the correct block type. 
+* Remember to deallocate when done!
+**/
+Block* ChunkBlock::GetBlock(Chunk* chunk)
+{
+	// Create a new instance with the data from this block
+	Block* block = nullptr;
+
+	switch (m_BlockId)
+	{
+	case Air:
+		break;
+	case Grass:
+		break;
+	case Dirt:
+		block = new Blocks::DirtBlock(chunk, this);
+		break;
+	case Stone:
+		block = new Blocks::StoneBlock(chunk, this);
+		break;
+	case Water:
+		break;
+	case Gravel:
+		break;
+	case Sand:
+		break;
+	case OakLog:
+		break;
+	case OakLeaves:
+		break;
+	case Chest:
+		break;
+	case Count:
+		break;
+	
+	default:
+		break;
+	}
+
+	return block;
 }
 
 void ChunkBlock::Break(Chunk* chunk)

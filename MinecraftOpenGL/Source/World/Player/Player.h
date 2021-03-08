@@ -7,6 +7,7 @@
 #include "Camera.h"
 #include "Crosshair.h"
 
+class Chunk;
 class ChunkBlock;
 struct GLFWwindow;
 
@@ -33,8 +34,8 @@ public:
 private:
 	void HandleMovement(float deltaTime);
 	void HandleCollision(float deltaTime);
-	void HandleBlockBreaking();
-	void HandleBlockPlacing();
+	void HandleBlockBreaking(int button, int action, int mods);
+	void HandleBlockPlacing(int button, int action, int mods);
 
 public:
 	glm::vec3 m_Position = glm::vec3(0.0f, 70.0f, 0.0f);
@@ -49,6 +50,7 @@ private:
 	Camera m_Camera;
 
 	ChunkBlock* m_HighlightedBlock = nullptr;
+	Chunk* m_HighlightedBlockChunk = nullptr;
 
 	glm::vec3 m_Velocity;
 	float m_MovementSpeed = 0.0f;

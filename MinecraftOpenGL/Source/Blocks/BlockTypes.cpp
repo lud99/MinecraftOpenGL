@@ -13,7 +13,7 @@ namespace BlockTypes {
 		for (int i = 0; i < Count; i++) {
 			Blocks[i].id = i;
 			
-			for (int j = 0; j < Block::facesCount; j++) {
+			for (int j = 0; j < BlockType::facesCount; j++) {
 				Blocks[i].faces[j].positions = Cube::GetFace(j);
 				Blocks[i].faces[j].direction = j;
 			}
@@ -62,4 +62,4 @@ namespace BlockTypes {
 	}
 }
 
-Block BlockTypes::Blocks[Count];
+BlockType BlockTypes::Blocks[Count];

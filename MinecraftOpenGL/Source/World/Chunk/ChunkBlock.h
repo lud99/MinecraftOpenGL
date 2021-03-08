@@ -37,7 +37,8 @@ public:
 
 	void SetLocalPosition(glm::u8vec3 position);
 
-	Block* GetBlockType();
+	BlockType* GetBlockType();
+	Block* GetBlock(Chunk* chunk);
 
 	void Break(Chunk* chunk);
 

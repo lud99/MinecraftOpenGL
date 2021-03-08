@@ -74,7 +74,7 @@ bool BlockEntity::ShouldAddBlockFace(Directions direction, Chunk* adjacentChunk)
 	}
 
 	ChunkBlock* adjacentBlock = nullptr;
-	Block* adjacentBlockType = nullptr;
+	BlockType* adjacentBlockType = nullptr;
 
 	if (isAtChunkBorder)
 	{
@@ -186,7 +186,7 @@ void BlockEntity::AddAllBlockFaces()
 {
 	if (m_BlockId == BlockIds::Air) return;
 
-	Block* blockType = GetBlockType();
+	BlockType* blockType = GetBlockType();
 
 	AddBlockFace(blockType->faces[Directions::West]);
 	AddBlockFace(blockType->faces[Directions::East]);
@@ -201,7 +201,7 @@ void BlockEntity::AddBlockFaces()
 	if (m_BlockId == BlockIds::Air) return;
 
 	AdjacentChunks adjacentChunks = GetChunk()->GetAdjacentChunks();
-	Block* blockType = GetBlockType();
+	BlockType* blockType = GetBlockType();
 
 	// Check for chunks on the x axis
 	if (ShouldAddBlockFace(Directions::West, adjacentChunks.West))
@@ -259,7 +259,7 @@ const glm::ivec3 BlockEntity::GetWorldPosition()
 	return (glm::ivec3) GetLocalPosition() + glm::ivec3(chunkPosition.x, 0, chunkPosition.y);
 }
 
-Block* BlockEntity::GetBlockType()
+BlockType* BlockEntity::GetBlockType()
 {
 	return &BlockTypes::Blocks[m_BlockId];
 }

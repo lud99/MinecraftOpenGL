@@ -189,7 +189,6 @@
     <ClCompile Include="Source\World\WorldRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Blocks\Blocks.h" />
     <ClInclude Include="Source\Graphics\Graphics\BasicVertices.h" />
     <ClInclude Include="Source\Graphics\Graphics\Mesh.hpp" />
     <ClInclude Include="Source\Graphics\Graphics\Shader.h" />
@@ -210,7 +209,7 @@
     <ClInclude Include="Source\World\Chunk\ChunkBuilder.h" />
     <ClInclude Include="Source\World\Player\Crosshair.h" />
     <ClInclude Include="Source\World\Player\Player.h" />
-    <ClInclude Include="Source\Blocks\Block.h" />
+    <ClInclude Include="Source\Blocks\Blocks.h" />
     <ClInclude Include="Source\Blocks\BlockIds.h" />
     <ClInclude Include="Source\Blocks\BlockTypes.h" />
     <ClInclude Include="Source\World\Chunk\ChunkBlock.h" />
