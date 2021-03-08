@@ -77,7 +77,7 @@ bool ChunkBlock::ShouldAddBlockFace(Chunk* chunk, Directions direction, Chunk* a
 
 	if (isAtChunkBorder)
 	{
-		if (!adjacentChunk)
+		if (!adjacentChunk || !adjacentChunk->m_IsInitialized)
 			return true;
 
 		// Check if the block adjacent to this one exists

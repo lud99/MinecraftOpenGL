@@ -1,11 +1,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define GLM_ENABLE_EXPERIMENTAL // glm::vec3 hash for maps
 
-/*
-bool (glm::ivec2)::operator== (const glm::ivec2& v1, const glm::ivec2& v2) {
-	return v1.x == v2.x && v1.y == v2.y;
-}*/
-
 #include <GL/glewh.h>
 #include <GLFW/glfw3.h>
 

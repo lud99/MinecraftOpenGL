@@ -36,6 +36,9 @@ class Chunk
 {
 public:
 	Chunk(glm::ivec2 position);
+	
+	void Init();
+	void CreateGenerateAndBuild(ChunkAction* nextAction = nullptr);
 
 	void RebuildMesh();
 	void RebuildMeshThreaded(ChunkAction* nextAction = nullptr);
@@ -72,6 +75,7 @@ public:
 
 	static const int BlockCount = Width * Height * Depth;
 
+	bool m_IsInitialized = false;
 	bool m_HasGenerated = false;
 	bool m_IsGenerating = false;
 	bool m_ShouldRebuild = false;

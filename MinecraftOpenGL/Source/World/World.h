@@ -45,8 +45,9 @@ namespace World
 	void HandleCreatingNewChunks();
 	void UnloadChunksOutsideRenderDistance();
 
+	Chunk* CreateEmptyChunk(glm::ivec2 position);
 	Chunk* CreateChunk(glm::ivec2 position);
-	Chunk* CreateChunk(glm::ivec3 position);
+	Chunk* GenerateNewChunkThreaded(glm::ivec2 position, ChunkAction* nextAction = nullptr);
 
 	Chunk* LoadChunk(glm::ivec2 position);
 
@@ -56,11 +57,11 @@ namespace World
 
 	Chunk* GetChunkAt(glm::ivec2 position);
 	Chunk* GetChunkAt(glm::ivec3 position);
+	void SetChunkAt(Chunk* chunk);
 
 	ChunkMap& GetChunks();
 
 	bool ChunkExistsAt(glm::ivec2 position);
-	bool ChunkExistsAt(glm::ivec3 position);
 
 	ChunkBlock* GetBlockAt(glm::ivec3 position);
 	ChunkBlock* GetBlockAt(glm::vec3 position);

@@ -17,6 +17,8 @@ typedef struct ChunkAction ChunkAction;
 struct ChunkAction
 {
 	enum class ActionType {
+		Create,
+		CreateGenerateAndBuild,
 		Rebuild,
 		RebuildAdjacentChunks,
 		Generate,

@@ -95,11 +95,23 @@ void ThreadPool::DoWork()
 
 			action = m_WorkQueue.front();
 			m_WorkQueue.pop_front();
+
+			//std::cout << "Threadpool queue length: " << m_WorkQueue.size() << "\n";
 		};
 
 		// Perform the requested action
 		switch (action.type)
 		{
+		case ChunkAction::ActionType::Create:
+			action.chunk->Init();
+
+			break;
+		case ChunkAction::ActionType::CreateGenerateAndBuild:
+			action.chunk->Init();
+			action.chunk->GenerateTerrain();
+			action.chunk->RebuildMesh();
+
+			break;
 		case ChunkAction::ActionType::Rebuild:
 			
 			action.chunk->RebuildMesh();

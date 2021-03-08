@@ -18,22 +18,21 @@
 
 Chunk::Chunk(glm::ivec2 position)
 {
-	// Generate vertex array objects
-	m_OpaqueMesh.CreateVao();
-	m_WaterMesh.CreateVao();
-
 	SetPosition(position);
 
 	m_AdjacentChunksWhenLastRebuilt = GetAdjacentChunks();
 
 	m_OpaqueMesh.m_Texture = World::m_TextureAtlas.Texture;
 	m_WaterMesh.m_Texture = World::m_TextureAtlas.Texture;
+}
 
+void Chunk::Init()
+{
 	BlockEntity* chest = new BlockEntity();
 	chest->m_BlockId = BlockIds::Chest;
 	chest->SetLocalPosition(glm::u8vec3(0, 60, 0));
 	chest->m_ChunkPosition = m_Position;
-	
+
 	m_BlockEntities[Utils::BlockPositionToIndex(glm::u8vec3(0, 60, 0))] = chest;
 
 	m_Blocks = new ChunkBlock[Chunk::BlockCount];
@@ -55,6 +54,13 @@ Chunk::Chunk(glm::ivec2 position)
 			}
 		}
 	}
+
+	m_IsInitialized = true;
+}
+
+void Chunk::CreateGenerateAndBuild(ChunkAction* nextAction)
+{
+	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::CreateGenerateAndBuild, this, nextAction));
 }
 
 void Chunk::Fill(const glm::vec4* colors)
@@ -317,6 +323,9 @@ void Chunk::GenerateTerrain()
 
 void Chunk::RebuildMesh()
 {
+	if (!m_IsInitialized) std::cout << "Not int\n";
+	if (!m_IsInitialized) return;
+
 	m_IsRebuilding = true;
 
 	m_MeshMutex.lock();
@@ -368,6 +377,9 @@ void Chunk::RebuildMesh()
 
 void Chunk::RebuildMeshThreaded(ChunkAction* nextAction)
 {
+	if (!m_IsInitialized) std::cout << "Not int\n";
+	if (!m_IsInitialized) return;
+
 	m_IsRebuilding = true;
 
 	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, this, nextAction));
@@ -375,6 +387,8 @@ void Chunk::RebuildMeshThreaded(ChunkAction* nextAction)
 
 void Chunk::GenerateTerrainThreaded(ChunkAction* nextAction)
 {
+	//if (!m_IsInitialized) return;
+
 	m_IsGenerating = true;
 
 	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Generate, this, nextAction));

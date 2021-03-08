@@ -42,6 +42,11 @@ void ChunkBuilder::ProcessQueue()
 			//ChunkIO::WriteFile("test.txt", action.chunk);
 
 			break;
+		case ChunkAction::ActionType::CreateGenerateAndBuild:
+			action.chunk->m_OpaqueMesh.Update();
+			action.chunk->m_WaterMesh.Update();
+
+			break;
 		case ChunkAction::ActionType::RebuildAdjacentChunks:
 			action.chunk->m_OpaqueMesh.Update();
 			action.chunk->m_WaterMesh.Update();

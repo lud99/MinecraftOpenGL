@@ -7,32 +7,6 @@
 #include <algorithm>
 #include <iostream>
 
-/*struct ChunkPosition
-{
-	ChunkPosition(const ChunkPosition&) = default;
-	ChunkPosition& operator=(const ChunkPosition&) = default;
-
-	ChunkPosition();
-	ChunkPosition(uint32_t x, uint32_t z);
-	ChunkPosition(glm::ivec2 vec);
-
-	int32_t x;
-	int32_t z;
-
-	bool operator==(const ChunkPosition& other) const;
-
-	~ChunkPosition();
-};
-
-namespace std
-{
-	template<>
-	struct hash<ChunkPosition>
-	{
-		std::size_t operator()(ChunkPosition const& k) const noexcept;
-	};
-}*/
-
 namespace Utils
 {
 	int to1D(glm::vec3& position, int width, int height);
