@@ -302,63 +302,6 @@ Block* ChunkBlock::GetBlock(Chunk* chunk)
 	return block;
 }
 
-void ChunkBlock::Break(Chunk* chunk)
-{
-	if (m_BlockId == BlockIds::Air) return;
-
-	m_BlockId = BlockIds::Air;
-
-	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, chunk));
-
-	// Rebuild the adjacent chunk if it exists
-	glm::u8vec3 blockPosition = GetLocalPosition();
-	glm::ivec2 chunkPosition = chunk->GetPosition();
-	std::vector<Chunk*> adjacentChunks;
-
-	// Logic to get the chunk at edge depending on the block position
-	if (blockPosition.x == 0)
-		adjacentChunks.push_back(World::GetChunkAt(chunkPosition + glm::ivec2(-1, 0)));
-	if (blockPosition.x == Chunk::Width - 1)
-		adjacentChunks.push_back(World::GetChunkAt(chunkPosition + glm::ivec2(1, 0)));
-	if (blockPosition.z == 0)
-		adjacentChunks.push_back(World::GetChunkAt(chunkPosition + glm::ivec2(0, -1)));
-	if (blockPosition.z == Chunk::Depth - 1)
-		adjacentChunks.push_back(World::GetChunkAt(chunkPosition + glm::ivec2(0, 1)));
-
-	// Add each of the adjacent chunks to the rebuild queue
-	for (unsigned int i = 0; i < adjacentChunks.size(); i++)
-		World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, adjacentChunks[i]));
-}
-
-/*Chunk* ChunkBlock::GetChunkAtRelativePosition(glm::i8vec2 offset)
-{
-	return World::GetChunkAt(m_ChunkPosition + (glm::ivec2) offset);
-}
-
-ChunkBlock* ChunkBlock::GetBlockAtRelativePosition(glm::u8vec3 offset)
-{
-	return GetChunk()->GetBlockAt(GetLocalPosition() + offset);
-}
-
-bool ChunkBlock::ChunkExistsAtRelativePosition(glm::i8vec3 offset)
-{
-	return World::ChunkExistsAt(GetWorldPosition() + (glm::ivec3) offset);
-}
-
-bool ChunkBlock::BlockExistsAtRelativePosition(glm::u8vec3 offset)
-{
-	return GetChunk()->BlockExistsAt(GetLocalPosition() + offset);
-}*/
-
 ChunkBlock::~ChunkBlock()
 {
 }
-
-void ChunkBlock::OnBlockClick(Chunk* chunk, int button, int action, int mods)
-{
-	Break(chunk);
-}
-
-void ChunkBlock::OnBlockPlaced() {};
-void ChunkBlock::OnBlockBroken() {};
-void ChunkBlock::OnTick() {};

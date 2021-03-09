@@ -52,6 +52,25 @@ namespace BlockTypes {
 		Blocks[OakLeaves].isTransparent = true;
 		Blocks[OakLeaves].isOpaque = false;
 
+		// Door
+		Blocks[DoorBottom].faces[Cube::Faces::Left].textureId = -1;
+		Blocks[DoorBottom].faces[Cube::Faces::Right].textureId = -1; 
+		Blocks[DoorBottom].faces[Cube::Faces::Top].textureId = -1; 
+		Blocks[DoorBottom].faces[Cube::Faces::Bottom].textureId = -1; 
+		Blocks[DoorBottom].faces[Cube::Faces::Front].textureId = TextureIds::DoorBottom; 
+		Blocks[DoorBottom].faces[Cube::Faces::Back].textureId = -1;
+		Blocks[DoorBottom].isTransparent = true;
+		Blocks[DoorBottom].isOpaque = true;
+
+		Blocks[DoorTop].faces[Cube::Faces::Left].textureId = -1;
+		Blocks[DoorTop].faces[Cube::Faces::Right].textureId = -1;
+		Blocks[DoorTop].faces[Cube::Faces::Top].textureId = -1;
+		Blocks[DoorTop].faces[Cube::Faces::Bottom].textureId = -1;
+		Blocks[DoorTop].faces[Cube::Faces::Front].textureId = TextureIds::DoorTop;
+		Blocks[DoorTop].faces[Cube::Faces::Back].textureId = -1;
+		Blocks[DoorTop].isTransparent = true;
+		Blocks[DoorTop].isOpaque = true;
+
 		// Set all the textures for the grass block
 		Blocks[Grass].faces[Cube::Faces::Left].textureId = TextureIds::GrassSide;
 		Blocks[Grass].faces[Cube::Faces::Right].textureId = TextureIds::GrassSide;

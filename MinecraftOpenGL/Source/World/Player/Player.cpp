@@ -17,15 +17,6 @@
 
 #include <GLFW/glfw3.h>
 
-class ChunkChestBlock : public ChunkBlock
-{
-public:
-	inline int AMethod() { return 42; }
-
-public:
-	glm::ivec2 pos;
-};
-
 Player::Player()
 {
 }
@@ -66,15 +57,28 @@ void Player::Update(float deltaTime)
 
 		glm::ivec3 flooredRayPos = glm::floor(raycast.m_CurrentPosition);
 
-		m_HighlightedBlock = World::GetBlockAt(flooredRayPos);
-		m_HighlightedBlockChunk = World::GetChunkAt(Utils::WorldPositionToChunkPosition(flooredRayPos));
+		ChunkBlock* highligtedBlock = World::GetBlockAt(flooredRayPos);
+		Chunk* highlightedChunk = World::GetChunkAt(Utils::WorldPositionToChunkPosition(flooredRayPos));
 
-		if (m_HighlightedBlock && m_HighlightedBlock->m_BlockId != BlockIds::Air)
+		if (highligtedBlock && highligtedBlock->m_BlockId != BlockIds::Air)
 		{
-			World::m_LookingAtCollider.m_Enabled = true;
-			World::m_LookingAtCollider.m_Position = (glm::vec3)flooredRayPos + 0.5f;
+			if (m_HighlightedBlock == nullptr)
+				m_HighlightedBlock = highligtedBlock;
 
-			m_LookingAtPosition = raycast.m_CurrentPosition;
+			if (highligtedBlock != m_HighlightedBlock)
+			{
+				std::cout << "New highlighted block\n";
+
+				//m_PrevHighlightedBlock = m_HighlightedBlock;
+
+				m_HighlightedBlock = highligtedBlock;
+				m_HighlightedBlockChunk = highlightedChunk;
+
+				World::m_LookingAtCollider.m_Enabled = true;
+				World::m_LookingAtCollider.m_Position = (glm::vec3)flooredRayPos + 0.5f;
+
+				m_LookingAtPosition = raycast.m_CurrentPosition;
+			}
 
 			raycast.Stop();
 		}
@@ -217,21 +221,49 @@ void Player::MouseCallback(GLFWwindow* window, double xpos, double ypos)
 
 void Player::HandleBlockBreaking(int button, int action, int mods)
 {
-	if (!m_HighlightedBlock) return;
+	if (!m_HighlightedBlock)
+	{
+		m_BlockBreakProgress = 0.0f;
 
-	// Remember to de-aloc when done!
-	Block* block = m_HighlightedBlock->GetBlock(m_HighlightedBlockChunk);
-	
-	if (!block) return;
+		return;
+	}
 
-	bool doDefault = block->OnBlockClick(button, action, mods);
-	if (doDefault) block->Break();
+	// Check if the highlighted block is different
+	if (m_HighlightedBlock != m_PrevHighlightedBlock)
+	{
+		m_BlockBreakProgress = 0.0f;
+	}
 
-	delete block;
+	m_BlockBreakProgress += 0.25f;
+
+	std::cout << "Progress: " << m_BlockBreakProgress << "\n";
+
+	if (m_BlockBreakProgress >= 1.0f)
+	{
+		m_BlockBreakProgress = 0.0f;
+
+		// Remember to de-aloc when done!
+		Block* block = m_HighlightedBlock->GetBlock(m_HighlightedBlockChunk);
+
+		if (!block) return;
+
+		bool doDefault = block->OnBlockClick(button, action, mods);
+		if (doDefault) block->Break();
+
+		delete block;
+	}
+
+	m_PrevHighlightedBlock = m_HighlightedBlock;
 }
 
 void Player::HandleBlockPlacing(int button, int action, int mods)
 {
+	m_HighlightedBlock->m_BlockId = BlockIds::DoorBottom;
+	m_HighlightedBlockChunk->GetBlockAt(m_HighlightedBlock->GetLocalPosition() + glm::u8vec3(0, 1, 0))->m_BlockId = BlockIds::DoorTop;
+	m_HighlightedBlockChunk->SetDirty(true);
+
+	return;
+
 	Raycast raycast(m_Camera.m_Position, m_Camera.m_Front);
 	raycast.m_MaxDistance = 7.0f;
 

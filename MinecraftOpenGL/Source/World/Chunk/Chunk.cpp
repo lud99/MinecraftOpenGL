@@ -58,11 +58,6 @@ void Chunk::Init()
 	m_IsInitialized = true;
 }
 
-void Chunk::CreateGenerateAndBuild(ChunkAction* nextAction)
-{
-	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::CreateGenerateAndBuild, this, nextAction));
-}
-
 void Chunk::Fill(const glm::vec4* colors)
 {
 	for (int x = 0; x < Width; x++)
@@ -406,6 +401,14 @@ void Chunk::GenerateTerrainThreaded(ChunkAction* nextAction)
 	m_IsGenerating = true;
 
 	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Generate, this, nextAction));
+}
+
+void Chunk::CreateGenerateAndBuild(ChunkAction* nextAction)
+{
+	m_IsGenerating = true;
+	m_IsRebuilding = true;
+
+	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::CreateGenerateAndBuild, this, nextAction));
 }
 
 void Chunk::Render()

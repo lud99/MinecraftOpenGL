@@ -28,9 +28,9 @@ public:
 	ChunkBlock();
 
 	void AddBlockFace(Chunk* chunk, BlockFace& face);
-
 	void AddBlockFaces(Chunk* chunk);
 	void AddAllBlockFaces();
+	bool ShouldAddBlockFace(Chunk* chunk, Directions direction, Chunk* adjacentChunk);
 
 	const glm::u8vec3 GetLocalPosition();
 	const glm::ivec3 GetWorldPosition(Chunk* chunk);
@@ -40,18 +40,7 @@ public:
 	BlockType* GetBlockType();
 	Block* GetBlock(Chunk* chunk);
 
-	void Break(Chunk* chunk);
-
-	// For derived classes
-	void OnBlockClick(Chunk* chunk, int button, int action, int mods);
-	void OnBlockPlaced();
-	void OnBlockBroken();
-	void OnTick();
-
 	~ChunkBlock();
-
-private:
-	bool ShouldAddBlockFace(Chunk* chunk, Directions direction, Chunk* adjacentChunk);
 
 public:
 	static const uint8_t Size = 1;

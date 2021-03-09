@@ -29,7 +29,7 @@ void Block::Break()
 
 	m_ChunkBlock->m_BlockId = BlockIds::Air;
 
-	m_Chunk->RebuildMeshThreaded();
+	m_Chunk->SetDirty(true);
 
 	// Rebuild the adjacent chunk if it exists
 	glm::ivec2 chunkPosition = m_Chunk->GetPosition();
@@ -47,7 +47,7 @@ void Block::Break()
 
 	// Add each of the adjacent chunks to the rebuild queue
 	for (unsigned int i = 0; i < adjacentChunks.size(); i++)
-		adjacentChunks[i]->RebuildMeshThreaded();
+		adjacentChunks[i]->SetDirty(true);
 }
 
 bool Blocks::StoneBlock::OnBlockClick(int button, int action, int mods)

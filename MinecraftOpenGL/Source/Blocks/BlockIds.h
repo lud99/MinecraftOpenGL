@@ -11,6 +11,8 @@ enum BlockIds {
 	OakLog = 7,
 	OakLeaves = 8,
 	Chest = 9,
+	DoorBottom = 10,
+	DoorTop = 11,
 
-	Count = 10
+	Count = 12
 };

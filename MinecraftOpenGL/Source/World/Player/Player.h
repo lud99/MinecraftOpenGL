@@ -50,6 +50,7 @@ private:
 	Camera m_Camera;
 
 	ChunkBlock* m_HighlightedBlock = nullptr;
+	ChunkBlock* m_PrevHighlightedBlock = nullptr;
 	Chunk* m_HighlightedBlockChunk = nullptr;
 
 	glm::vec3 m_Velocity;
@@ -59,6 +60,8 @@ private:
 
 	float m_EyeOffset = 1.62f;
 	float m_Height = 1.85f;
+
+	float m_BlockBreakProgress = 0.0f;
 
 	// Mouse variables
 	// TODO: seperate class
