@@ -26,7 +26,7 @@ void MouseCallback(GLFWwindow* window, double xpos, double ypos)
 
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
-	World::GetPlayer().MouseButtonCallback(window, button, action, mods);
+	InputHandler::UpdateMouseButtonState(button, action, mods);
 }
 
 void test()
@@ -82,9 +82,9 @@ int main()
 	// Print the OpenGL version
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
-	World::Init(window);
+	InputHandler::Init(window);
 
-	InputHandler input(window);
+	World::Init(window);
 
 	DroppedItem* item = new DroppedItem();
 	item->m_Position = glm::vec3(1.0f, 55.0f, 0.0);
@@ -101,7 +101,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 
 		// Close the window if escape is pressed
-		if (input.IsKeyPressed(GLFW_KEY_ESCAPE))
+		if (InputHandler::IsKeyPressed(GLFW_KEY_ESCAPE))
 			glfwSetWindowShouldClose(window, true);
 
 		// Calcuate FPS

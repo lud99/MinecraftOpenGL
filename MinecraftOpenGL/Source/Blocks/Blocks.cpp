@@ -50,7 +50,7 @@ void Block::Break()
 		adjacentChunks[i]->SetDirty(true);
 }
 
-bool Blocks::StoneBlock::OnBlockClick(int button, int action, int mods)
+bool Blocks::StoneBlock::OnBlockClick()
 {
 	std::cout << "Stone block clicked! " << (int)m_Position.x << " " << (int)m_Position.z << "\n";
 
@@ -58,12 +58,11 @@ bool Blocks::StoneBlock::OnBlockClick(int button, int action, int mods)
 	item->m_Position = m_ChunkBlock->GetWorldPosition(m_Chunk);
 
 	m_Chunk->m_DroppedItems.push_back(item);
-	//m_Chunk->m_DroppedItems[m_Chunk->m_DroppedItems.size() - 1].m_Position = m_ChunkBlock->GetWorldPosition(m_Chunk);
 
 	return true;
 }
 
-bool Blocks::DirtBlock::OnBlockClick(int button, int action, int mods)
+bool Blocks::DirtBlock::OnBlockClick()
 {
 	std::cout << "Dirt block clicked!\n";
 

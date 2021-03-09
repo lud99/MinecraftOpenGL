@@ -7,6 +7,7 @@
 
 #include <glm/gtc/matrix_transform.hpp> 
 
+#include "../../InputHandler.h"
 #include "../Blocks/Blocks.h"
 #include "../World.h"
 #include "../Chunk/Chunk.h"
@@ -34,6 +35,15 @@ void Player::Init()
 
 void Player::Update(float deltaTime)
 {
+	// Handle input
+	// Block breaking
+	if (InputHandler::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT))
+		HandleBlockBreaking();
+
+	// Block placing
+	if (InputHandler::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT))
+		HandleBlockPlacing();
+
 	HandleMovement(deltaTime);
 	HandleCollision(deltaTime);
 
@@ -62,15 +72,13 @@ void Player::Update(float deltaTime)
 
 		if (highligtedBlock && highligtedBlock->m_BlockId != BlockIds::Air)
 		{
+			// If no block has been highlighted
 			if (m_HighlightedBlock == nullptr)
 				m_HighlightedBlock = highligtedBlock;
 
+			// Only run if a new block is highlighted
 			if (highligtedBlock != m_HighlightedBlock)
 			{
-				std::cout << "New highlighted block\n";
-
-				//m_PrevHighlightedBlock = m_HighlightedBlock;
-
 				m_HighlightedBlock = highligtedBlock;
 				m_HighlightedBlockChunk = highlightedChunk;
 
@@ -219,8 +227,9 @@ void Player::MouseCallback(GLFWwindow* window, double xpos, double ypos)
 	m_LastMouseY = y;
 }
 
-void Player::HandleBlockBreaking(int button, int action, int mods)
+void Player::HandleBlockBreaking()
 {
+	float blockBreakSpeed = 0.01f;
 	if (!m_HighlightedBlock)
 	{
 		m_BlockBreakProgress = 0.0f;
@@ -229,14 +238,14 @@ void Player::HandleBlockBreaking(int button, int action, int mods)
 	}
 
 	// Check if the highlighted block is different
-	if (m_HighlightedBlock != m_PrevHighlightedBlock)
+	if (m_HighlightedBlock != m_PrevBreakingBlock)
 	{
 		m_BlockBreakProgress = 0.0f;
 	}
 
-	m_BlockBreakProgress += 0.25f;
+	m_BlockBreakProgress += blockBreakSpeed;
 
-	std::cout << "Progress: " << m_BlockBreakProgress << "\n";
+	//std::cout << "Progress: " << m_BlockBreakProgress << "\n";
 
 	if (m_BlockBreakProgress >= 1.0f)
 	{
@@ -247,16 +256,16 @@ void Player::HandleBlockBreaking(int button, int action, int mods)
 
 		if (!block) return;
 
-		bool doDefault = block->OnBlockClick(button, action, mods);
+		bool doDefault = block->OnBlockClick();
 		if (doDefault) block->Break();
 
 		delete block;
 	}
 
-	m_PrevHighlightedBlock = m_HighlightedBlock;
+	m_PrevBreakingBlock = m_HighlightedBlock;
 }
 
-void Player::HandleBlockPlacing(int button, int action, int mods)
+void Player::HandleBlockPlacing()
 {
 	m_HighlightedBlock->m_BlockId = BlockIds::DoorBottom;
 	m_HighlightedBlockChunk->GetBlockAt(m_HighlightedBlock->GetLocalPosition() + glm::u8vec3(0, 1, 0))->m_BlockId = BlockIds::DoorTop;
@@ -333,17 +342,6 @@ void Player::HandleBlockPlacing(int button, int action, int mods)
 
 		raycast.Stop();
 	}
-}
-
-void Player::MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
-{
-	// Block breaking
-	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-		HandleBlockBreaking(button, action, mods);
-
-	// Block placing
-	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
-		HandleBlockPlacing(button, action, mods);
 }
    
 void Player::SetWindow(GLFWwindow* window)

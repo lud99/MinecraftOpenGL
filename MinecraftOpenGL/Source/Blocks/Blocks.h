@@ -45,7 +45,7 @@ class Block
 public:
 	Block(Chunk* chunk, ChunkBlock* chunkBlock);
 
-	virtual bool OnBlockClick(int button, int action, int mods) = 0;
+	virtual bool OnBlockClick() = 0;
 	virtual void Break();
 
 public:
@@ -64,7 +64,7 @@ namespace Blocks
 	public:
 		using Block::Block; // Inherit constructor
 
-		bool OnBlockClick(int button, int action, int mods);
+		bool OnBlockClick();
 	};
 
 	class DirtBlock : public Block
@@ -72,6 +72,6 @@ namespace Blocks
 	public:
 		using Block::Block; // Inherit constructor
 
-		bool OnBlockClick(int button, int action, int mods);
+		bool OnBlockClick();
 	};
 };

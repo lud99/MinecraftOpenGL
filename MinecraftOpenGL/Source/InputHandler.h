@@ -1,19 +1,31 @@
 #pragma once
 
+#define MOUSE_BUTTON_RELEASED 0;
+#define MOUSE_BUTTON_PRESSED 1;
+#define MOUSE_BUTTON_HOLD 2;
+
 struct GLFWwindow;
 
 class InputHandler
 {
 public:
-	InputHandler();
-	InputHandler(GLFWwindow* window) : m_Window(window) {};
+	static void Init(GLFWwindow* window);
 
-	bool IsKeyPressed(int key);
+	static bool IsKeyPressed(int key);
+	static bool IsMouseButtonPressed(int button);
+	static bool isMouseButtonHeld(int button);
 
-	void SetWindow(GLFWwindow* window);
-	GLFWwindow* GetWindow();
+	static void UpdateMouseButtonState(int button, int action, int mods);
 
-	~InputHandler();
+	static void SetWindow(GLFWwindow* window);
+	static GLFWwindow* GetWindow();
+
 public:
-	GLFWwindow* m_Window = nullptr;
+	const static int MouseButtonCount = 10;
+
+	static int MouseButtonStates[MouseButtonCount];
+	static int PreviousMouseButtonStates[MouseButtonCount];
+
+private:
+	static GLFWwindow* m_Window;
 };
