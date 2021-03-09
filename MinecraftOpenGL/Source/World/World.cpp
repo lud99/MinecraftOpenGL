@@ -32,12 +32,12 @@ void World::Init(GLFWwindow* window)
 	m_LookingAtCollider.Init();
 }
 
-void World::Update(float deltaTime)
+void World::Update()
 {
 	HandleCreatingNewChunks();
 	UnloadChunksOutsideRenderDistance();
 
-	m_Player.Update(deltaTime);
+	m_Player.Update();
 
 	m_ChunkBuilder.ProcessQueue();
 }
@@ -269,11 +269,14 @@ bool World::ChunkExistsAt(glm::ivec2 position)
 
 ChunkBlock* World::GetBlockAt(glm::ivec3 position)
 {
+	// Check the y position bounds (0 - 255) to avoid overflow
+	if (position.y < 0 || position.y > 255)
+		return nullptr;
+
 	glm::ivec2 chunkPosition = Utils::WorldPositionToChunkPosition(position);
 	Chunk* chunk = GetChunkAt(chunkPosition);
 
 	if (!chunk || !chunk->m_IsInitialized) return nullptr;
-
 
 	glm::u8vec3 blockPosition = Utils::WorldBlockPositionToLocalBlockPosition(position, chunk->GetPosition());
 	ChunkBlock* block = chunk->GetBlockAt(blockPosition);

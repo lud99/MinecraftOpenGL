@@ -19,7 +19,7 @@ public:
 
 	void Init();
 
-	void Update(float deltaTime);
+	void Update();
 	void UpdateCameraPosition();
 
 	void MouseCallback(GLFWwindow* window, double xpos, double ypos);
@@ -31,8 +31,8 @@ public:
 	~Player();
 
 private:
-	void HandleMovement(float deltaTime);
-	void HandleCollision(float deltaTime);
+	void HandleMovement();
+	void HandleCollision();
 	void HandleBlockBreaking();
 	void HandleBlockPlacing();
 

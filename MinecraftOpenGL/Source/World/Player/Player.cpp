@@ -15,6 +15,7 @@
 #include "../Chunk/BlockEntity.h"
 #include "../../Utils/Raycast.h"
 #include "../../Utils/Utils.h"
+#include "../../Time.h"
 
 #include <GLFW/glfw3.h>
 
@@ -33,19 +34,17 @@ void Player::Init()
 	m_Crosshair.Init();
 }
 
-void Player::Update(float deltaTime)
+void Player::Update()
 {
-	// Handle input
 	// Block breaking
 	if (InputHandler::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT))
 		HandleBlockBreaking();
-
 	// Block placing
 	if (InputHandler::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT))
 		HandleBlockPlacing();
 
-	HandleMovement(deltaTime);
-	HandleCollision(deltaTime);
+	HandleMovement();
+	HandleCollision();
 
 	UpdateCameraPosition();
 
@@ -98,7 +97,7 @@ void Player::UpdateCameraPosition()
 	m_Camera.m_Position = glm::vec3(m_Position.x, m_Position.y + m_EyeOffset, m_Position.z);
 }
 
-void Player::HandleMovement(float deltaTime)
+void Player::HandleMovement()
 {
 	// TODO
 
@@ -114,7 +113,7 @@ void Player::HandleMovement(float deltaTime)
 		if (m_MovementSpeed > m_MaxVelocity) m_MovementSpeed = m_MaxVelocity;
 		if (m_MovementSpeed < -m_MaxVelocity) m_MovementSpeed = -m_MaxVelocity;
 
-		m_Velocity += glm::normalize(glm::cross(m_Camera.m_Front2D, m_Camera.m_Up)) * m_MovementSpeed * deltaTime;
+		m_Velocity += glm::normalize(glm::cross(m_Camera.m_Front2D, m_Camera.m_Up)) * m_MovementSpeed * Time::DeltaTime;
 	}
 	if (wSInput != 0) {
 		m_MovementSpeed += wSInput * m_Acceleration;
@@ -122,29 +121,29 @@ void Player::HandleMovement(float deltaTime)
 		if (m_MovementSpeed > m_MaxVelocity) m_MovementSpeed = m_MaxVelocity;
 		if (m_MovementSpeed < -m_MaxVelocity) m_MovementSpeed = -m_MaxVelocity;
 
-		m_Velocity += m_Camera.m_Front2D * m_MovementSpeed * deltaTime;
+		m_Velocity += m_Camera.m_Front2D * m_MovementSpeed * Time::DeltaTime;
 	}
 
 	if (m_Input.IsKeyPressed(GLFW_KEY_SPACE))
-		m_Velocity.y = 10 * deltaTime;
+		m_Velocity.y = 3.f * Time::DeltaTime * m_Acceleration;
 	if (m_Input.IsKeyPressed(GLFW_KEY_LEFT_SHIFT))
-		m_Velocity.y = -10 * deltaTime;
+		m_Velocity.y = -3.f * Time::DeltaTime * m_Acceleration;
 
 	// Increase and decrease movement speed
 	if (m_Input.IsKeyPressed(GLFW_KEY_E))
-		m_MaxVelocity += 0.025f * 10;
+		m_MaxVelocity += 0.025f * 10 * Time::DeltaTime;
 	if (m_Input.IsKeyPressed(GLFW_KEY_Q))
-		m_MaxVelocity -= 0.025f * 10;
+		m_MaxVelocity -= 0.025f * 10 * Time::DeltaTime;
 
 	// Lerp movement speed towards 0
 	m_Velocity.x = Utils::Math::Lerp(m_Velocity.x, 0, friction);
-	m_Velocity.y = Utils::Math::Lerp(m_Velocity.y, 0, friction);
+	//m_Velocity.y = Utils::Math::Lerp(m_Velocity.y, 0, friction);
 	m_Velocity.z = Utils::Math::Lerp(m_Velocity.z, 0, friction);
 }
 
-void Player::HandleCollision(float deltaTime)
+void Player::HandleCollision()
 {
-	float gravity = -1.0f * deltaTime;
+	float gravity = -0.01f * Time::DeltaTime;
 
 	// Apply gravity and collision detection
 	m_Velocity.y += gravity;
@@ -229,7 +228,7 @@ void Player::MouseCallback(GLFWwindow* window, double xpos, double ypos)
 
 void Player::HandleBlockBreaking()
 {
-	float blockBreakSpeed = 0.01f;
+	float blockBreakSpeed = 1.5f * Time::DeltaTime;
 	if (!m_HighlightedBlock)
 	{
 		m_BlockBreakProgress = 0.0f;
@@ -237,15 +236,11 @@ void Player::HandleBlockBreaking()
 		return;
 	}
 
-	// Check if the highlighted block is different
+	// Reset break progess if the highlighted block has changed
 	if (m_HighlightedBlock != m_PrevBreakingBlock)
-	{
 		m_BlockBreakProgress = 0.0f;
-	}
 
 	m_BlockBreakProgress += blockBreakSpeed;
-
-	//std::cout << "Progress: " << m_BlockBreakProgress << "\n";
 
 	if (m_BlockBreakProgress >= 1.0f)
 	{

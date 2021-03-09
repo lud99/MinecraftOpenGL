@@ -166,6 +166,7 @@
     <ClCompile Include="Source\Graphics\Graphics\Textures\Texture2D.cpp" />
     <ClCompile Include="Source\Graphics\Graphics\Textures\TextureAtlas.cpp" />
     <ClCompile Include="Source\Graphics\Graphics\Vertex.cpp" />
+    <ClCompile Include="Source\Time.cpp" />
     <ClCompile Include="Source\Utils\Raycast.cpp" />
     <ClCompile Include="Source\World\Chunk\BlockEntity.cpp" />
     <ClCompile Include="Source\World\Chunk\ChunkIO.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="Source\Graphics\Graphics\Textures\TextureIds.h" />
     <ClInclude Include="Source\Graphics\Graphics\Vertex.h" />
     <ClInclude Include="Source\Graphics\Textures\Cubemap.h" />
+    <ClInclude Include="Source\Time.h" />
     <ClInclude Include="Source\Utils\Raycast.h" />
     <ClInclude Include="Source\World\Chunk\BlockEntity.h" />
     <ClInclude Include="Source\World\Chunk\ChunkIO.h" />

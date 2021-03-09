@@ -18,13 +18,6 @@
 class Chunk;
 class WorldRenderer;
 
-/*
-class HashFn
-{
-	std::size_t operator()(glm::ivec2 const& k) const noexcept;
-	//bool operator()(const glm::ivec2& a, const glm::ivec2& b)const;
-};*/
-
 typedef std::unordered_map<glm::ivec2, Chunk*> ChunkMap;
 
 enum Directions {
@@ -39,7 +32,7 @@ enum Directions {
 namespace World
 {
 	void Init(GLFWwindow* window);
-	void Update(float deltaTime);
+	void Update();
 	void Render();
 
 	void HandleCreatingNewChunks();

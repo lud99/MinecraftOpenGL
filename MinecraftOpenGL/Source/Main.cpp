@@ -18,6 +18,7 @@
 #include "World/Chunk/Chunk.h"
 #include "World/Chunk/BlockEntity.h"
 #include "World/DroppedItem.h"
+#include "Time.h"
 
 void MouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
@@ -68,7 +69,7 @@ int main()
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwWindowHint(GLFW_SAMPLES, 4);
-	//glfwSwapInterval(0); // Vsync
+	glfwSwapInterval(0); // Vsync
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -121,11 +122,13 @@ int main()
 			previousTime = currentTime;
 		}
 
-		float deltaTime = glfwGetTime() - prevTime;
-		prevTime = glfwGetTime();
+		Time::ElapsedTime = glfwGetTime();
+		Time::DeltaTime = Time::ElapsedTime - prevTime;
+
+		prevTime = Time::ElapsedTime;
 
 		// Update everything in the world
-		World::Update(deltaTime);
+		World::Update();
 
 		World::Render();
 		item->Render();
