@@ -119,26 +119,22 @@ void ThreadPool::DoWork()
 			break;
 
 		case ChunkAction::ActionType::RebuildAdjacentChunks: {
-
-			// Rebuild the 'center' chunk
-			action.chunk->RebuildMesh();
-
 			AdjacentChunks chunks = action.chunk->GetAdjacentChunks();
 
-			Chunk* westChunkEast = chunks.West ? chunks.West->m_AdjacentChunksWhenLastRebuilt.East : nullptr;
+			/*Chunk* westChunkEast = chunks.West ? chunks.West->m_AdjacentChunksWhenLastRebuilt.East : nullptr;
 			Chunk* eastChunkWest = chunks.East ? chunks.East->m_AdjacentChunksWhenLastRebuilt.West : nullptr;
 			Chunk* northChunkSouth = chunks.North ? chunks.North->m_AdjacentChunksWhenLastRebuilt.South : nullptr;
-			Chunk* southChunkNorth = chunks.South ? chunks.South->m_AdjacentChunksWhenLastRebuilt.North : nullptr;
+			Chunk* southChunkNorth = chunks.South ? chunks.South->m_AdjacentChunksWhenLastRebuilt.North : nullptr;*/
 
 			// Check that the chunk exists before adding it to the work queue
 			if (chunks.West && chunks.West->m_HasGenerated)// && (!westChunkEast || !westChunkEast->m_HasGenerated))
-				QueueWork(ChunkAction(ChunkAction::ActionType::Rebuild, chunks.West));
+				chunks.West->RebuildMeshThreaded();
 			if (chunks.East && chunks.East->m_HasGenerated)// && (!eastChunkWest || !eastChunkWest->m_HasGenerated))
-				QueueWork(ChunkAction(ChunkAction::ActionType::Rebuild, chunks.East));
+				chunks.East->RebuildMeshThreaded();
 			if (chunks.North && chunks.North->m_HasGenerated)// && (!northChunkSouth || !northChunkSouth->m_HasGenerated))
-				QueueWork(ChunkAction(ChunkAction::ActionType::Rebuild, chunks.North));
+				chunks.North->RebuildMeshThreaded();
 			if (chunks.South && chunks.South->m_HasGenerated)//&& (!southChunkNorth || !southChunkNorth->m_HasGenerated))
-				QueueWork(ChunkAction(ChunkAction::ActionType::Rebuild, chunks.South));
+				chunks.South->RebuildMeshThreaded();
 
 			break;
 		}

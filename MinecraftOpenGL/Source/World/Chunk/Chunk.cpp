@@ -316,6 +316,15 @@ void Chunk::GenerateTerrain()
 	m_IsGenerating = false;
 	m_ShouldRebuild = true;
 
+	// Set flag for adjacent chunks to rebuild to remove uneq. block faces at chunk border
+	/*AdjacentChunks chunks = GetAdjacentChunks();
+	if (chunks.West) chunks.West->SetDirty(true);
+	if (chunks.North) chunks.North->SetDirty(true);
+	if (chunks.East) chunks.East->SetDirty(true);
+	if (chunks.South) chunks.South->SetDirty(true);*/
+
+	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, this));
+
 	//std::cout << "Terrain generatation done. " << m_Position.x << ", " << m_Position.y << "\n";
 
 	mutex.unlock();
@@ -323,9 +332,13 @@ void Chunk::GenerateTerrain()
 
 void Chunk::RebuildMesh()
 {
-	if (!m_IsInitialized) std::cout << "Not int\n";
-	if (!m_IsInitialized) return;
+	if (!m_IsInitialized)
+	{
+		std::cout << "Chunk not initialized. Cant rebuild mesh\n";
+		return;
+	}
 
+	SetDirty(true);
 	m_IsRebuilding = true;
 
 	m_MeshMutex.lock();
@@ -370,7 +383,7 @@ void Chunk::RebuildMesh()
 	//std::cout << "Chunk mesh rebuilt. " << m_Position.x << ", " << m_Position.y << "\n";
 
 	m_IsRebuilding = false;
-	m_ShouldRebuild = false;
+	SetDirty(false);
 
 	m_MeshMutex.unlock();
 }
@@ -381,6 +394,7 @@ void Chunk::RebuildMeshThreaded(ChunkAction* nextAction)
 	if (!m_IsInitialized) return;
 
 	m_IsRebuilding = true;
+	SetDirty(true);
 
 	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, this, nextAction));
 }
@@ -462,6 +476,9 @@ AdjacentChunks Chunk::GetAdjacentChunks()
 
 	return chunks;
 }
+
+void Chunk::SetDirty(bool flag) { m_IsDirty = flag; }
+bool Chunk::IsDirty() { return m_IsDirty; }
 
 Chunk::~Chunk()
 {

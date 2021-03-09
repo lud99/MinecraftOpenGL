@@ -8,6 +8,7 @@ in float chunk;
 
 uniform sampler2D tex;
 uniform int u_Rebuilding = 0;
+uniform int u_Dirty = 0;
 uniform int u_ShouldBeRemoved = 0;
 
 void main()
@@ -22,11 +23,11 @@ void main()
 
 	//color = mix(textureColor, vec4(c, c, c, 1.0), 0.5);
 
-	if (u_Rebuilding == 1)
-		color = vec4(0, 1, 0, 1);
+	if (u_Dirty == 1)
+		color = mix(textureColor, vec4(0, 0, 1, 1), 0.3);
 	if (u_ShouldBeRemoved == 1)
-		color = vec4(1, 0, 0, 1);
-	if (u_Rebuilding == 0 && u_ShouldBeRemoved == 0)
+		color = mix(textureColor, vec4(1, 0, 0, 1), 0.5);
+	if (u_Dirty == 0&& u_Rebuilding == 0 && u_ShouldBeRemoved == 0)
 		color = textureColor * vec4(passLightLevel, passLightLevel, passLightLevel, 1);
 		
 	if (color.a == 0.0)

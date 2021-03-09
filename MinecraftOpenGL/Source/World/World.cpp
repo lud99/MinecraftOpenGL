@@ -64,7 +64,7 @@ void World::HandleCreatingNewChunks()
 	}
 
 	// Generate the terrain
-	/*for (int x = position.x - RenderDistance * Chunk::Width; x < position.x + RenderDistance * Chunk::Width; x += Chunk::Width)
+	for (int x = position.x - RenderDistance * Chunk::Width; x < position.x + RenderDistance * Chunk::Width; x += Chunk::Width)
 	{
 		for (int z = position.z - RenderDistance * Chunk::Depth; z < position.z + RenderDistance * Chunk::Depth; z += Chunk::Depth)
 		{
@@ -73,6 +73,10 @@ void World::HandleCreatingNewChunks()
 			Chunk* chunk = GetChunkAt(chunkPos);
 			if (!chunk)
 				continue;
+
+			// Rebuild the chunk if changes has occured and it's not already rebuilding
+			if (chunk->m_IsInitialized && chunk->IsDirty() && !chunk->m_IsRebuilding)
+				chunk->RebuildMeshThreaded();
 
 			/*if (!chunk->m_IsInitialized) // Only generate if the chunk exists and has been initalized properly
 				continue;
@@ -99,9 +103,9 @@ void World::HandleCreatingNewChunks()
 			nextAction->SetTimestamp();
 			m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk));
 
-			//chunk->GenerateTerrainThreaded(nextAction);
+			//chunk->GenerateTerrainThreaded(nextAction);*/
 		}
-	}*/
+	}
 }
 
 void World::UnloadChunksOutsideRenderDistance()

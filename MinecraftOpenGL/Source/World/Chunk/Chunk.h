@@ -66,6 +66,9 @@ public:
 
 	AdjacentChunks GetAdjacentChunks();
 
+	void SetDirty(bool flag);
+	bool IsDirty();
+
 	~Chunk();
 
 public:
@@ -100,4 +103,7 @@ public:
 
 private:
 	glm::ivec2 m_Position = glm::ivec2(0, 0);
+
+	// Flag to indicate if the chunk has changed and needs rebuilding
+	bool m_IsDirty = false;
 };
