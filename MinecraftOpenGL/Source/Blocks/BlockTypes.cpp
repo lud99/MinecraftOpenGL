@@ -53,6 +53,8 @@ namespace BlockTypes {
 		Blocks[OakLeaves].isOpaque = false;
 
 		// Door
+		Blocks[DoorBottom].isModel = true;
+		//[DoorBottom].faces[0].positions = new glm::vec3[4] {}
 		Blocks[DoorBottom].faces[Cube::Faces::Left].textureId = -1;
 		Blocks[DoorBottom].faces[Cube::Faces::Right].textureId = -1; 
 		Blocks[DoorBottom].faces[Cube::Faces::Top].textureId = -1; 

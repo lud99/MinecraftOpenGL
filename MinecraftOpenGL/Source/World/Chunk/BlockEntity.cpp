@@ -146,7 +146,7 @@ void BlockEntity::AddBlockFace(BlockFace& face)
 	{
 		BlockTexture& texture = World::m_TextureAtlas[face.textureId];
 
-		glm::u8vec3 position(face.positions[i] + GetLocalPosition());
+		glm::u8vec3 position((glm::u8vec3)face.positions[i] + GetLocalPosition());
 
 		int lightLevel = 15;
 

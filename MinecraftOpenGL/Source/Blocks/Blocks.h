@@ -16,7 +16,7 @@ class DroppedItem;
 
 struct BlockFace
 {
-	const glm::u8vec3* positions;
+	const glm::vec3* positions;
 
 	int direction;
 
@@ -30,6 +30,7 @@ struct BlockType
 	bool isTranslucent = false; // For example water. Has opacity but not no parts with 0 opacity
 	bool isTransparent = false; // For example leaves. Has some parts which are fully see-through
 	bool isOpaque = true; // Solid blocks. Neither transparent or translucent
+	bool isModel = false; // For blocks that need custom vertices
 
 	BlockFace faces[6];
 

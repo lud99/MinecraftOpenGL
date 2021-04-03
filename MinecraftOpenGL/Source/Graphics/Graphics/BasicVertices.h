@@ -15,49 +15,49 @@ namespace BasicVertices {
 			Front
 		};
 
-		const static glm::u8vec3 TopVertices[4] = {
-			glm::u8vec3(0, 1, 1),
-			glm::u8vec3(1, 1, 1),
-			glm::u8vec3(1, 1, 0),
-			glm::u8vec3(0, 1, 0),
+		const static glm::vec3 TopVertices[4] = {
+			glm::vec3(0, 1, 1),
+			glm::vec3(1, 1, 1),
+			glm::vec3(1, 1, 0),
+			glm::vec3(0, 1, 0),
 		};
 
-		const static glm::u8vec3 BottomVertices[4] = {
-			glm::u8vec3(0, 0, 1),
-			glm::u8vec3(1, 0, 1),
-			glm::u8vec3(1, 0, 0),
-			glm::u8vec3(0, 0, 0),
+		const static glm::vec3 BottomVertices[4] = {
+			glm::vec3(0, 0, 0),
+			glm::vec3(1, 0, 0),
+			glm::vec3(1, 0, 1),
+			glm::vec3(0, 0, 1),
 		};
 
-		const static glm::u8vec3 LeftVertices[4] = {
-			glm::u8vec3(0, 0, 0),
-			glm::u8vec3(0, 0, 1),
-			glm::u8vec3(0, 1, 1),
-			glm::u8vec3(0, 1, 0),
+		const static glm::vec3 LeftVertices[4] = {
+			glm::vec3(0, 0, 0),
+			glm::vec3(0, 0, 1),
+			glm::vec3(0, 1, 1),
+			glm::vec3(0, 1, 0),
 		};
 
-		const static glm::u8vec3 RightVertices[4] = {
-			glm::u8vec3(1, 0, 0),
-			glm::u8vec3(1, 0, 1),
-			glm::u8vec3(1, 1, 1),
-			glm::u8vec3(1, 1, 0),
+		const static glm::vec3 RightVertices[4] = {
+			glm::vec3(1, 0, 1),
+			glm::vec3(1, 0, 0),
+			glm::vec3(1, 1, 0),
+			glm::vec3(1, 1, 1),
 		};
 
-		const static glm::u8vec3 FrontVertices[4] = {
-			glm::u8vec3(0, 0, 1),
-			glm::u8vec3(1, 0, 1),
-			glm::u8vec3(1, 1, 1),
-			glm::u8vec3(0, 1, 1),
+		const static glm::vec3 FrontVertices[4] = {
+			glm::vec3(0, 0, 1),
+			glm::vec3(1, 0, 1),
+			glm::vec3(1, 1, 1),
+			glm::vec3(0, 1, 1),
 		};
 
-		const static glm::u8vec3 BackVertices[4] = {
-			glm::u8vec3(0, 0, 0),
-			glm::u8vec3(1, 0, 0),
-			glm::u8vec3(1, 1, 0),
-			glm::u8vec3(0, 1, 0),
+		const static glm::vec3 BackVertices[4] = {
+			glm::vec3(1, 0, 0),
+			glm::vec3(0, 0, 0),
+			glm::vec3(0, 1, 0),
+			glm::vec3(1, 1, 0),
 		};
 
-		inline const glm::u8vec3* GetFace(int id)
+		inline const glm::vec3* GetFace(int id)
 		{
 			switch (id)
 			{
@@ -73,7 +73,7 @@ namespace BasicVertices {
 		}
 
 		const static uint16_t Indices[6] = {
-			0, 1, 2,
+			2, 0, 1,
 			2, 3, 0
 		};
 

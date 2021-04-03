@@ -95,6 +95,7 @@ public:
 
 	Mesh<PackedVertex> m_OpaqueMesh;
 	Mesh<PackedVertex> m_WaterMesh;
+	Mesh<TextureVertex> m_ModelsMesh;
 
 	Mesh<PackedVertex> m_TempOpaqueMesh;
 	Mesh<PackedVertex> m_TempWaterMesh;

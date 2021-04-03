@@ -66,6 +66,7 @@ int main()
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glfwSwapInterval(1); // Vsync
 
+	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glEnable(GL_MULTISAMPLE);
@@ -74,6 +75,8 @@ int main()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glLineWidth(2);
+	glFrontFace(GL_CCW);
+	glCullFace(GL_BACK);
 
 	// Print the OpenGL version
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
