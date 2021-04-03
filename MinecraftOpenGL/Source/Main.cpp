@@ -16,8 +16,6 @@
 #include "World/Player/Player.h"
 #include "World/Chunk/ChunkBlock.h"
 #include "World/Chunk/Chunk.h"
-#include "World/Chunk/BlockEntity.h"
-#include "World/DroppedItem.h"
 #include "Time.h"
 
 void MouseCallback(GLFWwindow* window, double xpos, double ypos)
@@ -32,10 +30,7 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 
 void test()
 {
-	std::cout << "sizeof ChunkBlock: " << sizeof(ChunkBlock) << "\n"; // 16 bytes
-	std::cout << "sizeof u8vec3: " << sizeof(glm::u8vec3) << "\n";
-	std::cout << "sizeof ivec2: " << sizeof(glm::ivec2) << "\n";
-	std::cout << "sizeof uint16: " << sizeof(uint16_t) << "\n";
+	std::cout << "sizeof ChunkBlock: " << sizeof(ChunkBlock) << "\n";
 	std::cout << "sizeof Chunk: " << sizeof(Chunk) << "\n";
 }
 
@@ -69,7 +64,7 @@ int main()
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwWindowHint(GLFW_SAMPLES, 4);
-	glfwSwapInterval(0); // Vsync
+	glfwSwapInterval(1); // Vsync
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -87,9 +82,6 @@ int main()
 
 	World::Init(window);
 
-	DroppedItem* item = new DroppedItem();
-	item->m_Position = glm::vec3(1.0f, 55.0f, 0.0);
-
 	double previousTime = glfwGetTime();
 	double prevTime = glfwGetTime();
 	int frameCount = 0;
@@ -100,6 +92,10 @@ int main()
 		/* Render here */
 		glClearColor(1, 1, 1, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
+
+		// Poll keys
+		/* Poll for and process events */
+		glfwPollEvents();
 
 		// Close the window if escape is pressed
 		if (InputHandler::IsKeyPressed(GLFW_KEY_ESCAPE))
@@ -114,7 +110,10 @@ int main()
 		{
 			std::string title = "MinecraftOpenGL | FPS: ";
 
+			glm::vec3 pos = World::GetPlayer().m_Position;
+
 			title.append(std::to_string(frameCount));
+			title.append(" | " + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ", " + std::to_string(pos.z));
 
 			glfwSetWindowTitle(window, title.c_str());
 
@@ -122,8 +121,8 @@ int main()
 			previousTime = currentTime;
 		}
 
-		Time::ElapsedTime = glfwGetTime();
-		Time::DeltaTime = Time::ElapsedTime - prevTime;
+		Time::ElapsedTime = (float)glfwGetTime();
+		Time::DeltaTime = Time::ElapsedTime - (float)prevTime;
 
 		prevTime = Time::ElapsedTime;
 
@@ -131,7 +130,6 @@ int main()
 		World::Update();
 
 		World::Render();
-		item->Render();
 
 		GLenum err;
 		while ((err = glGetError()) != GL_NO_ERROR)
@@ -142,8 +140,8 @@ int main()
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
 
-		/* Poll for and process events */
-		glfwPollEvents();
+		InputHandler::Init(window);
+
 	}
 
 	glfwTerminate();

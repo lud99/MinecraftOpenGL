@@ -180,7 +180,7 @@ void Chunk::GenerateTerrain()
 			int finalHeight = (int)floor(height);
 
 			float dirtThickness = noise.GetOctaveNoise(worldPosition.x, worldPosition.z, 8) / 24 - 2;
-			float dirtTransition = finalHeight;
+			float dirtTransition = (float)finalHeight;
 			float stoneTransition = dirtTransition + dirtThickness;
 
 			bool sandChance = (noise.Normalize(noise.GetOctaveNoise(worldPosition.x, worldPosition.z, 8)) > 0.5f);
@@ -206,7 +206,7 @@ void Chunk::GenerateTerrain()
 			}
 
 			{
-				float y = finalHeight;
+				int y = finalHeight;
 
 				ChunkBlock* block = GetBlockAt(glm::vec3(x, y, z));
 				ChunkBlock* blockAbove = GetBlockAt(glm::vec3(x, y + 1, z));

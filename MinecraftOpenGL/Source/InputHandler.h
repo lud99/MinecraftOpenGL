@@ -1,8 +1,8 @@
 #pragma once
 
-#define MOUSE_BUTTON_RELEASED 0;
-#define MOUSE_BUTTON_PRESSED 1;
-#define MOUSE_BUTTON_HOLD 2;
+#define MOUSE_BUTTON_RELEASED 0
+#define MOUSE_BUTTON_PRESSED 1
+#define MOUSE_BUTTON_HOLD 2
 
 struct GLFWwindow;
 
@@ -16,6 +16,7 @@ public:
 	static bool isMouseButtonHeld(int button);
 
 	static void UpdateMouseButtonState(int button, int action, int mods);
+	static void UpdateMouseButtonStates();
 
 	static void SetWindow(GLFWwindow* window);
 	static GLFWwindow* GetWindow();

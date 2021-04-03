@@ -37,7 +37,7 @@ void Player::Init()
 void Player::Update()
 {
 	// Block breaking
-	if (InputHandler::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT))
+	if (InputHandler::isMouseButtonHeld(GLFW_MOUSE_BUTTON_LEFT))
 		HandleBlockBreaking();
 	// Block placing
 	if (InputHandler::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT))
@@ -143,7 +143,11 @@ void Player::HandleMovement()
 
 void Player::HandleCollision()
 {
-	float gravity = -0.01f * Time::DeltaTime;
+	float gravity = -0.1f * Time::DeltaTime;
+
+	// Don't do collision checks if not inside a chunk
+	if (!World::ChunkExistsAt(Utils::WorldPositionToChunkPosition(m_Position)))
+		return;
 
 	// Apply gravity and collision detection
 	m_Velocity.y += gravity;
@@ -228,7 +232,7 @@ void Player::MouseCallback(GLFWwindow* window, double xpos, double ypos)
 
 void Player::HandleBlockBreaking()
 {
-	float blockBreakSpeed = 1.5f * Time::DeltaTime;
+	float blockBreakSpeed = 2.0f * Time::DeltaTime;
 	if (!m_HighlightedBlock)
 	{
 		m_BlockBreakProgress = 0.0f;
@@ -262,9 +266,38 @@ void Player::HandleBlockBreaking()
 
 void Player::HandleBlockPlacing()
 {
-	m_HighlightedBlock->m_BlockId = BlockIds::DoorBottom;
-	m_HighlightedBlockChunk->GetBlockAt(m_HighlightedBlock->GetLocalPosition() + glm::u8vec3(0, 1, 0))->m_BlockId = BlockIds::DoorTop;
-	m_HighlightedBlockChunk->SetDirty(true);
+	if (World::ChunkExistsAt(glm::vec2(0, 0)))
+	{
+
+
+		if (m_HighlightedBlock && m_HighlightedBlockChunk) {
+			float dx = m_Position.x * m_Camera.m_Front.x - m_HighlightedBlock->GetWorldPosition(m_HighlightedBlockChunk).x - 0.5f;
+			float dy = m_Position.z * m_Camera.m_Front.z - m_HighlightedBlock->GetWorldPosition(m_HighlightedBlockChunk).z - 0.5f;
+			float angle = std::atan2(dy, dx) * (180 / 3.14f);
+			std::cout << angle << "\n";
+
+			if (angle < 45) {
+				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Left].textureId = TextureIds::DoorBottom;
+				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Right].textureId = -1;
+				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Top].textureId = -1;
+				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Bottom].textureId = -1;
+				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Front].textureId = -1;
+				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Back].textureId = -1;
+			}
+			else if (angle > 45) {
+				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Left].textureId = -1;
+				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Right].textureId = -1;
+				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Top].textureId = -1;
+				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Bottom].textureId = -1;
+				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Front].textureId = -1;
+				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Back].textureId = TextureIds::DoorBottom;
+			}
+
+			//m_HighlightedBlock->m_BlockId = BlockIds::DoorBottom;
+			m_HighlightedBlockChunk->GetBlockAt(m_HighlightedBlock->GetLocalPosition() + glm::u8vec3(0, 1, 0))->m_BlockId = BlockIds::DoorBottom;
+			m_HighlightedBlockChunk->SetDirty(true);
+		}
+	}
 
 	return;
 

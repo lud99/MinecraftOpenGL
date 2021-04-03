@@ -1,6 +1,6 @@
 #pragma once
 
-static struct Time
+struct Time
 {
 	static float DeltaTime;
 	static float ElapsedTime;

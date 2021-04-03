@@ -55,6 +55,7 @@ namespace World
 	ChunkMap& GetChunks();
 
 	bool ChunkExistsAt(glm::ivec2 position);
+	bool ChunkExistsAt(glm::vec3 position);
 
 	ChunkBlock* GetBlockAt(glm::ivec3 position);
 	ChunkBlock* GetBlockAt(glm::vec3 position);

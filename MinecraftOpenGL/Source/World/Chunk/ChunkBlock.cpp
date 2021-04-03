@@ -259,10 +259,6 @@ BlockType* ChunkBlock::GetBlockType()
 	return &BlockTypes::Blocks[m_BlockId]; 
 }
 
-/**
-* Gets a block instance corresponding to the correct block type. 
-* Remember to deallocate when done!
-**/
 Block* ChunkBlock::GetBlock(Chunk* chunk)
 {
 	// Create a new instance with the data from this block
@@ -292,14 +288,14 @@ Block* ChunkBlock::GetBlock(Chunk* chunk)
 		break;
 	case Chest:
 		break;
-	case Count:
-		break;
 	
 	default:
 		break;
 	}
 
-	return block;
+	if (block) return block;
+
+	return new Block(chunk, this);
 }
 
 ChunkBlock::~ChunkBlock()

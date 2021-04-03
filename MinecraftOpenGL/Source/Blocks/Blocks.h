@@ -45,7 +45,7 @@ class Block
 public:
 	Block(Chunk* chunk, ChunkBlock* chunkBlock);
 
-	virtual bool OnBlockClick() = 0;
+	virtual bool OnBlockClick();
 	virtual void Break();
 
 public:

@@ -50,6 +50,12 @@ void Block::Break()
 		adjacentChunks[i]->SetDirty(true);
 }
 
+// Events
+bool Block::OnBlockClick() 
+{
+	return true;
+};
+
 bool Blocks::StoneBlock::OnBlockClick()
 {
 	std::cout << "Stone block clicked! " << (int)m_Position.x << " " << (int)m_Position.z << "\n";

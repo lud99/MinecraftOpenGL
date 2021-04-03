@@ -267,6 +267,8 @@ bool World::ChunkExistsAt(glm::ivec2 position)
 	return m_Chunks.count(position) == 1; 
 }
 
+bool World::ChunkExistsAt(glm::vec3 position) { return ChunkExistsAt(glm::ivec2(position.x, position.z)); }
+
 ChunkBlock* World::GetBlockAt(glm::ivec3 position)
 {
 	// Check the y position bounds (0 - 255) to avoid overflow

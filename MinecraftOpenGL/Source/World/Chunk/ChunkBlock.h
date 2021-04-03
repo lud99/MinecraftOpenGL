@@ -38,6 +38,11 @@ public:
 	void SetLocalPosition(glm::u8vec3 position);
 
 	BlockType* GetBlockType();
+
+	/**
+	Gets a block instance corresponding to the correct block type.
+	Remember to deallocate when done!
+	**/
 	Block* GetBlock(Chunk* chunk);
 
 	~ChunkBlock();
@@ -47,7 +52,6 @@ public:
 
 #pragma pack(push, 1) // To disable byte alignment. Could reduce performance
 
-	//glm::ivec2 m_ChunkPosition; // 8 bytes
 	uint16_t m_LocalPositionPacked = 0; // 2 bytes. pack the 3 component position into 2 bytes instead of 3 to save space
 
 	uint8_t m_BlockId = BlockIds::Air; // 1 byte
