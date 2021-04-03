@@ -13,6 +13,7 @@ enum BlockIds {
 	Chest = 9,
 	DoorBottom = 10,
 	DoorTop = 11,
+	Noteblock = 12,
 
-	Count = 12
+	Count = 13
 };

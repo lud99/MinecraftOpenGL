@@ -15,7 +15,8 @@ namespace TextureIds {
 		Chest = 10,
 		DoorBottom = 11,
 		DoorTop = 12,
+		Noteblock = 13,
 
-		Count = 13
+		Count = 14
 	};
 }

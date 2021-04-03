@@ -47,6 +47,9 @@ public:
 	Block(Chunk* chunk, ChunkBlock* chunkBlock);
 
 	virtual bool OnBlockClick();
+	virtual bool OnBlockLeftClick();
+	virtual bool OnBlockRightClick();
+	virtual bool OnBlockShouldBreak();
 	virtual void Break();
 
 public:
@@ -74,5 +77,15 @@ namespace Blocks
 		using Block::Block; // Inherit constructor
 
 		bool OnBlockClick();
+	};
+
+	class NoteBlock : public Block
+	{
+	public:
+		using Block::Block; // Inherit constructor
+
+		bool OnBlockLeftClick();
+		bool OnBlockRightClick();
+		bool OnBlockShouldBreak();
 	};
 };

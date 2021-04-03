@@ -39,6 +39,25 @@ void Player::Update()
 	// Block breaking
 	if (InputHandler::isMouseButtonHeld(GLFW_MOUSE_BUTTON_LEFT))
 		HandleBlockBreaking();
+	else
+		m_BlockBreakProgress = 0.0f;
+
+	if (InputHandler::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT))
+	{
+		if (m_HighlightedBlock && m_HighlightedBlockChunk)
+		{
+			// Remember to de-aloc when done!
+			Block* block = m_HighlightedBlock->GetBlock(m_HighlightedBlockChunk);
+
+			if (block)
+			{
+				bool doDefault = block->OnBlockLeftClick();
+				//if (doDefault) block->Break();
+
+				delete block;
+			}
+		}
+	}
 	// Block placing
 	if (InputHandler::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT))
 		HandleBlockPlacing();
@@ -266,40 +285,38 @@ void Player::HandleBlockBreaking()
 
 void Player::HandleBlockPlacing()
 {
-	if (World::ChunkExistsAt(glm::vec2(0, 0)))
-	{
+	//if (World::ChunkExistsAt(glm::vec2(0, 0)))
+	//{
 
 
-		if (m_HighlightedBlock && m_HighlightedBlockChunk) {
-			float dx = m_Position.x * m_Camera.m_Front.x - m_HighlightedBlock->GetWorldPosition(m_HighlightedBlockChunk).x - 0.5f;
-			float dy = m_Position.z * m_Camera.m_Front.z - m_HighlightedBlock->GetWorldPosition(m_HighlightedBlockChunk).z - 0.5f;
-			float angle = std::atan2(dy, dx) * (180 / 3.14f);
-			std::cout << angle << "\n";
+	//	if (m_HighlightedBlock && m_HighlightedBlockChunk) {
+	//		float dx = m_Position.x * m_Camera.m_Front.x - m_HighlightedBlock->GetWorldPosition(m_HighlightedBlockChunk).x - 0.5f;
+	//		float dy = m_Position.z * m_Camera.m_Front.z - m_HighlightedBlock->GetWorldPosition(m_HighlightedBlockChunk).z - 0.5f;
+	//		float angle = std::atan2(dy, dx) * (180 / 3.14f);
+	//		std::cout << angle << "\n";
 
-			if (angle < 45) {
-				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Left].textureId = TextureIds::DoorBottom;
-				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Right].textureId = -1;
-				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Top].textureId = -1;
-				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Bottom].textureId = -1;
-				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Front].textureId = -1;
-				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Back].textureId = -1;
-			}
-			else if (angle > 45) {
-				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Left].textureId = -1;
-				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Right].textureId = -1;
-				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Top].textureId = -1;
-				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Bottom].textureId = -1;
-				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Front].textureId = -1;
-				BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Back].textureId = TextureIds::DoorBottom;
-			}
+	//		if (angle < 45) {
+	//			BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Left].textureId = TextureIds::DoorBottom;
+	//			BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Right].textureId = -1;
+	//			BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Top].textureId = -1;
+	//			BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Bottom].textureId = -1;
+	//			BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Front].textureId = -1;
+	//			BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Back].textureId = -1;
+	//		}
+	//		else if (angle > 45) {
+	//			BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Left].textureId = -1;
+	//			BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Right].textureId = -1;
+	//			BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Top].textureId = -1;
+	//			BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Bottom].textureId = -1;
+	//			BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Front].textureId = -1;
+	//			BlockTypes::Blocks[DoorBottom].faces[BasicVertices::Cube::Faces::Back].textureId = TextureIds::DoorBottom;
+	//		}
 
-			//m_HighlightedBlock->m_BlockId = BlockIds::DoorBottom;
-			m_HighlightedBlockChunk->GetBlockAt(m_HighlightedBlock->GetLocalPosition() + glm::u8vec3(0, 1, 0))->m_BlockId = BlockIds::DoorBottom;
-			m_HighlightedBlockChunk->SetDirty(true);
-		}
-	}
-
-	return;
+	//		//m_HighlightedBlock->m_BlockId = BlockIds::DoorBottom;
+	//		m_HighlightedBlockChunk->GetBlockAt(m_HighlightedBlock->GetLocalPosition() + glm::u8vec3(0, 1, 0))->m_BlockId = BlockIds::DoorBottom;
+	//		m_HighlightedBlockChunk->SetDirty(true);
+	//	}
+	//}
 
 	Raycast raycast(m_Camera.m_Position, m_Camera.m_Front);
 	raycast.m_MaxDistance = 7.0f;
@@ -343,7 +360,20 @@ void Player::HandleBlockPlacing()
 
 		if (blockToReplace)
 		{
-			//blockToReplace->m_BlockId = BlockIds::OakLeaves;
+			// Remember to de-aloc when done!
+			Block* targetedBlock = World::GetBlockAt(raycastPositionFloored)->GetBlock(m_HighlightedBlockChunk);
+
+			if (targetedBlock)
+			{
+				bool doDefault = targetedBlock->OnBlockRightClick();
+				if (doDefault)
+				{
+					blockToReplace->m_BlockId = BlockIds::Noteblock;
+					m_HighlightedBlockChunk->SetDirty(true);
+				}
+
+				delete targetedBlock;
+			}
 
 			/*BlockEntity* chest = new BlockEntity();
 			chest->m_BlockId = BlockIds::Chest;

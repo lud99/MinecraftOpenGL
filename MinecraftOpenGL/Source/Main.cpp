@@ -137,7 +137,7 @@ int main()
 		GLenum err;
 		while ((err = glGetError()) != GL_NO_ERROR)
 		{
-			std::cout << err << "\n";
+			std::cout << "OpenGL error: " << err << "\n";
 		}
 
 		/* Swap front and back buffers */

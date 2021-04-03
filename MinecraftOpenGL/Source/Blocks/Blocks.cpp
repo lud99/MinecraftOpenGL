@@ -1,11 +1,14 @@
 #include "Blocks.h"
 
 #include <iostream>
+#include <math.h>
 
 #include "../World/World.h"
 #include "../World/Chunk/Chunk.h"
 #include "../World/Chunk/ChunkBlock.h"
 #include "../World/DroppedItem.h"
+
+#include <irrklang/irrKlang.h>
 
 void BlockType::SetTexture(int textureId)
 {
@@ -56,6 +59,21 @@ bool Block::OnBlockClick()
 	return true;
 };
 
+bool Block::OnBlockLeftClick()
+{
+	return true;
+};
+
+bool Block::OnBlockRightClick()
+{
+	return true;
+}
+
+bool Block::OnBlockShouldBreak()
+{
+	return true;
+}
+
 bool Blocks::StoneBlock::OnBlockClick()
 {
 	std::cout << "Stone block clicked! " << (int)m_Position.x << " " << (int)m_Position.z << "\n";
@@ -73,4 +91,56 @@ bool Blocks::DirtBlock::OnBlockClick()
 	std::cout << "Dirt block clicked!\n";
 
 	return true;
+}
+
+bool Blocks::NoteBlock::OnBlockLeftClick()
+{
+	int maxNote = 24;
+
+	float spd = powf(2, (m_ChunkBlock->m_BlockData - maxNote / 2.0f) / 12.0f);
+
+	irrklang::ISound* snd = World::SoundEngine->play2D("Resources/Audio/harp.wav", false, false, true);
+	if (snd)
+	{
+		snd->setPlaybackSpeed(spd);
+	}
+
+	if (snd)
+	{
+		snd->drop();
+		snd = 0;
+	}
+
+	return false;
+}
+
+bool Blocks::NoteBlock::OnBlockRightClick()
+{
+	int maxNote = 24;
+
+	if (m_ChunkBlock->m_BlockData < maxNote)
+		m_ChunkBlock->m_BlockData++;
+	else
+		m_ChunkBlock->m_BlockData = 0;
+
+	float spd = powf(2, (m_ChunkBlock->m_BlockData - maxNote / 2.0f) / 12.0f);
+
+	irrklang::ISound* snd = World::SoundEngine->play2D("Resources/Audio/harp.wav", false, false, true);
+	if (snd)
+	{
+		snd->setPlaybackSpeed(spd);
+	}
+
+	if (snd)
+	{
+		snd->drop();
+		snd = 0;
+	}
+
+	return false;
+}
+
+bool Blocks::NoteBlock::OnBlockShouldBreak()
+{
+	return false;
 }

@@ -335,6 +335,9 @@ Block* ChunkBlock::GetBlock(Chunk* chunk)
 		break;
 	case Chest:
 		break;
+	case Noteblock:
+		block = new Blocks::NoteBlock(chunk, this);
+		break;
 	
 	default:
 		break;

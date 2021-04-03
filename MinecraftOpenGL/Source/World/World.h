@@ -18,6 +18,11 @@
 class Chunk;
 class WorldRenderer;
 
+namespace irrklang
+{
+	class ISoundEngine;
+};
+
 typedef std::unordered_map<glm::ivec2, Chunk*> ChunkMap;
 
 enum Directions {
@@ -67,6 +72,8 @@ namespace World
 	extern Collider m_LookingAtCollider;
 	extern WorldRenderer* m_Renderer;
 	extern ChunkBuilder m_ChunkBuilder;
+
+	extern irrklang::ISoundEngine* SoundEngine;
 
 	namespace {
 		GLFWwindow* m_Window;

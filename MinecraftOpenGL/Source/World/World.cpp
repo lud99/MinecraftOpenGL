@@ -13,6 +13,7 @@
 #include "Collider.h"
 #include <mutex>
 #include <GLFW/glfw3.h>
+#include <irrklang/irrKlang.h>
 
 void World::Init(GLFWwindow* window)
 {
@@ -20,6 +21,8 @@ void World::Init(GLFWwindow* window)
 	std::cout << "Using render distance " << Settings::RenderDistance << ". Total chunks: " << chunkCount << "\n";
 
 	m_Window = window;
+
+	SoundEngine = irrklang::createIrrKlangDevice();
 
 	m_TextureAtlas.Load();
 	BlockTypes::CreateBlocks();
@@ -296,6 +299,7 @@ TextureAtlas World::m_TextureAtlas;
 Collider World::m_LookingAtCollider;
 WorldRenderer* World::m_Renderer;
 ChunkBuilder World::m_ChunkBuilder;
+irrklang::ISoundEngine* World::SoundEngine;
 
 unsigned int World::m_ChunkCount = 0;
 
