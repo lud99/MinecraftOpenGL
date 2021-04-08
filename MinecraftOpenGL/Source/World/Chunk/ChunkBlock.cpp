@@ -5,7 +5,7 @@
 
 #include "Chunk.h"
 #include "../World.h"
-#include "../../Blocks/BlockTypes.h"
+#include "../../Blocks.h"
 #include <Graphics/Mesh.hpp>
 #include <Graphics/Textures/TextureAtlas.h>
 
@@ -308,6 +308,8 @@ BlockType* ChunkBlock::GetBlockType()
 
 Block* ChunkBlock::GetBlock(Chunk* chunk)
 {
+	using namespace BlockIds;
+
 	// Create a new instance with the data from this block
 	Block* block = nullptr;
 

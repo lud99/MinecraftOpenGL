@@ -160,13 +160,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Blocks\Blocks.cpp" />
+    <ClCompile Include="Source\Blocks.cpp" />
     <ClCompile Include="Source\Graphics\Graphics\Shader.cpp" />
     <ClCompile Include="Source\Graphics\Graphics\Textures\Cubemap.cpp" />
     <ClCompile Include="Source\Graphics\Graphics\Textures\Texture2D.cpp" />
     <ClCompile Include="Source\Graphics\Graphics\Textures\TextureAtlas.cpp" />
     <ClCompile Include="Source\Graphics\Graphics\Vertex.cpp" />
-    <ClCompile Include="Source\Time.cpp" />
+    <ClCompile Include="Source\Time.h" />
     <ClCompile Include="Source\Utils\Raycast.cpp" />
     <ClCompile Include="Source\World\Chunk\BlockEntity.cpp" />
     <ClCompile Include="Source\World\Chunk\ChunkIO.cpp" />
@@ -179,7 +179,6 @@
     <ClCompile Include="Source\World\Chunk\ChunkBuilder.cpp" />
     <ClCompile Include="Source\World\Player\Crosshair.cpp" />
     <ClCompile Include="Source\World\Player\Player.cpp" />
-    <ClCompile Include="Source\Blocks\BlockTypes.cpp" />
     <ClCompile Include="Source\World\Chunk\ChunkBlock.cpp" />
     <ClCompile Include="Source\Noise\FastNoise.cpp" />
     <ClCompile Include="Source\World\Chunk\Chunk.cpp" />
@@ -196,10 +195,8 @@
     <ClInclude Include="Source\Graphics\Graphics\Textures\Cubemap.h" />
     <ClInclude Include="Source\Graphics\Graphics\Textures\Texture2D.h" />
     <ClInclude Include="Source\Graphics\Graphics\Textures\TextureAtlas.h" />
-    <ClInclude Include="Source\Graphics\Graphics\Textures\TextureIds.h" />
     <ClInclude Include="Source\Graphics\Graphics\Vertex.h" />
     <ClInclude Include="Source\Graphics\Textures\Cubemap.h" />
-    <ClInclude Include="Source\Time.h" />
     <ClInclude Include="Source\Utils\Raycast.h" />
     <ClInclude Include="Source\World\Chunk\BlockEntity.h" />
     <ClInclude Include="Source\World\Chunk\ChunkIO.h" />
@@ -211,9 +208,8 @@
     <ClInclude Include="Source\World\Chunk\ChunkBuilder.h" />
     <ClInclude Include="Source\World\Player\Crosshair.h" />
     <ClInclude Include="Source\World\Player\Player.h" />
-    <ClInclude Include="Source\Blocks\Blocks.h" />
-    <ClInclude Include="Source\Blocks\BlockIds.h" />
-    <ClInclude Include="Source\Blocks\BlockTypes.h" />
+    <ClInclude Include="Source\Blocks.h" />
+    <ClInclude Include="Source\BlockIds.h" />
     <ClInclude Include="Source\World\Chunk\ChunkBlock.h" />
     <ClInclude Include="Source\Noise\FastNoise.h" />
     <ClInclude Include="Source\World\Chunk\Chunk.h" />

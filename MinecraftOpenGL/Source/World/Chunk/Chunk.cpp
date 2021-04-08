@@ -9,12 +9,12 @@
 #include "../DroppedItem.h"
 #include "BlockEntity.h"
 #include "ChunkIO.h"
-#include "../../Blocks/BlockTypes.h"
+#include "../../Blocks.h"
 #include "../World.h"
 #include "../../Noise/NoiseGenerator.h"
 #include "../../Utils/ThreadPool.h"
-#include "../../Blocks/BlockIds.h"
-#include "../../Blocks/Blocks.h"
+#include "../../BlockIds.h"
+#include "../../Blocks.h"
 
 Chunk::Chunk(glm::ivec2 position)
 {
@@ -109,16 +109,48 @@ void Chunk::GenerateTerrain()
 	noise.SetSeed(123456789);
 	noise.SetNoiseType(FastNoise::Perlin);
 
+#define oldbiome 1
+
 	for (int x = 0; x < Chunk::Width; x++)
 	{
 		for (int z = 0; z < Chunk::Depth; z++)
-		{
+		{			
+#ifdef newbiome
+			int h = 10;
+			float biome = noise.Normalize(noise.GetNoise(worldPosition.x * 0.5f, worldPosition.z * 0.5f)) * 10;
+
+			{
+				float scale1 = 7.5f, scale2 = 0.25, scale3 = 10.0f, scale4 = 7.0f;
+				float noise1 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale1, worldPosition.z * scale1, 4)) * 1.125f;
+
+				float finalHeight = noise1 + offset;
+
+				id = BlockIds::Sand;
+
+				for (int y = 0; y < finalHeight; y++)
+				{
+					GetBlockAt(glm::vec3(x, y, z))->m_BlockId = (int)id;
+				}
+			}
+
+
+			//if (finalHeight > 255) finalHeight = 255;
+			//if (finalHeight < 0) finalHeight = 0;
+			//GetBlockAt(glm::vec3(x, finalHeight, z))->m_BlockId = id;
+			//for (int y = 0; y < 50; y++)
+			//{
+			//	//GetBlockAt(glm::vec3(x, y, z))->m_BlockId = (int)id;
+			//}
+
+			//m_HeightMap[x][z] = (uint8_t)finalHeight;
+#endif
+#ifdef oldbiome
 			glm::vec3 worldPosition = GetBlockAt(glm::vec3(x, 0, z))->GetWorldPosition(this);
 
 			float scale1 = 7.5f, scale2 = 0.25, scale3 = 10.0f, scale4 = 7.0f;
 			float holesScale = 20.0f;
 
-			float noise1 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale1, worldPosition.z * scale1, 4)) * 4.125f;
+			float noise1 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale1, worldPosition.z * scale1, 4)) * 2.125f;
 			float noise2 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale2, worldPosition.z * scale2, 3)) * 2.5f;
 			float noise3 = noise.Normalize(noise.GetOctaveNoise(worldPosition.x * scale2 * 3, worldPosition.z * scale2 * 3, 3)) * 0.5f;
 			float noise4 = noise.Normalize(noise.GetCombinedNoise(worldPosition.x * scale3, worldPosition.z * scale3, 3, 3)) * .025f;
@@ -191,7 +223,7 @@ void Chunk::GenerateTerrain()
 				ChunkBlock* block = GetBlockAt(glm::vec3(x, y, z));
 				ChunkBlock* blockAbove = GetBlockAt(glm::vec3(x, y + 1, z));
 
-				BlockIds blockId = BlockIds::Air;
+				uint8_t blockId = BlockIds::Air;
 
 				if (y <= stoneTransition) blockId = BlockIds::Stone;
 				else if (y <= dirtTransition) blockId = BlockIds::Dirt;
@@ -226,7 +258,7 @@ void Chunk::GenerateTerrain()
 			m_HeightMap[x][z] = (uint8_t)finalHeight;
 
 
-
+#endif
 		}
 
 		/*if (y < finalHeight)
@@ -258,9 +290,9 @@ void Chunk::GenerateTerrain()
 			}
 
 		}*/
-
 	}
 
+#ifdef TREES
 	// Tree generation
 	for (int x = 0; x < Chunk::Width; x++)
 	{
@@ -307,6 +339,7 @@ void Chunk::GenerateTerrain()
 		}
 	}
 
+#endif
 	m_HasGenerated = true;
 	m_IsGenerating = false;
 	m_ShouldRebuild = true;

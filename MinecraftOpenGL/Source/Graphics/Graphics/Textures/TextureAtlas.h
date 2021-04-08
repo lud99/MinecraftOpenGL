@@ -6,8 +6,6 @@
 
 #include <glm/vec2.hpp>
 
-#include "TextureIds.h"
-
 struct BlockTexture {
 	glm::vec2 textureCoordinates[4] = {
 		glm::vec2(0.0f, 0.0f),
@@ -29,7 +27,7 @@ struct TextureAtlas {
 	const static int BlockSize = 16;
 	const static int BlockCountRow = Size / BlockSize;
 
-	static BlockTexture BlockTextures[TextureIds::TextureIds::Count];
+	static BlockTexture BlockTextures[1];
 
 	static void Load();
 	

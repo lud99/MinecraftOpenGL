@@ -1,7 +1,7 @@
 #include "TextureAtlas.h"
 
 #include <iostream>
-using namespace TextureIds;
+// namespace TextureIds;
 
 void BlockTexture::SetTextureAtlasOffset(glm::vec2 offset)
 {
@@ -35,6 +35,6 @@ TextureAtlas::~TextureAtlas()
 	delete Texture;
 }
 
-BlockTexture TextureAtlas::BlockTextures[Count];
+BlockTexture TextureAtlas::BlockTextures[1];
 
 Texture2D* TextureAtlas::Texture;

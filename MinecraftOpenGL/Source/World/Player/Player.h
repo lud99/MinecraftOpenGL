@@ -54,7 +54,9 @@ private:
 	glm::vec3 m_Velocity;
 	float m_MovementSpeed = 0.0f;
 	float m_Acceleration = 2.0f;
-	float m_MaxVelocity = 0.5f;
+	float m_MaxVelocity = 0.1f;
+
+	bool m_IsStandingOnGround = false;
 
 	float m_EyeOffset = 1.62f;
 	float m_Height = 1.85f;
@@ -68,5 +70,9 @@ private:
 	float m_LastMouseX = 400, m_LastMouseY = 300;
 	float m_MouseSensitivity = 0.1f;
 	float m_MouseYaw = 0, m_MousePitch = 0;
+
+	static constexpr int HotbarSlots = 9;
+	int m_Hotbar[HotbarSlots];
+	int m_CurrentHotbarSlot = 0;
 };
 

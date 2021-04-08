@@ -2,7 +2,7 @@
 
 #include "World.h"
 #include "WorldRenderer.h"
-#include "../Blocks/BlockTypes.h"
+#include "../Blocks.h"
 
 DroppedItem::DroppedItem()
 {

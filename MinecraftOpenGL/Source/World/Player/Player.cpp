@@ -8,7 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp> 
 
 #include "../../InputHandler.h"
-#include "../Blocks/Blocks.h"
+#include "../Blocks.h"
 #include "../World.h"
 #include "../Chunk/Chunk.h"
 #include "../Chunk/ChunkBlock.h"
@@ -18,6 +18,10 @@
 #include "../../Time.h"
 
 #include <GLFW/glfw3.h>
+
+float clamp(float n, float lower, float upper) {
+	return std::max(lower, std::min(n, upper));
+}
 
 Player::Player()
 {
@@ -32,12 +36,37 @@ Player::Player(GLFWwindow* window)
 void Player::Init()
 {
 	m_Crosshair.Init();
+
+	for (int i = 1; i < HotbarSlots; i++)
+	{
+		m_Hotbar[i] = i;
+	}
 }
 
 void Player::Update()
 {
+	// Update hotbar slot
+	if (InputHandler::IsKeyPressed(GLFW_KEY_1))
+		m_CurrentHotbarSlot = 0;
+	if (InputHandler::IsKeyPressed(GLFW_KEY_2))
+		m_CurrentHotbarSlot = 1;
+	if (InputHandler::IsKeyPressed(GLFW_KEY_3))
+		m_CurrentHotbarSlot = 2;
+	if (InputHandler::IsKeyPressed(GLFW_KEY_4))
+		m_CurrentHotbarSlot = 3;
+	if (InputHandler::IsKeyPressed(GLFW_KEY_5))
+		m_CurrentHotbarSlot = 4;
+	if (InputHandler::IsKeyPressed(GLFW_KEY_6))
+		m_CurrentHotbarSlot = 5;
+	if (InputHandler::IsKeyPressed(GLFW_KEY_7))
+		m_CurrentHotbarSlot = 6;
+	if (InputHandler::IsKeyPressed(GLFW_KEY_8))
+		m_CurrentHotbarSlot = 7;
+	if (InputHandler::IsKeyPressed(GLFW_KEY_9))
+		m_CurrentHotbarSlot = 8;
+
 	// Block breaking
-	if (InputHandler::isMouseButtonHeld(GLFW_MOUSE_BUTTON_LEFT))
+	if (InputHandler::IsMouseButtonHeld(GLFW_MOUSE_BUTTON_LEFT))
 		HandleBlockBreaking();
 	else
 		m_BlockBreakProgress = 0.0f;
@@ -120,56 +149,165 @@ void Player::HandleMovement()
 {
 	// TODO
 
-	float friction = 0.1f;
-
-	int aDInput = m_Input.IsKeyPressed(GLFW_KEY_D) - m_Input.IsKeyPressed(GLFW_KEY_A);
-	int wSInput = m_Input.IsKeyPressed(GLFW_KEY_W) - m_Input.IsKeyPressed(GLFW_KEY_S);
+	int aDInput = m_Input.IsKeyHeld(GLFW_KEY_D) - m_Input.IsKeyHeld(GLFW_KEY_A);
+	int wSInput = m_Input.IsKeyHeld(GLFW_KEY_W) - m_Input.IsKeyHeld(GLFW_KEY_S);
 	int shiftSpaceInput = m_Input.IsKeyPressed(GLFW_KEY_SPACE) - m_Input.IsKeyPressed(GLFW_KEY_LEFT_SHIFT);
 
-	if (aDInput != 0) {
-		m_MovementSpeed += aDInput * m_Acceleration;
+	float acceleration = 2.0f;
 
-		if (m_MovementSpeed > m_MaxVelocity) m_MovementSpeed = m_MaxVelocity;
-		if (m_MovementSpeed < -m_MaxVelocity) m_MovementSpeed = -m_MaxVelocity;
+	glm::vec3 newVelocity(m_Velocity);
+	glm::vec3 newMovementDirection(0.0f);
 
-		m_Velocity += glm::normalize(glm::cross(m_Camera.m_Front2D, m_Camera.m_Up)) * m_MovementSpeed * Time::DeltaTime;
+	//if (InputHandler::IsKeyHeld(GLFW_KEY_W))
+	//{
+	//	newMovementDirection += glm::normalize(m_Camera.m_Front2D);
+	//	//newVelocity = glm::vec3(m_Velocity.x, 0.0f, m_Velocity.y) + m_Camera.m_Front2D * acceleration * (float)Time::DeltaTime;
+	//
+	//	/*if (glm::length(newVelocity) < m_MaxVelocity)
+	//		m_Velocity = glm::vec3(newVelocity.x, m_Velocity.y, newVelocity.z);*/
+	//}
+
+	if (InputHandler::IsKeyHeld(GLFW_KEY_W))
+		newMovementDirection += glm::normalize(m_Camera.m_Front2D);
+	if (InputHandler::IsKeyHeld(GLFW_KEY_A))
+		newMovementDirection -= glm::normalize(glm::cross(m_Camera.m_Front2D, m_Camera.m_Up));
+	if (InputHandler::IsKeyHeld(GLFW_KEY_S))
+		newMovementDirection -= glm::normalize(m_Camera.m_Front2D);
+	if (InputHandler::IsKeyHeld(GLFW_KEY_D))
+		newMovementDirection += glm::normalize(glm::cross(m_Camera.m_Front2D, m_Camera.m_Up));
+
+	// Is undefined if x and z are equal to 0
+	if (newMovementDirection.x != 0 || newMovementDirection.z != 0)
+		newMovementDirection = glm::normalize(newMovementDirection);
+
+	/*if (InputHandler::IsKeyHeld(GLFW_KEY_S))
+	{
+		glm::vec3 newVelocity = m_Velocity + m_Camera.m_Front2D * -acceleration * (float)Time::DeltaTime;
+		newVelocity.y = 0.0f;
+		if (glm::length(newVelocity) < m_MaxVelocity)
+			m_Velocity = glm::vec3(newVelocity.x, m_Velocity.y, newVelocity.z);
 	}
-	if (wSInput != 0) {
-		m_MovementSpeed += wSInput * m_Acceleration;
-
-		if (m_MovementSpeed > m_MaxVelocity) m_MovementSpeed = m_MaxVelocity;
-		if (m_MovementSpeed < -m_MaxVelocity) m_MovementSpeed = -m_MaxVelocity;
-
-		m_Velocity += m_Camera.m_Front2D * m_MovementSpeed * Time::DeltaTime;
+	if (InputHandler::IsKeyHeld(GLFW_KEY_D))
+	{
+		glm::vec3 newVelocity = m_Velocity + glm::normalize(glm::cross(m_Camera.m_Front2D, m_Camera.m_Up)) * acceleration * (float)Time::DeltaTime;
+		newVelocity.y = 0.0f;
+		if (glm::length(newVelocity) < m_MaxVelocity)
+			m_Velocity = glm::vec3(newVelocity.x, m_Velocity.y, newVelocity.z);
 	}
+	if (InputHandler::IsKeyHeld(GLFW_KEY_A))
+	{
+		glm::vec3 newVelocity = m_Velocity + glm::normalize(glm::cross(m_Camera.m_Front2D, m_Camera.m_Up)) * -acceleration * (float)Time::DeltaTime;
+		newVelocity.y = 0.0f;
+		if (glm::length(newVelocity) < m_MaxVelocity)
+			m_Velocity = glm::vec3(newVelocity.x, m_Velocity.y, newVelocity.z);
+	}*/
 
-	if (m_Input.IsKeyPressed(GLFW_KEY_SPACE))
-		m_Velocity.y = 3.f * Time::DeltaTime * m_Acceleration;
+	//if (aDInput != 0) {
+	//	m_MovementSpeed = aDInput * acceleration;
+
+	//	//m_MovementSpeed = clamp(m_MovementSpeed, -m_MaxVelocity, m_MaxVelocity);
+
+	//	glm::vec3 newVelocity = m_Velocity + glm::normalize(glm::cross(m_Camera.m_Front2D, m_Camera.m_Up)) * m_MovementSpeed * (float)Time::DeltaTime;
+	//	newVelocity.y = 0.0f;
+	//	if (glm::length(newVelocity) < m_MaxVelocity)
+	//		m_Velocity = glm::vec3(newVelocity.x, m_Velocity.y, newVelocity.z);
+
+	//	//m_Velocity += glm::normalize(glm::cross(m_Camera.m_Front2D, m_Camera.m_Up)) * m_MovementSpeed * (float)Time::DeltaTime;
+	//}
+	//if (wSInput != 0) {
+	//	m_MovementSpeed = wSInput * acceleration;
+
+	//	glm::vec3 newVelocity = m_Velocity + m_Camera.m_Front2D * m_MovementSpeed * (float)Time::DeltaTime;
+	//	newVelocity.y = 0.0f;
+	//	if (glm::length(newVelocity) < m_MaxVelocity)
+	//		m_Velocity = glm::vec3(newVelocity.x, m_Velocity.y, newVelocity.z);
+
+	//	//m_MovementSpeed = clamp(m_MovementSpeed, -m_MaxVelocity, m_MaxVelocity);
+
+	//	//m_Velocity += m_Camera.m_Front2D * m_MovementSpeed * (float)Time::DeltaTime;
+	//}
+
+	//if (m_Input.IsKeyPressed(GLFW_KEY_SPACE))
+	//	m_Velocity.y = 0.212132034356f;//6.f * Time::DeltaTime * m_Acceleration;
 	if (m_Input.IsKeyPressed(GLFW_KEY_LEFT_SHIFT))
-		m_Velocity.y = -3.f * Time::DeltaTime * m_Acceleration;
+		m_Velocity.y = -6.f * Time::DeltaTime * m_Acceleration;
 
-	// Increase and decrease movement speed
-	if (m_Input.IsKeyPressed(GLFW_KEY_E))
+	//// Increase and decrease movement speed
+	if (m_Input.IsKeyHeld(GLFW_KEY_E))
 		m_MaxVelocity += 0.025f * 10 * Time::DeltaTime;
-	if (m_Input.IsKeyPressed(GLFW_KEY_Q))
+	if (m_Input.IsKeyHeld(GLFW_KEY_Q))
 		m_MaxVelocity -= 0.025f * 10 * Time::DeltaTime;
 
-	// Lerp movement speed towards 0
-	m_Velocity.x = Utils::Math::Lerp(m_Velocity.x, 0, friction);
-	//m_Velocity.y = Utils::Math::Lerp(m_Velocity.y, 0, friction);
-	m_Velocity.z = Utils::Math::Lerp(m_Velocity.z, 0, friction);
+	// Only jump if on ground
+	if (m_IsStandingOnGround && m_Input.IsKeyPressed(GLFW_KEY_SPACE))
+		m_Velocity.y = 0.212132034356f; // v0 = sqrt(2*g*h)
+
+	if (m_Input.IsKeyHeld(GLFW_KEY_SPACE))
+	m_Velocity.y = 0.212132034356f; // v0 = sqrt(2*g*h)
+
+	m_Velocity += newMovementDirection * acceleration * (float)Time::DeltaTime;
+
+	float friction = 0.5f;
+	ChunkBlock* blockBelow = World::GetBlockAt(glm::floor(m_Position - glm::vec3(0, ChunkBlock::Size, 0)));
+	if (blockBelow) friction = blockBelow->GetBlockType()->friction;
+
+	glm::vec3 frictionVelocity(Utils::Math::Lerp(m_Velocity.x, 0.0f, friction), 0.0f, Utils::Math::Lerp(m_Velocity.z, 0.0f, friction));
+	
+	float mag = glm::length(frictionVelocity);
+	if (mag > m_MaxVelocity && mag != 0)
+	{
+		float scale = m_MaxVelocity / mag;
+
+		m_Velocity.x *= scale;
+		m_Velocity.z *= scale;
+	}
+	else 
+	{
+		m_Velocity = glm::vec3(frictionVelocity.x, m_Velocity.y, frictionVelocity.z);
+	}
+
+	/*if (glm::length(norm) != 0)
+		acceleration = glm::length(norm);*/
+
+	/*m_Velocity.x = Utils::Math::Lerp(m_Velocity.x, 0.0f, friction);
+	m_Velocity.z = Utils::Math::Lerp(m_Velocity.z, 0.0f, friction);*/
+
+
+
+
+	/*m_Velocity.x = Utils::Math::Clamp(m_Velocity.x, -m_MaxVelocity, m_MaxVelocity);
+	m_Velocity.z = Utils::Math::Clamp(m_Velocity.z, -m_MaxVelocity, m_MaxVelocity);*/
+
+	/*if (blockBelow && (wSInput == 0))
+	{
+		float friction = fabs(blockBelow->GetBlockType()->friction - 1);
+
+		m_MovementSpeed = m_Velocity.x * friction;
+
+		m_MovementSpeed = clamp(m_MovementSpeed, -m_MaxVelocity, m_MaxVelocity);
+
+		m_Velocity.x = m_MovementSpeed;
+		
+		m_MovementSpeed = m_Velocity.z * friction;
+
+		m_MovementSpeed = clamp(m_MovementSpeed, -m_MaxVelocity, m_MaxVelocity);
+
+		m_Velocity.z = m_MovementSpeed;
+	}*/
+
+	//std::cout << glm::length(m_Velocity) << "\n";// << m_Velocity.x << "; " << m_Velocity.z << "\n";
+
+	// Apply gravity
+	m_Velocity.y += World::Gravity * Time::DeltaTime;
 }
 
 void Player::HandleCollision()
 {
-	float gravity = -0.1f * Time::DeltaTime;
-
 	// Don't do collision checks if not inside a chunk
 	if (!World::ChunkExistsAt(Utils::WorldPositionToChunkPosition(m_Position)))
 		return;
 
-	// Apply gravity and collision detection
-	m_Velocity.y += gravity;
+	m_IsStandingOnGround = false;
 
 	// Check for collision with block below
 	if (m_Velocity.y < 0)
@@ -185,6 +323,8 @@ void Player::HandleCollision()
 			// Check if the player will be inside the top block after the velocity (aka the velocity is larger than the distance to the block above)
 			if (std::abs(m_Velocity.y) > distanceToBlock)
 				m_Velocity.y = -distanceToBlock;
+
+			m_IsStandingOnGround = true;
 		}
 	}
 
@@ -251,7 +391,7 @@ void Player::MouseCallback(GLFWwindow* window, double xpos, double ypos)
 
 void Player::HandleBlockBreaking()
 {
-	float blockBreakSpeed = 2.0f * Time::DeltaTime;
+	float blockBreakSpeed = 4.0f * Time::DeltaTime;
 	if (!m_HighlightedBlock)
 	{
 		m_BlockBreakProgress = 0.0f;
@@ -360,20 +500,27 @@ void Player::HandleBlockPlacing()
 
 		if (blockToReplace)
 		{
+			blockToReplace->m_BlockId = (uint8_t)m_Hotbar[m_CurrentHotbarSlot];
+			m_HighlightedBlockChunk->SetDirty(true);
+
 			// Remember to de-aloc when done!
-			Block* targetedBlock = World::GetBlockAt(raycastPositionFloored)->GetBlock(m_HighlightedBlockChunk);
+			/*Block* targetedBlock = World::GetBlockAt(raycastPositionFloored)->GetBlock(m_HighlightedBlockChunk);
 
 			if (targetedBlock)
 			{
 				bool doDefault = targetedBlock->OnBlockRightClick();
 				if (doDefault)
 				{
-					blockToReplace->m_BlockId = BlockIds::Noteblock;
+					blockToReplace->m_BlockId = (uint8_t) m_Hotbar[m_CurrentHotbarSlot] || BlockIds::Stone;
 					m_HighlightedBlockChunk->SetDirty(true);
 				}
 
 				delete targetedBlock;
 			}
+			else {
+				blockToReplace->m_BlockId = m_Hotbar[m_CurrentHotbarSlot] || BlockIds::Stone;
+				m_HighlightedBlockChunk->SetDirty(true);
+			}*/
 
 			/*BlockEntity* chest = new BlockEntity();
 			chest->m_BlockId = BlockIds::Chest;

@@ -26,11 +26,13 @@ struct BlockFace
 struct BlockType
 {
 	const std::string name;
-	int id;
+	int id = BlockIds::Air;
 	bool isTranslucent = false; // For example water. Has opacity but not no parts with 0 opacity
 	bool isTransparent = false; // For example leaves. Has some parts which are fully see-through
 	bool isOpaque = true; // Solid blocks. Neither transparent or translucent
 	bool isModel = false; // For blocks that need custom vertices
+
+	float friction = 0.25f;
 
 	BlockFace faces[6];
 
@@ -39,6 +41,11 @@ struct BlockType
 	void SetTexture(int textureId);
 };
 
+namespace BlockTypes {
+	extern BlockType Blocks[BlockIds::Count];
+
+	void CreateBlocks();
+}
 
 // glm::u8vec3 position, uint8_t blockId, uint16_t blockData
 class Block

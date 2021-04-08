@@ -9,7 +9,7 @@
 #include "Chunk/Chunk.h"
 #include "Chunk/ChunkIO.h"
 #include "../Utils/Utils.h"
-#include "../Blocks/BlockTypes.h"
+#include "../Blocks.h"
 #include "Collider.h"
 #include <mutex>
 #include <GLFW/glfw3.h>
@@ -303,4 +303,4 @@ irrklang::ISoundEngine* World::SoundEngine;
 
 unsigned int World::m_ChunkCount = 0;
 
-int Settings::RenderDistance = 4;
+int Settings::RenderDistance = 16;

@@ -18,6 +18,9 @@
 #include "World/Chunk/Chunk.h"
 #include "Time.h"
 
+float Time::ElapsedTime;
+float Time::DeltaTime;
+
 void MouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
 	World::GetPlayer().MouseCallback(window, xpos, ypos);
@@ -26,6 +29,11 @@ void MouseCallback(GLFWwindow* window, double xpos, double ypos)
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
 	InputHandler::UpdateMouseButtonState(button, action, mods);
+}
+
+void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	InputHandler::UpdateKeyState(key, action, mods);
 }
 
 void test()
@@ -61,6 +69,7 @@ int main()
 
 	glfwSetCursorPosCallback(window, MouseCallback);
 	glfwSetMouseButtonCallback(window, MouseButtonCallback);
+	glfwSetKeyCallback(window, KeyCallback);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwWindowHint(GLFW_SAMPLES, 4);
@@ -124,8 +133,8 @@ int main()
 			previousTime = currentTime;
 		}
 
-		Time::ElapsedTime = (float)glfwGetTime();
-		Time::DeltaTime = Time::ElapsedTime - (float)prevTime;
+		Time::ElapsedTime = glfwGetTime();
+		Time::DeltaTime = Time::ElapsedTime - prevTime;
 
 		prevTime = Time::ElapsedTime;
 
@@ -143,7 +152,7 @@ int main()
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
 
-		InputHandler::Init(window);
+		InputHandler::Clear();
 
 	}
 

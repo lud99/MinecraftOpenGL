@@ -74,6 +74,7 @@ namespace World
 	extern ChunkBuilder m_ChunkBuilder;
 
 	extern irrklang::ISoundEngine* SoundEngine;
+	extern constexpr float Gravity = -0.6f;
 
 	namespace {
 		GLFWwindow* m_Window;

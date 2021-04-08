@@ -24,9 +24,6 @@
     <ClCompile Include="Source\World\World.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Blocks\BlockTypes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\World\Chunk\Chunk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -93,10 +90,10 @@
     <ClCompile Include="Source\Graphics\Graphics\Textures\Texture2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Blocks\Blocks.cpp">
+    <ClCompile Include="Source\Blocks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Time.cpp">
+    <ClCompile Include="Source\Time.h">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -105,12 +102,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\World\World.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Blocks\BlockIds.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Blocks\BlockTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\World\Chunk\Chunk.h">
@@ -194,16 +185,13 @@
     <ClInclude Include="Source\Graphics\Graphics\Textures\TextureAtlas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\Graphics\Textures\TextureIds.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Graphics\Graphics\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Blocks\Blocks.h">
+    <ClInclude Include="Source\BlockIds.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Time.h">
+    <ClInclude Include="Source\Blocks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
