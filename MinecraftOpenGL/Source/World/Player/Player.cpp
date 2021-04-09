@@ -147,41 +147,16 @@ void Player::UpdateCameraPosition()
 
 void Player::HandleMovement()
 {
-	// TODO
-
-	int aDInput = m_Input.IsKeyHeld(GLFW_KEY_D) - m_Input.IsKeyHeld(GLFW_KEY_A);
-	int wSInput = m_Input.IsKeyHeld(GLFW_KEY_W) - m_Input.IsKeyHeld(GLFW_KEY_S);
-	int shiftSpaceInput = m_Input.IsKeyPressed(GLFW_KEY_SPACE) - m_Input.IsKeyPressed(GLFW_KEY_LEFT_SHIFT);
-
 	float friction = 0.0f;
 	ChunkBlock* blockBelow = World::GetBlockAt(glm::floor(m_Position - glm::vec3(0, ChunkBlock::Size, 0)));
 	if (blockBelow && blockBelow->m_BlockId != BlockIds::Air) friction = blockBelow->GetBlockType()->friction;
 
-	float flippedFriction = std::fabs(friction - 1);
-
-	float baseAcceleration = 2.0f;
-
-	
-	/*if (glm::length(m_Velocity) > 0)
-	{
-		m_Acceleration += 0.01f;
-	}
-	else {
-		m_Acceleration = 2.0f;
-	}*/
-	//m_Acceleration = 2.0f * ((flippedFriction + 0.5f) / 2.0f);
+	// Make the acceleration based on the friction of the block. 
+	// This makes it so it's more slippery to move on ice, compared to dirt
+	m_Acceleration = m_BaseAcceleration * (friction == 0.0f ? 0.25f : friction);
 
 	glm::vec3 newVelocity(m_Velocity);
 	glm::vec3 newMovementDirection(0.0f);
-
-	//if (InputHandler::IsKeyHeld(GLFW_KEY_W))
-	//{
-	//	newMovementDirection += glm::normalize(m_Camera.m_Front2D);
-	//	//newVelocity = glm::vec3(m_Velocity.x, 0.0f, m_Velocity.y) + m_Camera.m_Front2D * acceleration * (float)Time::DeltaTime;
-	//
-	//	/*if (glm::length(newVelocity) < m_MaxVelocity)
-	//		m_Velocity = glm::vec3(newVelocity.x, m_Velocity.y, newVelocity.z);*/
-	//}
 
 	if (InputHandler::IsKeyHeld(GLFW_KEY_W))
 		newMovementDirection += glm::normalize(m_Camera.m_Front2D);
@@ -196,77 +171,31 @@ void Player::HandleMovement()
 	if (newMovementDirection.x != 0 || newMovementDirection.z != 0)
 		newMovementDirection = glm::normalize(newMovementDirection);
 
-	/*if (InputHandler::IsKeyHeld(GLFW_KEY_S))
-	{
-		glm::vec3 newVelocity = m_Velocity + m_Camera.m_Front2D * -acceleration * (float)Time::DeltaTime;
-		newVelocity.y = 0.0f;
-		if (glm::length(newVelocity) < m_MaxVelocity)
-			m_Velocity = glm::vec3(newVelocity.x, m_Velocity.y, newVelocity.z);
-	}
-	if (InputHandler::IsKeyHeld(GLFW_KEY_D))
-	{
-		glm::vec3 newVelocity = m_Velocity + glm::normalize(glm::cross(m_Camera.m_Front2D, m_Camera.m_Up)) * acceleration * (float)Time::DeltaTime;
-		newVelocity.y = 0.0f;
-		if (glm::length(newVelocity) < m_MaxVelocity)
-			m_Velocity = glm::vec3(newVelocity.x, m_Velocity.y, newVelocity.z);
-	}
-	if (InputHandler::IsKeyHeld(GLFW_KEY_A))
-	{
-		glm::vec3 newVelocity = m_Velocity + glm::normalize(glm::cross(m_Camera.m_Front2D, m_Camera.m_Up)) * -acceleration * (float)Time::DeltaTime;
-		newVelocity.y = 0.0f;
-		if (glm::length(newVelocity) < m_MaxVelocity)
-			m_Velocity = glm::vec3(newVelocity.x, m_Velocity.y, newVelocity.z);
-	}*/
-
-	//if (aDInput != 0) {
-	//	m_MovementSpeed = aDInput * acceleration;
-
-	//	//m_MovementSpeed = clamp(m_MovementSpeed, -m_MaxVelocity, m_MaxVelocity);
-
-	//	glm::vec3 newVelocity = m_Velocity + glm::normalize(glm::cross(m_Camera.m_Front2D, m_Camera.m_Up)) * m_MovementSpeed * (float)Time::DeltaTime;
-	//	newVelocity.y = 0.0f;
-	//	if (glm::length(newVelocity) < m_MaxVelocity)
-	//		m_Velocity = glm::vec3(newVelocity.x, m_Velocity.y, newVelocity.z);
-
-	//	//m_Velocity += glm::normalize(glm::cross(m_Camera.m_Front2D, m_Camera.m_Up)) * m_MovementSpeed * (float)Time::DeltaTime;
-	//}
-	//if (wSInput != 0) {
-	//	m_MovementSpeed = wSInput * acceleration;
-
-	//	glm::vec3 newVelocity = m_Velocity + m_Camera.m_Front2D * m_MovementSpeed * (float)Time::DeltaTime;
-	//	newVelocity.y = 0.0f;
-	//	if (glm::length(newVelocity) < m_MaxVelocity)
-	//		m_Velocity = glm::vec3(newVelocity.x, m_Velocity.y, newVelocity.z);
-
-	//	//m_MovementSpeed = clamp(m_MovementSpeed, -m_MaxVelocity, m_MaxVelocity);
-
-	//	//m_Velocity += m_Camera.m_Front2D * m_MovementSpeed * (float)Time::DeltaTime;
-	//}
-
+	// Jump
 	//if (m_Input.IsKeyPressed(GLFW_KEY_SPACE))
 	//	m_Velocity.y = 0.212132034356f;//6.f * Time::DeltaTime * m_Acceleration;
 	if (m_Input.IsKeyPressed(GLFW_KEY_LEFT_SHIFT))
 		m_Velocity.y = -6.f * Time::DeltaTime * m_Acceleration;
 
-	//// Increase and decrease movement speed
+	// Increase and decrease movement speed
 	if (m_Input.IsKeyHeld(GLFW_KEY_E))
 	{
 		m_MaxVelocity += 0.25f * Time::DeltaTime;
-		m_Acceleration += m_Acceleration * Time::DeltaTime;
+		m_BaseAcceleration += m_BaseAcceleration * Time::DeltaTime;
 	}
 	if (m_Input.IsKeyHeld(GLFW_KEY_Q))
 	{
 		m_MaxVelocity -= 0.25f * Time::DeltaTime;
-		m_Acceleration -= m_Acceleration * Time::DeltaTime;
+		m_BaseAcceleration -= m_BaseAcceleration * Time::DeltaTime;
 	}
-
 
 	// Only jump if on ground
 	if (m_IsStandingOnGround && m_Input.IsKeyPressed(GLFW_KEY_SPACE))
 		m_Velocity.y = 0.212132034356f; // v0 = sqrt(2*g*h)
 
+	// Fly
 	if (m_Input.IsKeyHeld(GLFW_KEY_SPACE))
-	m_Velocity.y = 0.212132034356f; // v0 = sqrt(2*g*h)
+		m_Velocity.y = 0.212132034356f; // v0 = sqrt(2*g*h)
 
 	m_Velocity += newMovementDirection * m_Acceleration * (float)Time::DeltaTime;
 
@@ -293,46 +222,10 @@ void Player::HandleMovement()
 		m_Velocity.x *= scale;
 		m_Velocity.z *= scale;
 	}
-	/*else
-	{
-		m_Velocity = glm::vec3(frictionVelocity.x, m_Velocity.y, frictionVelocity.z);
-	}*/
-
-	std::cout << "mag: " << mag << "; " << velMag << "\n";
-
-	/*if (glm::length(norm) != 0)
-		acceleration = glm::length(norm);*/
-
-	/*m_Velocity.x = Utils::Math::Lerp(m_Velocity.x, 0.0f, friction);
-	m_Velocity.z = Utils::Math::Lerp(m_Velocity.z, 0.0f, friction);*/
-
-
-
-
-	/*m_Velocity.x = Utils::Math::Clamp(m_Velocity.x, -m_MaxVelocity, m_MaxVelocity);
-	m_Velocity.z = Utils::Math::Clamp(m_Velocity.z, -m_MaxVelocity, m_MaxVelocity);*/
-
-	/*if (blockBelow && (wSInput == 0))
-	{
-		float friction = fabs(blockBelow->GetBlockType()->friction - 1);
-
-		m_MovementSpeed = m_Velocity.x * friction;
-
-		m_MovementSpeed = clamp(m_MovementSpeed, -m_MaxVelocity, m_MaxVelocity);
-
-		m_Velocity.x = m_MovementSpeed;
-		
-		m_MovementSpeed = m_Velocity.z * friction;
-
-		m_MovementSpeed = clamp(m_MovementSpeed, -m_MaxVelocity, m_MaxVelocity);
-
-		m_Velocity.z = m_MovementSpeed;
-	}*/
-
-	//std::cout << glm::length(m_Velocity) << "\n";// << m_Velocity.x << "; " << m_Velocity.z << "\n";
 
 	// Apply gravity
-	m_Velocity.y += World::Gravity * Time::DeltaTime;
+	if (!World::ChunkExistsAt(Utils::WorldPositionToChunkPosition(m_Position)))
+		m_Velocity.y += World::Gravity * Time::DeltaTime;
 }
 
 void Player::HandleCollision()
@@ -407,13 +300,13 @@ void Player::MouseCallback(GLFWwindow* window, double xpos, double ypos)
 	if (m_MousePitch < -89.0f)
 		m_MousePitch = -89.0f;
 
-	glm::vec3 direction2D;
+	glm::vec3 direction2D(0.0f);
 	direction2D.x = cos(glm::radians(m_MouseYaw));
 	direction2D.y = 0;
 	direction2D.z = sin(glm::radians(m_MouseYaw));
 	m_Camera.m_Front2D = glm::normalize(direction2D);
 
-	glm::vec3 direction;
+	glm::vec3 direction(0.0f);
 	direction.x = direction2D.x * cos(glm::radians(m_MousePitch));
 	direction.y = sin(glm::radians(m_MousePitch));
 	direction.z = direction2D.z * cos(glm::radians(m_MousePitch));

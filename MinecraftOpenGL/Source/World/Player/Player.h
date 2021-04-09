@@ -53,7 +53,8 @@ private:
 
 	glm::vec3 m_Velocity;
 	float m_MovementSpeed = 0.0f;
-	float m_Acceleration = 2.0f;
+	float m_Acceleration = 0.0f;
+	float m_BaseAcceleration = 8.0f;
 	float m_MaxVelocity = 0.1f;
 
 	bool m_IsStandingOnGround = false;
