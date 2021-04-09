@@ -19,10 +19,6 @@
 
 #include <GLFW/glfw3.h>
 
-float clamp(float n, float lower, float upper) {
-	return std::max(lower, std::min(n, upper));
-}
-
 Player::Player()
 {
 }
@@ -223,16 +219,18 @@ void Player::HandleMovement()
 		m_Velocity.z *= scale;
 	}
 
-	// Apply gravity
-	if (!World::ChunkExistsAt(Utils::WorldPositionToChunkPosition(m_Position)))
-		m_Velocity.y += World::Gravity * Time::DeltaTime;
+	m_Velocity.y += World::Gravity * Time::DeltaTime;
 }
 
 void Player::HandleCollision()
 {
-	// Don't do collision checks if not inside a chunk
-	if (!World::ChunkExistsAt(Utils::WorldPositionToChunkPosition(m_Position)))
+	// Don't do collision checks if not inside a chunk or it hasn't generated the terrain yet
+	Chunk* inChunk = World::GetChunkAt(Utils::WorldPositionToChunkPosition(m_Position));
+	if (!inChunk || !inChunk->m_HasGenerated)
+	{
+		m_Velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 		return;
+	}
 
 	m_IsStandingOnGround = false;
 
