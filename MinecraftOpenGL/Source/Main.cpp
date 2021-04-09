@@ -73,7 +73,7 @@ int main()
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwWindowHint(GLFW_SAMPLES, 4);
-	glfwSwapInterval(1); // Vsync
+	glfwSwapInterval(0); // Vsync
 
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
@@ -96,6 +96,7 @@ int main()
 
 	double previousTime = glfwGetTime();
 	double prevTime = glfwGetTime();
+	double prevFixedTimestempTime = glfwGetTime();
 	int frameCount = 0;
 
 	/* Loop until the user closes the window */
@@ -116,6 +117,13 @@ int main()
 		// Calcuate FPS
 		double currentTime = glfwGetTime();
 		frameCount++;
+
+		if (currentTime - prevFixedTimestempTime >= Time::FixedTimestep)
+		{
+			World::FixedUpdate();
+			//std::cout << currentTime - prevFixedTimestempTime << "\n";
+			prevFixedTimestempTime = currentTime;
+		}
 
 		// If a second has passed.
 		if (currentTime - previousTime >= 1.0)

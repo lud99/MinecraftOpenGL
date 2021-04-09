@@ -22,6 +22,8 @@ struct BlockFaceData
 	std::vector<unsigned int> waterIndices;
 };
 
+// To disable byte alignment. Could reduce performance
+#pragma pack(push, 1)
 class ChunkBlock
 {
 public:
@@ -50,12 +52,9 @@ public:
 public:
 	static const uint8_t Size = 1;
 
-//#pragma pack(push, 1) // To disable byte alignment. Could reduce performance
-
 	uint16_t m_LocalPositionPacked = 0; // 2 bytes. pack the 3 component position into 2 bytes instead of 3 to save space
 
 	uint8_t m_BlockId = BlockIds::Air; // 1 byte
 	uint16_t m_BlockData = 0; // 2 bytes. 16 bits of block data packed into 2 bytes
-
-//#pragma pack(pop)
 };
+#pragma pack(pop)

@@ -40,9 +40,14 @@ void World::Update()
 	HandleCreatingNewChunks();
 	UnloadChunksOutsideRenderDistance();
 
-	m_Player.Update();
+	m_Player.OnUpdate();
 
 	m_ChunkBuilder.ProcessQueue();
+}
+
+void World::FixedUpdate()
+{
+	m_Player.OnFixedUpdate();
 }
 
 void World::Render() { m_Renderer->Render(); }
@@ -116,7 +121,7 @@ void World::UnloadChunksOutsideRenderDistance()
 	using namespace Settings;
 
 	// Iterate through all chunks
-	for (auto entry : m_Chunks)
+	for (auto& entry : m_Chunks)
 	{
 		Chunk* chunk = entry.second;
 
@@ -184,10 +189,12 @@ Chunk* World::CreateChunk(glm::ivec2 position)
 
 Chunk* World::GenerateNewChunkThreaded(glm::ivec2 position, ChunkAction* nextAction)
 {
-	std::lock_guard<std::recursive_mutex> lk(m_ChunkMutex);
+	std::unique_lock<std::recursive_mutex> lk(m_ChunkMutex);
 
 	Chunk* chunk = new Chunk(position);
 	m_Chunks[position] = chunk;
+
+	lk.unlock();
 
 	chunk->CreateGenerateAndBuild(nextAction);
 
@@ -303,4 +310,4 @@ irrklang::ISoundEngine* World::SoundEngine;
 
 unsigned int World::m_ChunkCount = 0;
 
-int Settings::RenderDistance = 16;
+int Settings::RenderDistance = 8;

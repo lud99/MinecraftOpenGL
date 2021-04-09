@@ -99,8 +99,8 @@ void Chunk::GenerateTerrain()
 {
 	m_IsGenerating = true;
 
-	std::mutex mutex;
-	mutex.lock();
+	//std::mutex mutex;
+	//mutex.lock();
 
 	int offset = 32 * 2;
 	int waterLevel = 27 * 2;
@@ -355,7 +355,7 @@ void Chunk::GenerateTerrain()
 
 	//std::cout << "Terrain generatation done. " << m_Position.x << ", " << m_Position.y << "\n";
 
-	mutex.unlock();
+	//mutex.unlock();
 }
 
 void Chunk::RebuildMesh()

@@ -35,11 +35,11 @@ void Player::Init()
 
 	for (int i = 0; i < HotbarSlots; i++)
 	{
-		m_Hotbar[i] = BlockIds::Ice;
+		m_Hotbar[i] = i + 1;
 	}
 }
 
-void Player::Update()
+void Player::OnUpdate()
 {
 	// Update hotbar slot
 	if (InputHandler::IsKeyPressed(GLFW_KEY_1))
@@ -87,10 +87,8 @@ void Player::Update()
 	if (InputHandler::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT))
 		HandleBlockPlacing();
 
-	HandleMovement();
-	HandleCollision();
-
-	UpdateCameraPosition();
+	if (m_IsStandingOnGround && InputHandler::IsKeyPressed(GLFW_KEY_SPACE))
+		m_ShouldJumpNextUpdate = true;
 
 	// Get the block that is currently highlighted or looked at
 	Raycast raycast(m_Camera.m_Position, m_Camera.m_Front);
@@ -136,6 +134,14 @@ void Player::Update()
 	}
 }
 
+void Player::OnFixedUpdate()
+{
+	HandleMovement();
+	HandleCollision();
+
+	UpdateCameraPosition();
+}
+
 void Player::UpdateCameraPosition()
 {
 	m_Camera.m_Position = glm::vec3(m_Position.x, m_Position.y + m_EyeOffset, m_Position.z);
@@ -144,12 +150,16 @@ void Player::UpdateCameraPosition()
 void Player::HandleMovement()
 {
 	float friction = 0.0f;
+
 	ChunkBlock* blockBelow = World::GetBlockAt(glm::floor(m_Position - glm::vec3(0, ChunkBlock::Size, 0)));
-	if (blockBelow && blockBelow->m_BlockId != BlockIds::Air) friction = blockBelow->GetBlockType()->friction;
+	if (blockBelow && blockBelow->m_BlockId != BlockIds::Air)
+		friction = blockBelow->GetBlockType()->friction;
+	else
+		friction = m_PreviousBlockFriction;
 
 	// Make the acceleration based on the friction of the block. 
 	// This makes it so it's more slippery to move on ice, compared to dirt
-	m_Acceleration = m_BaseAcceleration * (friction == 0.0f ? 0.25f : friction);
+	m_Acceleration = m_BaseAcceleration * (friction == 0.0f ? 0.25f : friction) * (float)Time::FixedTimestep;
 
 	glm::vec3 newVelocity(m_Velocity);
 	glm::vec3 newMovementDirection(0.0f);
@@ -169,38 +179,45 @@ void Player::HandleMovement()
 
 	// Jump
 	//if (m_Input.IsKeyPressed(GLFW_KEY_SPACE))
-	//	m_Velocity.y = 0.212132034356f;//6.f * Time::DeltaTime * m_Acceleration;
+	//	m_Velocity.y = 0.212132034356f;//6.f * Time::FixedTimestep * m_Acceleration;
 	if (m_Input.IsKeyPressed(GLFW_KEY_LEFT_SHIFT))
-		m_Velocity.y = -6.f * Time::DeltaTime * m_Acceleration;
+		m_Velocity.y = -6.f * Time::FixedTimestep * m_Acceleration;
 
 	// Increase and decrease movement speed
 	if (m_Input.IsKeyHeld(GLFW_KEY_E))
 	{
-		m_MaxVelocity += 0.25f * Time::DeltaTime;
-		m_BaseAcceleration += m_BaseAcceleration * Time::DeltaTime;
+		m_MaxVelocity += 0.25f * Time::FixedTimestep;
+		m_BaseAcceleration += m_BaseAcceleration * Time::FixedTimestep;
 	}
 	if (m_Input.IsKeyHeld(GLFW_KEY_Q))
 	{
-		m_MaxVelocity -= 0.25f * Time::DeltaTime;
-		m_BaseAcceleration -= m_BaseAcceleration * Time::DeltaTime;
+		m_MaxVelocity -= 0.25f * Time::FixedTimestep;
+		m_BaseAcceleration -= m_BaseAcceleration * Time::FixedTimestep;
 	}
 
 	// Only jump if on ground
-	if (m_IsStandingOnGround && m_Input.IsKeyPressed(GLFW_KEY_SPACE))
+	if (m_IsStandingOnGround && m_ShouldJumpNextUpdate)
+	{
 		m_Velocity.y = 0.212132034356f; // v0 = sqrt(2*g*h)
+
+		m_ShouldJumpNextUpdate = false;
+	}
 
 	// Fly
-	if (m_Input.IsKeyHeld(GLFW_KEY_SPACE))
-		m_Velocity.y = 0.212132034356f; // v0 = sqrt(2*g*h)
+	//if (m_Input.IsKeyHeld(GLFW_KEY_SPACE))
+	//	m_Velocity.y = 0.212132034356f; // v0 = sqrt(2*g*h)
 
-	m_Velocity += newMovementDirection * m_Acceleration * (float)Time::DeltaTime;
+	m_Velocity += newMovementDirection * m_Acceleration;
 
 	glm::vec3 frictionVelocity(Utils::Math::Lerp(m_Velocity.x, 0.0f, friction), 0.0f, Utils::Math::Lerp(m_Velocity.z, 0.0f, friction));
 
 	float mag = glm::length(frictionVelocity);
-	if (mag > m_MaxVelocity && mag != 0)
+	float maxVelocity = m_MaxVelocity * Time::FixedTimestep;
+
+	//std::cout << mag << "; ";
+	if (mag > maxVelocity && mag != 0)
 	{
-		float scale = m_MaxVelocity / mag;
+		float scale = maxVelocity / mag;
 
 		m_Velocity.x *= scale;
 		m_Velocity.z *= scale;
@@ -211,28 +228,34 @@ void Player::HandleMovement()
 	}
 
 	float velMag = glm::length(glm::vec2(m_Velocity.x, m_Velocity.z));
-	if (velMag > m_MaxVelocity && velMag != 0)
+	if (velMag > maxVelocity && velMag != 0)
 	{
-		float scale = m_MaxVelocity / velMag;
+		float scale = maxVelocity / velMag;
 
 		m_Velocity.x *= scale;
 		m_Velocity.z *= scale;
 	}
 
-	m_Velocity.y += World::Gravity * Time::DeltaTime;
+	m_Velocity.y += World::Gravity * Time::FixedTimestep;
+
+	//std::cout << glm::length(m_Velocity) << "\n";
+
+	//std::cout << World::Gravity * Time::DeltaTime << "; " << World::Gravity * Time::DeltaTime  * 500 << "\n";
+
+	m_PreviousBlockFriction = friction;
 }
 
 void Player::HandleCollision()
 {
+	m_IsStandingOnGround = false;
+
 	// Don't do collision checks if not inside a chunk or it hasn't generated the terrain yet
 	Chunk* inChunk = World::GetChunkAt(Utils::WorldPositionToChunkPosition(m_Position));
 	if (!inChunk || !inChunk->m_HasGenerated)
 	{
-		m_Velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+		m_Velocity = glm::vec3(0.0f);
 		return;
 	}
-
-	m_IsStandingOnGround = false;
 
 	// Check for collision with block below
 	if (m_Velocity.y < 0)

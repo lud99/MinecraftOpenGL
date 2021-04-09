@@ -19,7 +19,8 @@ public:
 
 	void Init();
 
-	void Update();
+	void OnUpdate();
+	void OnFixedUpdate();
 	void UpdateCameraPosition();
 
 	void MouseCallback(GLFWwindow* window, double xpos, double ypos);
@@ -38,8 +39,8 @@ private:
 
 public:
 	glm::vec3 m_Position = glm::vec3(0.0f, 70.0f, 0.0f);
-	glm::vec3 m_LookingAtPosition = glm::vec3(0); 
-	glm::vec3 m_LastLookingAtPosition = glm::vec3(0);
+	glm::vec3 m_LookingAtPosition = glm::vec3(0.0f); 
+	glm::vec3 m_LastLookingAtPosition = glm::vec3(0.0f);
 
 	GLFWwindow* m_Window = nullptr;
 	Crosshair m_Crosshair;
@@ -51,11 +52,12 @@ private:
 	ChunkBlock* m_HighlightedBlock = nullptr;
 	Chunk* m_HighlightedBlockChunk = nullptr;
 
-	glm::vec3 m_Velocity;
+	glm::vec3 m_Velocity = glm::vec3(0.0f);
 	float m_MovementSpeed = 0.0f;
 	float m_Acceleration = 0.0f;
 	float m_BaseAcceleration = 8.0f;
-	float m_MaxVelocity = 0.1f;
+	float m_MaxVelocity = 10.0f; // Meters per second
+	float m_PreviousBlockFriction = 0.25f;
 
 	bool m_IsStandingOnGround = false;
 
@@ -71,6 +73,8 @@ private:
 	float m_LastMouseX = 400, m_LastMouseY = 300;
 	float m_MouseSensitivity = 0.1f;
 	float m_MouseYaw = 0, m_MousePitch = 0;
+
+	bool m_ShouldJumpNextUpdate = false;
 
 	static constexpr int HotbarSlots = 9;
 	int m_Hotbar[HotbarSlots];

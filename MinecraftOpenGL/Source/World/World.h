@@ -38,6 +38,7 @@ namespace World
 {
 	void Init(GLFWwindow* window);
 	void Update();
+	void FixedUpdate();
 	void Render();
 
 	void HandleCreatingNewChunks();
@@ -74,7 +75,7 @@ namespace World
 	extern ChunkBuilder m_ChunkBuilder;
 
 	extern irrklang::ISoundEngine* SoundEngine;
-	extern constexpr float Gravity = -0.6f;
+	extern constexpr float Gravity = -0.6f; // -0.6f
 
 	namespace {
 		GLFWwindow* m_Window;
