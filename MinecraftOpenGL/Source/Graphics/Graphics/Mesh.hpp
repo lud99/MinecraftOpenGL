@@ -259,10 +259,10 @@ const unsigned int Mesh<VertexT>::GetVao() { return m_Vao; }
 template <typename VertexT>
 Mesh<VertexT>::~Mesh()
 {
-	glDeleteVertexArrays(1, &m_Vao);
+	if (m_Vao != 0) glDeleteVertexArrays(1, &m_Vao);
 
-	glDeleteBuffers(1, &m_Vbo);
-	glDeleteBuffers(1, &m_Ebo);
+	if (m_Vbo != 0) glDeleteBuffers(1, &m_Vbo);
+	if (m_Ebo != 0) glDeleteBuffers(1, &m_Ebo);
 }
 
 #endif

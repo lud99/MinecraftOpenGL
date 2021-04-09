@@ -161,6 +161,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\Blocks.cpp" />
+    <ClCompile Include="Source\Graphics\Graphics\ModelParser.cpp" />
     <ClCompile Include="Source\Graphics\Graphics\Shader.cpp" />
     <ClCompile Include="Source\Graphics\Graphics\Textures\Cubemap.cpp" />
     <ClCompile Include="Source\Graphics\Graphics\Textures\Texture2D.cpp" />
@@ -191,6 +192,7 @@
   <ItemGroup>
     <ClInclude Include="Source\Graphics\Graphics\BasicVertices.h" />
     <ClInclude Include="Source\Graphics\Graphics\Mesh.hpp" />
+    <ClInclude Include="Source\Graphics\Graphics\ModelParser.h" />
     <ClInclude Include="Source\Graphics\Graphics\Shader.h" />
     <ClInclude Include="Source\Graphics\Graphics\Textures\Cubemap.h" />
     <ClInclude Include="Source\Graphics\Graphics\Textures\Texture2D.h" />

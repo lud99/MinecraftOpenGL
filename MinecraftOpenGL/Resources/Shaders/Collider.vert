@@ -6,7 +6,7 @@ out vec4 gl_Position;
 
 uniform mat4 u_ProjectionMatrix;
 uniform mat4 u_ViewMatrix;
-uniform mat4 u_ModelMatrix;
+uniform mat4 u_ModelMatrix = mat4(1.0);
 
 void main() {
 	gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_ModelMatrix * vec4(position, 1.0);

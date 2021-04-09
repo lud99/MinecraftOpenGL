@@ -17,6 +17,7 @@
 #include "World/Chunk/ChunkBlock.h"
 #include "World/Chunk/Chunk.h"
 #include "Time.h"
+#include <Graphics/ModelParser.h>
 
 float Time::ElapsedTime;
 float Time::DeltaTime;
@@ -94,6 +95,9 @@ int main()
 
 	World::Init(window);
 
+	Mesh<TextureVertex>* door = ModelParser::Parse("Resources/Models/door.obj");
+	Shader sh = ShaderLoader::CreateShader("Resources/Shaders/Collider.vert", "Resources/Shaders/Collider.frag");
+
 	double previousTime = glfwGetTime();
 	double prevTime = glfwGetTime();
 	double prevFixedTimestempTime = glfwGetTime();
@@ -150,6 +154,15 @@ int main()
 		World::Update();
 
 		World::Render();
+
+		glm::mat4 mod(1.0);
+		mod = glm::translate(mod, glm::vec3(0.0f, 55.0f, 0.0f));
+
+		sh.Bind();
+		sh.SetUniform("u_ProjectionMatrix", World::m_Renderer->m_ProjectionMatrix);
+		sh.SetUniform("u_ViewMatrix", World::m_Renderer->m_ViewMatrix);
+		sh.SetUniform("u_ModelMatrix", mod);
+		door->Render();
 
 		GLenum err;
 		while ((err = glGetError()) != GL_NO_ERROR)

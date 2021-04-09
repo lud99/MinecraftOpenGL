@@ -310,4 +310,4 @@ irrklang::ISoundEngine* World::SoundEngine;
 
 unsigned int World::m_ChunkCount = 0;
 
-int Settings::RenderDistance = 8;
+int Settings::RenderDistance = 2;
