@@ -37,9 +37,9 @@ void Player::Init()
 {
 	m_Crosshair.Init();
 
-	for (int i = 1; i < HotbarSlots; i++)
+	for (int i = 0; i < HotbarSlots; i++)
 	{
-		m_Hotbar[i] = i;
+		m_Hotbar[i] = BlockIds::Ice;
 	}
 }
 
@@ -153,7 +153,23 @@ void Player::HandleMovement()
 	int wSInput = m_Input.IsKeyHeld(GLFW_KEY_W) - m_Input.IsKeyHeld(GLFW_KEY_S);
 	int shiftSpaceInput = m_Input.IsKeyPressed(GLFW_KEY_SPACE) - m_Input.IsKeyPressed(GLFW_KEY_LEFT_SHIFT);
 
-	float acceleration = 2.0f;
+	float friction = 0.0f;
+	ChunkBlock* blockBelow = World::GetBlockAt(glm::floor(m_Position - glm::vec3(0, ChunkBlock::Size, 0)));
+	if (blockBelow && blockBelow->m_BlockId != BlockIds::Air) friction = blockBelow->GetBlockType()->friction;
+
+	float flippedFriction = std::fabs(friction - 1);
+
+	float baseAcceleration = 2.0f;
+
+	
+	/*if (glm::length(m_Velocity) > 0)
+	{
+		m_Acceleration += 0.01f;
+	}
+	else {
+		m_Acceleration = 2.0f;
+	}*/
+	//m_Acceleration = 2.0f * ((flippedFriction + 0.5f) / 2.0f);
 
 	glm::vec3 newVelocity(m_Velocity);
 	glm::vec3 newMovementDirection(0.0f);
@@ -234,9 +250,16 @@ void Player::HandleMovement()
 
 	//// Increase and decrease movement speed
 	if (m_Input.IsKeyHeld(GLFW_KEY_E))
-		m_MaxVelocity += 0.025f * 10 * Time::DeltaTime;
+	{
+		m_MaxVelocity += 0.25f * Time::DeltaTime;
+		m_Acceleration += m_Acceleration * Time::DeltaTime;
+	}
 	if (m_Input.IsKeyHeld(GLFW_KEY_Q))
-		m_MaxVelocity -= 0.025f * 10 * Time::DeltaTime;
+	{
+		m_MaxVelocity -= 0.25f * Time::DeltaTime;
+		m_Acceleration -= m_Acceleration * Time::DeltaTime;
+	}
+
 
 	// Only jump if on ground
 	if (m_IsStandingOnGround && m_Input.IsKeyPressed(GLFW_KEY_SPACE))
@@ -245,14 +268,10 @@ void Player::HandleMovement()
 	if (m_Input.IsKeyHeld(GLFW_KEY_SPACE))
 	m_Velocity.y = 0.212132034356f; // v0 = sqrt(2*g*h)
 
-	m_Velocity += newMovementDirection * acceleration * (float)Time::DeltaTime;
-
-	float friction = 0.5f;
-	ChunkBlock* blockBelow = World::GetBlockAt(glm::floor(m_Position - glm::vec3(0, ChunkBlock::Size, 0)));
-	if (blockBelow) friction = blockBelow->GetBlockType()->friction;
+	m_Velocity += newMovementDirection * m_Acceleration * (float)Time::DeltaTime;
 
 	glm::vec3 frictionVelocity(Utils::Math::Lerp(m_Velocity.x, 0.0f, friction), 0.0f, Utils::Math::Lerp(m_Velocity.z, 0.0f, friction));
-	
+
 	float mag = glm::length(frictionVelocity);
 	if (mag > m_MaxVelocity && mag != 0)
 	{
@@ -261,10 +280,25 @@ void Player::HandleMovement()
 		m_Velocity.x *= scale;
 		m_Velocity.z *= scale;
 	}
-	else 
+	else
 	{
 		m_Velocity = glm::vec3(frictionVelocity.x, m_Velocity.y, frictionVelocity.z);
 	}
+
+	float velMag = glm::length(glm::vec2(m_Velocity.x, m_Velocity.z));
+	if (velMag > m_MaxVelocity && velMag != 0)
+	{
+		float scale = m_MaxVelocity / velMag;
+
+		m_Velocity.x *= scale;
+		m_Velocity.z *= scale;
+	}
+	/*else
+	{
+		m_Velocity = glm::vec3(frictionVelocity.x, m_Velocity.y, frictionVelocity.z);
+	}*/
+
+	std::cout << "mag: " << mag << "; " << velMag << "\n";
 
 	/*if (glm::length(norm) != 0)
 		acceleration = glm::length(norm);*/

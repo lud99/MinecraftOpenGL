@@ -251,7 +251,7 @@ void Chunk::GenerateTerrain()
 					if (y <= waterLevel && sandChance)
 						block->m_BlockId = BlockIds::Sand;
 					else
-						block->m_BlockId = BlockIds::Grass;
+						block->m_BlockId = BlockIds::Ice;
 				}
 			}
 

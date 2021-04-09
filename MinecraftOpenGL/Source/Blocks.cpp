@@ -43,7 +43,6 @@ void BlockTypes::CreateBlocks()
 	Blocks[Dirt].SetTexture(TextureIds::Dirt);
 	// Stone
 	Blocks[Stone].SetTexture(TextureIds::Stone);
-	Blocks[Stone].friction = 0.05f;
 	// Water
 	Blocks[Water].SetTexture(TextureIds::Water);
 	Blocks[Water].isTranslucent = true;
@@ -56,6 +55,11 @@ void BlockTypes::CreateBlocks()
 	Blocks[Chest].SetTexture(TextureIds::Chest);
 	// Noteblock
 	Blocks[Noteblock].SetTexture(TextureIds::Noteblock);
+
+	Blocks[Ice].SetTexture(TextureIds::Ice);
+	Blocks[Ice].isTranslucent = true;
+	Blocks[Ice].isOpaque = false;
+	Blocks[Ice].friction = 0.01f;
 
 	// Set all the textures for the oak log
 	Blocks[OakLog].faces[Cube::Faces::Left].textureId = TextureIds::OakLogSide;

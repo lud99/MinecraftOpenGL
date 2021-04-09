@@ -135,6 +135,7 @@ bool ChunkBlock::ShouldAddBlockFace(Chunk* chunk, Directions direction, Chunk* a
 void ChunkBlock::AddBlockFace(Chunk* chunk, BlockFace& face)
 {
 	glm::vec3 worldPosition = GetWorldPosition(chunk);
+	BlockType* blockType = GetBlockType();
 
 	Mesh<PackedVertex>& opaqueMesh = chunk->m_TempOpaqueMesh;
 	Mesh<PackedVertex>& waterMesh = chunk->m_TempWaterMesh;
@@ -164,18 +165,18 @@ void ChunkBlock::AddBlockFace(Chunk* chunk, BlockFace& face)
 		vertex.texture = face.textureId;
 		vertex.lightLevel = lightLevel;
 
-		if (m_BlockId == BlockIds::Water)
-			chunk->m_TempWaterMesh.AddVertex(vertex.CreatePackedVertex());
-		else
+		if (blockType->isOpaque)
 			chunk->m_TempOpaqueMesh.AddVertex(vertex.CreatePackedVertex());
+		else
+			chunk->m_TempWaterMesh.AddVertex(vertex.CreatePackedVertex());
 	}
 
 	for (int i = 0; i < 6; i++)
 	{
-		if (m_BlockId == BlockIds::Water)
-			waterMesh.AddIndex(BasicVertices::Cube::Indices[i] + (uint16_t) (waterMesh.GetVertices().size() - 4));
+		if (blockType->isOpaque)
+			opaqueMesh.AddIndex(BasicVertices::Cube::Indices[i] + (uint16_t)(opaqueMesh.GetVertices().size() - 4));
 		else
-			opaqueMesh.AddIndex(BasicVertices::Cube::Indices[i] + (uint16_t) (opaqueMesh.GetVertices().size() - 4));
+			waterMesh.AddIndex(BasicVertices::Cube::Indices[i] + (uint16_t)(waterMesh.GetVertices().size() - 4));
 	}
 } 
 
