@@ -60,6 +60,16 @@ void Player::OnUpdate()
 		m_CurrentHotbarSlot = 7;
 	if (InputHandler::IsKeyPressed(GLFW_KEY_9))
 		m_CurrentHotbarSlot = 8;
+	if (InputHandler::IsKeyPressed(GLFW_KEY_0))
+		m_CurrentHotbarSlot = 9;
+	if (InputHandler::IsKeyPressed(GLFW_KEY_KP_0))
+		m_CurrentHotbarSlot = 10;
+	if (InputHandler::IsKeyPressed(GLFW_KEY_KP_1))
+		m_CurrentHotbarSlot = 11;
+	if (InputHandler::IsKeyPressed(GLFW_KEY_KP_2))
+		m_CurrentHotbarSlot = 12;
+	if (InputHandler::IsKeyPressed(GLFW_KEY_KP_3))
+		m_CurrentHotbarSlot = 13;
 
 	// Block breaking
 	if (InputHandler::IsMouseButtonHeld(GLFW_MOUSE_BUTTON_LEFT))

@@ -343,7 +343,7 @@ void Chunk::GenerateTerrain()
 	m_HasGenerated = true;
 	m_IsGenerating = false;
 
-	SetDirty(true);
+	//SetDirty(true);
 
 	// Set flag for adjacent chunks to rebuild to remove uneq. block faces at chunk border
 	/*AdjacentChunks chunks = GetAdjacentChunks();

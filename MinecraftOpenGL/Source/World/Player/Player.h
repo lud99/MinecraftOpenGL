@@ -76,7 +76,7 @@ private:
 
 	bool m_ShouldJumpNextUpdate = false;
 
-	static constexpr int HotbarSlots = 9;
+	static constexpr int HotbarSlots = 14;
 	int m_Hotbar[HotbarSlots];
 	int m_CurrentHotbarSlot = 0;
 };

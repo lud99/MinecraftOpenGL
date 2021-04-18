@@ -49,38 +49,40 @@ void ThreadPool::QueueWork(ChunkAction action)
 	// Grab the mutex
 	std::lock_guard<std::mutex> g(m_WorkQueueMutex); // Auto releases when going out of scope
 
+	// Iterate through all the queued work and remove any work that is older than the specified action, and is redu
+	typedef ChunkAction::Priority Priority;
+	for (int priority = (int)Priority::VeryLow; priority <= (int)Priority::VeryHigh; priority++)
+	{
+		// No actions with that priority exists
+		if (m_WorkQueue.count(priority) == 0)
+			continue;
+
+		if (!m_WorkQueue[priority].empty())
+		{
+			for (int i = 0; i < m_WorkQueue[priority].size(); i++)
+			{
+				ChunkAction entry = m_WorkQueue[priority][i];
+
+				// Check if multiple queued chunk actions are trying to do the same thing to the same chunk
+				if (entry.type == action.type && entry.chunk == action.chunk)
+				{
+					// If so, then remove the older one from the queue
+					if (action.timestamp > entry.timestamp) // The entry is older than the action specified
+					{
+						//std::cout << "Removing queue entry " << m_WorkQueue[i].timestamp << "\n";
+
+						m_WorkQueue[priority].erase(m_WorkQueue[priority].begin() + i);
+								
+						break;
+					}
+				}
+			}
+			
+		}
+	}
+
 	// Add the action to the correct priority queue
 	m_WorkQueue[(int)action.priority].push_back(action);
-
-	//std::cout << "Entry priority: " << (int)action.priority << "\n";
-	
-	// Iterate through all the priority entries
-
-	// Very low
-	//if (m_WorkQueue.count(ChunkAction::Priority::VeryLow) > 0)
-	//{
-	//	std::cout << "Adding"
-	//}
-
-	//for (unsigned int i = 0; i < m_WorkQueue.size(); i++)
-	//{
-	//	// Check if multiple queued chunk actions are trying to do the same thing to the same chunk
-	//	if (m_WorkQueue[i].type == action.type && m_WorkQueue[i].chunk == action.chunk)
-	//	{
-	//		// If so, then remove the older one from the queue
-	//		if (action.timestamp > m_WorkQueue[i].timestamp) // The entry is older than the action specified
-	//		{
-	//			//std::cout << "Removing queue entry " << m_WorkQueue[i].timestamp << "\n";
-
-	//			m_WorkQueue.erase(m_WorkQueue.begin() + i);
-	//			
-	//			break;
-	//		}
-	//	}
-	//}
-
-	// Push the request to the queue
-	//m_WorkQueue.push_back(action);
 
 	// Notify one thread that there are requests to process
 	m_WorkQueueConditionVariable.notify_one();
@@ -144,11 +146,6 @@ void ThreadPool::DoWork()
 			if (action.isNull)
 				continue;
 
-			//for (int priority = (int)Priority::VeryLow; priority < (int)Priority::VeryLow; priority--)
-			//{
-
-			//std::cout << "Threadpool queue length: " << m_WorkQueue.size() << "\n";
-
 			int sum = 0;
 			for (int priority = (int)ChunkAction::Priority::Low; priority < (int)ChunkAction::Priority::VeryHigh; priority++)
 			{
@@ -160,7 +157,32 @@ void ThreadPool::DoWork()
 					sum += m_WorkQueue[priority].size();
 			}
 
-			std::cout << sum << "; " << "\n";
+			std::string actionName = "";
+			switch (action.type)
+			{
+			case ChunkAction::ActionType::Create:
+				actionName = "Create";
+				break;
+			case ChunkAction::ActionType::CreateGenerateAndBuild:
+				actionName = "CreateGenerateAndBuild";
+				break;
+			case ChunkAction::ActionType::Generate:
+				actionName = "Generate";
+				break;
+			case ChunkAction::ActionType::Rebuild:
+				actionName = "Rebuild";
+				break;
+			case ChunkAction::ActionType::RebuildAdjacentChunks:
+				actionName = "RebuildAdjacentChunks";
+				break;
+			case ChunkAction::ActionType::Save:
+				actionName = "Save";
+				break;
+			default:
+				break;
+			}
+
+			std::cout << "Doing action: " << actionName << ", queue length: " << sum << "\n";
 		};
 
 		// Perform the requested action
