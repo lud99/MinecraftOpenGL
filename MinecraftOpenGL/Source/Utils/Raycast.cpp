@@ -2,6 +2,8 @@
 
 bool Raycast::Step(float stepSize)
 {
+	m_StepSize = stepSize;
+
 	// Stop stepping
 	if (m_IsFinished) return false;
 
@@ -16,6 +18,11 @@ bool Raycast::Step(float stepSize)
 		m_HasReachedMaxDistance = true;
 
 	return true;
+}
+
+glm::vec3 Raycast::GetPreviousPosition()
+{
+	return m_CurrentPosition - m_Direction * m_StepSize;
 }
 
 void Raycast::Stop()

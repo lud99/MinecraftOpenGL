@@ -323,7 +323,7 @@ ChunkBlock* World::GetBlockAt(glm::ivec3 position)
 }
 ChunkBlock* World::GetBlockAt(glm::vec3 position)
 {
-	return GetBlockAt((glm::ivec3) position);
+	return GetBlockAt((glm::ivec3) glm::floor(position));
 }
 
 Player& World::GetPlayer() { return m_Player; };

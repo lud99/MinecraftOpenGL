@@ -348,7 +348,7 @@ void Player::MouseCallback(GLFWwindow* window, double xpos, double ypos)
 
 void Player::HandleBlockBreaking()
 {
-	float blockBreakSpeed = 4.0f * Time::DeltaTime;
+	float blockBreakSpeed = 6.0f * Time::DeltaTime;
 	if (!m_HighlightedBlock)
 	{
 		m_BlockBreakProgress = 0.0f;
@@ -425,81 +425,35 @@ void Player::HandleBlockPlacing()
 			raycast.Stop();
 
 		glm::vec3 raycastPositionFloored = glm::floor(raycast.m_CurrentPosition);
-		ChunkBlock* lookingAtBlock = World::GetBlockAt(raycastPositionFloored);
+		ChunkBlock* block = World::GetBlockAt(raycastPositionFloored);
 
 		// Run next iteration if not looking at a block, or the block exists but is air
-		if (!lookingAtBlock || (lookingAtBlock && lookingAtBlock->m_BlockId == BlockIds::Air)) continue;
+		if (!block) continue;
+		if (block->m_BlockId == BlockIds::Air) continue;
 
-		ChunkBlock* blockToReplace = nullptr;
-		float faceThreshold = 0.05f;
-
-		glm::vec3 raycastPositionDecimals = raycast.m_CurrentPosition - raycastPositionFloored;
-
-		// Determine what face of the block the raycast hit
-
-		// X
-		if (raycastPositionDecimals.x < faceThreshold)
-			blockToReplace = World::GetBlockAt(raycastPositionFloored + glm::vec3(-1, 0, 0));
-		else if (raycastPositionDecimals.x > 1 - faceThreshold)
-			blockToReplace = World::GetBlockAt(raycastPositionFloored + glm::vec3(1, 0, 0));
-
-		// Y
-		if (raycastPositionDecimals.y < faceThreshold)
-			blockToReplace = World::GetBlockAt(raycastPositionFloored + glm::vec3(0, -1, 0));
-		else if (raycastPositionDecimals.y > 1 - faceThreshold)
-			blockToReplace = World::GetBlockAt(raycastPositionFloored + glm::vec3(0, 1, 0));
-
-		// Z
-		else if (raycastPositionDecimals.z < faceThreshold)
-			blockToReplace = World::GetBlockAt(raycastPositionFloored + glm::vec3(0, 0, -1));
-		else if (raycastPositionDecimals.z > 1 - faceThreshold)
-			blockToReplace = World::GetBlockAt(raycastPositionFloored + glm::vec3(0, 0, 1));
+		// A block has been reached, so do the block placing
+		ChunkBlock* blockToReplace = World::GetBlockAt(raycast.GetPreviousPosition());
 
 		if (blockToReplace)
 		{
-			blockToReplace->m_BlockId = (uint8_t)m_Hotbar[m_CurrentHotbarSlot];
-			m_HighlightedBlockChunk->SetDirty(true);
+			Block* block = blockToReplace->GetBlock(m_HighlightedBlockChunk);
 
-			// Remember to de-aloc when done!
-			/*Block* targetedBlock = World::GetBlockAt(raycastPositionFloored)->GetBlock(m_HighlightedBlockChunk);
-
-			if (targetedBlock)
+			if (block)
 			{
-				bool doDefault = targetedBlock->OnBlockRightClick();
+				bool doDefault = block->OnBlockRightClick();
 				if (doDefault)
 				{
-					blockToReplace->m_BlockId = (uint8_t) m_Hotbar[m_CurrentHotbarSlot] || BlockIds::Stone;
+					blockToReplace->m_BlockId = m_Hotbar[m_CurrentHotbarSlot];
 					m_HighlightedBlockChunk->SetDirty(true);
 				}
 
-				delete targetedBlock;
+				delete block;
 			}
-			else {
-				blockToReplace->m_BlockId = m_Hotbar[m_CurrentHotbarSlot] || BlockIds::Stone;
+			else 
+			{
+				blockToReplace->m_BlockId = m_Hotbar[m_CurrentHotbarSlot];
 				m_HighlightedBlockChunk->SetDirty(true);
-			}*/
-
-			/*BlockEntity* chest = new BlockEntity();
-			chest->m_BlockId = BlockIds::Chest;
-			chest->SetLocalPosition(blockToReplace->GetLocalPosition());
-			chest->m_ChunkPosition = blockToReplace->GetChunk()->GetPosition();
-
-			BlockEntitiesMap& entities = blockToReplace->GetChunk()->m_BlockEntities;
-			uint16_t index = Utils::BlockPositionToIndex(blockToReplace->GetLocalPosition());
-			entities[index] = chest;*/
-
-			/*ChunkChestBlock* chest = new ChunkChestBlock();
-			chest->m_BlockId = BlockIds::OakLeaves;
-			chest->SetLocalPosition(blockToReplace->GetLocalPosition());
-			chest->m_ChunkPosition = blockToReplace->GetChunk()->GetPosition();
-
-			blockToReplace->GetChunk()->SetBlockAt((glm::ivec3)blockToReplace->GetLocalPosition(), (ChunkBlock*)chest);
-			ChunkChestBlock* b = (ChunkChestBlock*) blockToReplace->GetChunk()->GetBlockAt(blockToReplace->GetLocalPosition());
-
-			std::cout << b->AMethod() << "\n";
-			std::cout << (b->pos).x << "\n";
-			
-			World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, blockToReplace->GetChunk()));*/
+			}
 		}
 
 		raycast.Stop();

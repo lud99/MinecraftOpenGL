@@ -12,7 +12,7 @@ public:
 	};
 
 public:
-	Raycast();
+	Raycast() {};
 	Raycast(glm::vec3 startPosition, glm::vec3 direction, float maxDistance = 10.0f) : 
 		m_StartPosition(startPosition), 
 		m_CurrentPosition(startPosition), 
@@ -21,6 +21,8 @@ public:
 
 	bool Step(float stepSize = 1.0f);
 
+	glm::vec3 GetPreviousPosition();
+
 	void Stop();
 
 public:
@@ -28,6 +30,7 @@ public:
 	glm::vec3 m_EndPosition = glm::vec3(0);
 
 	glm::vec3 m_CurrentPosition = glm::vec3(0);
+	glm::vec3 m_PreviousPosition = glm::vec3(0);
 	glm::vec3 m_Direction = glm::vec3(0);
 
 	float m_StepResolution = 1.0f;
@@ -37,4 +40,5 @@ public:
 
 	bool m_IsFinished = false;
 	bool m_HasReachedMaxDistance = false;
+	float m_StepSize = 1.0f;
 };
