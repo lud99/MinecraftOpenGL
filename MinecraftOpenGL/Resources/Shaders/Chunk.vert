@@ -7,8 +7,7 @@ out vec2 passTextureCoord;
 out float passLightLevel;
 out float chunk;
 
-uniform mat4 u_ProjectionMatrix;
-uniform mat4 u_ViewMatrix;
+uniform mat4 u_MVP;
 
 uniform ivec2 u_ChunkPosition;
 
@@ -43,7 +42,7 @@ void main() {
 
 	vec3 position = vec3(x, y, z) + vec3(u_ChunkPosition.x, 0, u_ChunkPosition.y) + 0.0;
 
-	gl_Position = u_ProjectionMatrix * u_ViewMatrix * vec4(position, 1.0);
+	gl_Position = u_MVP * vec4(position, 1.0);
 
 	passTextureCoord = CalculateTextureCoordinates(textureIndex, index);
 	passLightLevel = float(lightLevel) / 15;

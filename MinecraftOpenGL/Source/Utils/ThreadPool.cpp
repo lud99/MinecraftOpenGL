@@ -49,31 +49,77 @@ void ThreadPool::QueueWork(ChunkAction action)
 	// Grab the mutex
 	std::lock_guard<std::mutex> g(m_WorkQueueMutex); // Auto releases when going out of scope
 
-	for (unsigned int i = 0; i < m_WorkQueue.size(); i++)
-	{
-		// Check if multiple queued chunk actions are trying to do the same thing to the same chunk
-		if (m_WorkQueue[i].type == action.type && m_WorkQueue[i].chunk == action.chunk)
-		{
-			// If so, then remove the older one from the queue
-			if (action.timestamp > m_WorkQueue[i].timestamp) // The entry is older than the action specified
-			{
-				//std::cout << "Removing queue entry " << m_WorkQueue[i].timestamp << "\n";
+	// Add the action to the correct priority queue
+	m_WorkQueue[(int)action.priority].push_back(action);
 
-				m_WorkQueue.erase(m_WorkQueue.begin() + i);
-				
-				break;
-			}
-		}
-	}
+	//std::cout << "Entry priority: " << (int)action.priority << "\n";
+	
+	// Iterate through all the priority entries
+
+	// Very low
+	//if (m_WorkQueue.count(ChunkAction::Priority::VeryLow) > 0)
+	//{
+	//	std::cout << "Adding"
+	//}
+
+	//for (unsigned int i = 0; i < m_WorkQueue.size(); i++)
+	//{
+	//	// Check if multiple queued chunk actions are trying to do the same thing to the same chunk
+	//	if (m_WorkQueue[i].type == action.type && m_WorkQueue[i].chunk == action.chunk)
+	//	{
+	//		// If so, then remove the older one from the queue
+	//		if (action.timestamp > m_WorkQueue[i].timestamp) // The entry is older than the action specified
+	//		{
+	//			//std::cout << "Removing queue entry " << m_WorkQueue[i].timestamp << "\n";
+
+	//			m_WorkQueue.erase(m_WorkQueue.begin() + i);
+	//			
+	//			break;
+	//		}
+	//	}
+	//}
 
 	// Push the request to the queue
-	m_WorkQueue.push_back(action);
+	//m_WorkQueue.push_back(action);
 
 	// Notify one thread that there are requests to process
 	m_WorkQueueConditionVariable.notify_one();
 }
 
 // Function used by the threads to grab work from the queue
+
+ChunkAction ThreadPool::GetActionToDo()
+{
+	typedef ChunkAction::Priority Priority;
+
+	if (m_WorkQueue.empty())
+		return ChunkAction(NULL);
+
+	// Prioritise work with a high priority
+	for (int priority = (int)Priority::VeryHigh; priority >= (int)Priority::VeryLow; priority--)
+	{
+		// No actions with that priority exists
+		if (m_WorkQueue.count(priority) == 0)
+			continue;
+
+		if (!m_WorkQueue[priority].empty())
+		{
+			ChunkAction action = m_WorkQueue[priority].front();
+			m_WorkQueue[priority].pop_front();
+
+			// Remove the vector for the priority if this was the last action
+			if (m_WorkQueue[priority].empty())
+				m_WorkQueue.erase(priority);
+
+			return action;
+		}
+	}
+
+	// Clear the queue if nothing was found. This is to make sure it is empty to avoid infinite loops
+	m_WorkQueue.clear();
+
+	return ChunkAction(NULL);
+}
 
 void ThreadPool::DoWork()
 {
@@ -93,10 +139,28 @@ void ThreadPool::DoWork()
 			// If we are shutting down, then exit witout trying to process more work
 			if (m_Done) break;
 
-			action = m_WorkQueue.front();
-			m_WorkQueue.pop_front();
+			action = GetActionToDo();
+
+			if (action.isNull)
+				continue;
+
+			//for (int priority = (int)Priority::VeryLow; priority < (int)Priority::VeryLow; priority--)
+			//{
 
 			//std::cout << "Threadpool queue length: " << m_WorkQueue.size() << "\n";
+
+			int sum = 0;
+			for (int priority = (int)ChunkAction::Priority::Low; priority < (int)ChunkAction::Priority::VeryHigh; priority++)
+			{
+				// No actions with that priority exists
+				if (m_WorkQueue.count(priority) == 0)
+					continue;
+
+				if (!m_WorkQueue[priority].empty())
+					sum += m_WorkQueue[priority].size();
+			}
+
+			std::cout << sum << "; " << "\n";
 		};
 
 		// Perform the requested action
@@ -109,12 +173,16 @@ void ThreadPool::DoWork()
 		case ChunkAction::ActionType::CreateGenerateAndBuild:
 			action.chunk->Init();
 			action.chunk->GenerateTerrain();
-			action.chunk->RebuildMesh();
+
+			QueueWork(ChunkAction(ChunkAction::ActionType::Rebuild, action.chunk, ChunkAction::Priority::Low));
+			QueueWork(ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, action.chunk, ChunkAction::Priority::Low));
 
 			break;
 		case ChunkAction::ActionType::Rebuild:
 			
 			action.chunk->RebuildMesh();
+
+			//QueueWork(ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, action.chunk, ChunkAction::Priority::Low));
 
 			break;
 
@@ -128,19 +196,24 @@ void ThreadPool::DoWork()
 
 			// Check that the chunk exists before adding it to the work queue
 			if (chunks.West && chunks.West->m_HasGenerated)// && (!westChunkEast || !westChunkEast->m_HasGenerated))
-				chunks.West->RebuildMeshThreaded();
+				chunks.West->RebuildMeshThreaded(ChunkAction::Priority::Low);
 			if (chunks.East && chunks.East->m_HasGenerated)// && (!eastChunkWest || !eastChunkWest->m_HasGenerated))
-				chunks.East->RebuildMeshThreaded();
+				chunks.East->RebuildMeshThreaded(ChunkAction::Priority::Low);
 			if (chunks.North && chunks.North->m_HasGenerated)// && (!northChunkSouth || !northChunkSouth->m_HasGenerated))
-				chunks.North->RebuildMeshThreaded();
+				chunks.North->RebuildMeshThreaded(ChunkAction::Priority::Low);
 			if (chunks.South && chunks.South->m_HasGenerated)//&& (!southChunkNorth || !southChunkNorth->m_HasGenerated))
-				chunks.South->RebuildMeshThreaded();
+				chunks.South->RebuildMeshThreaded(ChunkAction::Priority::Low);
 
 			break;
 		}
 
 		case ChunkAction::ActionType::Generate:
 			action.chunk->GenerateTerrain();
+
+			break;
+
+		default:
+			m_WorkQueue.clear();
 
 			break;
 		}

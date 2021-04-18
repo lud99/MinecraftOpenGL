@@ -31,8 +31,8 @@ void WorldRenderer::Render()
 
 	m_ChunkShader.Bind();
 
-	m_ChunkShader.SetUniform("u_ProjectionMatrix", m_ProjectionMatrix);
-	m_ChunkShader.SetUniform("u_ViewMatrix", m_ViewMatrix);
+	glm::mat4 mvp = m_ProjectionMatrix * m_ViewMatrix;
+	m_ChunkShader.SetUniform("u_MVP", mvp);
 
 	ChunkMap& chunks = World::GetChunks();
 	for (auto const& entry : chunks)
@@ -71,7 +71,7 @@ void WorldRenderer::Render()
 		//if (dot > 0)
 		{
 			m_ChunkShader.SetUniform("u_ChunkPosition", entry.second->GetWorldPosition());
-			m_ChunkShader.SetUniform("u_Dirty", entry.second->IsDirty());
+			m_ChunkShader.SetUniform("u_Dirty", entry.second->IsDirty() || entry.second->m_IsRebuilding);
 			m_ChunkShader.SetUniform("u_ShouldBeRemoved", entry.second->m_ShouldBeRemoved);
 
 			entry.second->m_WaterMesh.Render();

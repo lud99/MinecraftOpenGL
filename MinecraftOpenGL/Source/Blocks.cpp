@@ -119,6 +119,8 @@ void Block::Break()
 {
 	if (m_BlockId == BlockIds::Air) return;
 
+	if (!m_Chunk) return;
+
 	m_ChunkBlock->m_BlockId = BlockIds::Air;
 
 	m_Chunk->SetDirty(true);

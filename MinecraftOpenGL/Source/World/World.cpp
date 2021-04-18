@@ -66,8 +66,11 @@ void World::HandleCreatingNewChunks()
 			glm::ivec2 chunkPos = Utils::WorldPositionToChunkPosition(glm::vec3(x, 0, z) + 8.0f);
 			Chunk* chunk = GetChunkAt(chunkPos);
 
+			//ChunkAction* nextAction = new ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk, ChunkAction::Priority::Low);
+
 			// Create the chunk here if a chunk at this position doesn't exist
-			if (!chunk) chunk = GenerateNewChunkThreaded(chunkPos);
+			if (!chunk)
+				chunk = GenerateNewChunkThreaded(chunkPos);
 		}
 	}
 
@@ -82,9 +85,32 @@ void World::HandleCreatingNewChunks()
 			if (!chunk)
 				continue;
 
-			// Rebuild the chunk if changes has occured and it's not already rebuilding
+			AdjacentChunks adjacentChunks = chunk->GetAdjacentChunks();
+
+			// Rebuild the chunk if changes has occured and it's not already rebuilding. For example if a block has been broken
 			if (chunk->m_IsInitialized && chunk->IsDirty() && !chunk->m_IsRebuilding)
-				chunk->RebuildMeshThreaded();
+			{
+				chunk->RebuildMeshThreaded(ChunkAction::Priority::VeryHigh);
+				//m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk, ChunkAction::Priority::Low));
+
+				//if (adjacentChunks.West)// && (!westChunkEast || !westChunkEast->m_HasGenerated))
+				//	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, adjacentChunks.West, ChunkAction::Priority::Low));
+				//if (adjacentChunks.East)// && (!eastChunkWest || !eastChunkWest->m_HasGenerated))
+				//	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, adjacentChunks.East, ChunkAction::Priority::Low));
+				//if (adjacentChunks.North)// && (!northChunkSouth || !northChunkSouth->m_HasGenerated))
+				//	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, adjacentChunks.North, ChunkAction::Priority::Low));
+				//if (adjacentChunks.South)//&& (!southChunkNorth || !southChunkNorth->m_HasGenerated))
+				//	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, adjacentChunks.South, ChunkAction::Priority::Low));
+
+				/*if (adjacentChunks.South && !adjacentChunks.South->m_AdjacentChunksWhenLastRebuilt.North)
+					adjacentChunks.South->SetDirty(true);
+				if (adjacentChunks.North && !adjacentChunks.North->m_AdjacentChunksWhenLastRebuilt.South)
+					adjacentChunks.North->SetDirty(true);
+				if (adjacentChunks.West && !adjacentChunks.West->m_AdjacentChunksWhenLastRebuilt.East)
+					adjacentChunks.West->SetDirty(true);
+				if (adjacentChunks.East && !adjacentChunks.East->m_AdjacentChunksWhenLastRebuilt.West)
+					adjacentChunks.East->SetDirty(true);*/
+			}
 
 			/*if (!chunk->m_IsInitialized) // Only generate if the chunk exists and has been initalized properly
 				continue;
@@ -102,14 +128,14 @@ void World::HandleCreatingNewChunks()
 			if (adjacentChunks.South && !adjacentChunks.South->m_IsInitialized)
 				continue;
 
-			std::cout << "Generate: " << chunkPos.x << "; " << chunkPos.y << "\n";
+			std::cout << "Generate: " << chunkPos.x << "; " << chunkPos.y << "\n";*/
 
 			// Add a action to be run after the generation is completed, which is to rebuild the adjacent chunks
-			ChunkAction* nextAction = new ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk);
-			/*nextAction->type = ChunkAction::ActionType::Rebuild;// RebuildAdjacentChunks;
-			nextAction->chunk = chunk;
-			nextAction->SetTimestamp();
-			m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk));
+			//ChunkAction* nextAction = new ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk);
+			//nextAction->type = ChunkAction::ActionType::Rebuild;// RebuildAdjacentChunks;
+			//nextAction->chunk = chunk;
+			//nextAction->SetTimestamp();
+			//m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk, ChunkAction::Priority::Low));
 
 			//chunk->GenerateTerrainThreaded(nextAction);*/
 		}
@@ -196,7 +222,7 @@ Chunk* World::GenerateNewChunkThreaded(glm::ivec2 position, ChunkAction* nextAct
 
 	lk.unlock();
 
-	chunk->CreateGenerateAndBuild(nextAction);
+	chunk->CreateGenerateAndBuild(ChunkAction::Priority::High, nextAction);
 
 	return chunk;
 }
@@ -224,12 +250,12 @@ Chunk* World::LoadChunk(glm::ivec2 position)
 	chunk->m_HasGenerated = true;
 	chunk->m_ShouldRebuild = true;
 
-	ChunkAction* nextAction = new ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk);
+	ChunkAction* nextAction = nullptr;/* new ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk);
 	nextAction->type = ChunkAction::ActionType::RebuildAdjacentChunks;
 	nextAction->chunk = chunk;
-	nextAction->SetTimestamp();
+	nextAction->SetTimestamp();*/
 
-	chunk->RebuildMeshThreaded(nextAction);
+	chunk->RebuildMeshThreaded(ChunkAction::Priority::High, nextAction);
 
 	return chunk;
 }
@@ -310,4 +336,4 @@ irrklang::ISoundEngine* World::SoundEngine;
 
 unsigned int World::m_ChunkCount = 0;
 
-int Settings::RenderDistance = 2;
+int Settings::RenderDistance = 8;

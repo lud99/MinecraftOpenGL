@@ -20,7 +20,7 @@ Chunk::Chunk(glm::ivec2 position)
 {
 	SetPosition(position);
 
-	m_AdjacentChunksWhenLastRebuilt = GetAdjacentChunks();
+	//m_AdjacentChunksWhenLastRebuilt = GetAdjacentChunks();
 
 	m_OpaqueMesh.m_Texture = World::m_TextureAtlas.Texture;
 	m_WaterMesh.m_Texture = World::m_TextureAtlas.Texture;
@@ -342,7 +342,8 @@ void Chunk::GenerateTerrain()
 #endif
 	m_HasGenerated = true;
 	m_IsGenerating = false;
-	m_ShouldRebuild = true;
+
+	SetDirty(true);
 
 	// Set flag for adjacent chunks to rebuild to remove uneq. block faces at chunk border
 	/*AdjacentChunks chunks = GetAdjacentChunks();
@@ -351,7 +352,7 @@ void Chunk::GenerateTerrain()
 	if (chunks.East) chunks.East->SetDirty(true);
 	if (chunks.South) chunks.South->SetDirty(true);*/
 
-	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, this));
+	//World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, this));
 
 	//std::cout << "Terrain generatation done. " << m_Position.x << ", " << m_Position.y << "\n";
 
@@ -366,7 +367,7 @@ void Chunk::RebuildMesh()
 		return;
 	}
 
-	SetDirty(true);
+	//SetDirty(true);
 	m_IsRebuilding = true;
 
 	m_MeshMutex.lock();
@@ -416,32 +417,32 @@ void Chunk::RebuildMesh()
 	m_MeshMutex.unlock();
 }
 
-void Chunk::RebuildMeshThreaded(ChunkAction* nextAction)
+void Chunk::RebuildMeshThreaded(ChunkAction::Priority priority, ChunkAction* nextAction)
 {
 	if (!m_IsInitialized) std::cout << "Not int\n";
 	if (!m_IsInitialized) return;
 
-	m_IsRebuilding = true;
-	SetDirty(true);
+	//m_IsRebuilding = true;
+	//SetDirty(true);
 
-	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, this, nextAction));
+	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, this, priority, nextAction));
 }
 
-void Chunk::GenerateTerrainThreaded(ChunkAction* nextAction)
+void Chunk::GenerateTerrainThreaded(ChunkAction::Priority priority, ChunkAction* nextAction)
 {
 	//if (!m_IsInitialized) return;
 
 	m_IsGenerating = true;
 
-	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Generate, this, nextAction));
+	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Generate, this, priority, nextAction));
 }
 
-void Chunk::CreateGenerateAndBuild(ChunkAction* nextAction)
+void Chunk::CreateGenerateAndBuild(ChunkAction::Priority priority, ChunkAction* nextAction)
 {
 	m_IsGenerating = true;
 	m_IsRebuilding = true;
 
-	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::CreateGenerateAndBuild, this, nextAction));
+	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::CreateGenerateAndBuild, this, priority, nextAction));
 }
 
 void Chunk::Render()

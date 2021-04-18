@@ -111,6 +111,12 @@ void Player::OnUpdate()
 		ChunkBlock* highligtedBlock = World::GetBlockAt(flooredRayPos);
 		Chunk* highlightedChunk = World::GetChunkAt(Utils::WorldPositionToChunkPosition(flooredRayPos));
 
+		if (!highligtedBlock || !highlightedChunk)
+		{
+			raycast.Stop();
+			break;
+		}
+
 		if (highligtedBlock && highligtedBlock->m_BlockId != BlockIds::Air)
 		{
 			// If no block has been highlighted
@@ -157,6 +163,9 @@ void Player::HandleMovement()
 	else
 		friction = m_PreviousBlockFriction;
 
+	if (friction == 0.0f)
+		friction = 0.25f;
+
 	// Make the acceleration based on the friction of the block. 
 	// This makes it so it's more slippery to move on ice, compared to dirt
 	m_Acceleration = m_BaseAcceleration * (friction == 0.0f ? 0.25f : friction) * (float)Time::FixedTimestep;
@@ -186,12 +195,12 @@ void Player::HandleMovement()
 	// Increase and decrease movement speed
 	if (m_Input.IsKeyHeld(GLFW_KEY_E))
 	{
-		m_MaxVelocity += 0.25f * Time::FixedTimestep;
+		m_MaxVelocity += 50.0f * Time::FixedTimestep;
 		m_BaseAcceleration += m_BaseAcceleration * Time::FixedTimestep;
 	}
 	if (m_Input.IsKeyHeld(GLFW_KEY_Q))
 	{
-		m_MaxVelocity -= 0.25f * Time::FixedTimestep;
+		m_MaxVelocity -= 50.0f * Time::FixedTimestep;
 		m_BaseAcceleration -= m_BaseAcceleration * Time::FixedTimestep;
 	}
 
@@ -204,8 +213,8 @@ void Player::HandleMovement()
 	}
 
 	// Fly
-	//if (m_Input.IsKeyHeld(GLFW_KEY_SPACE))
-	//	m_Velocity.y = 0.212132034356f; // v0 = sqrt(2*g*h)
+	if (m_Input.IsKeyHeld(GLFW_KEY_SPACE))
+		m_Velocity.y = 0.212132034356f; // v0 = sqrt(2*g*h)
 
 	m_Velocity += newMovementDirection * m_Acceleration;
 

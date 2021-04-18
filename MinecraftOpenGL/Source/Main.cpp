@@ -76,7 +76,7 @@ int main()
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glfwSwapInterval(0); // Vsync
 
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glEnable(GL_MULTISAMPLE);

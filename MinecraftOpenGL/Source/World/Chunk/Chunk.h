@@ -12,12 +12,13 @@
 #include <unordered_map>
 #include <vector>
 
+#include "../../Utils/ThreadPool.h"
+
 class ChunkBlock;
 class BlockEntity;
 class ChunkMesh;
 class DroppedItem;
 
-struct ChunkAction;
 class Chunk;
 
 struct AdjacentChunks
@@ -38,12 +39,12 @@ public:
 	Chunk(glm::ivec2 position);
 	
 	void Init();
-	void CreateGenerateAndBuild(ChunkAction* nextAction = nullptr);
+	void CreateGenerateAndBuild(ChunkAction::Priority priority, ChunkAction* nextAction = nullptr);
 
 	void RebuildMesh();
-	void RebuildMeshThreaded(ChunkAction* nextAction = nullptr);
+	void RebuildMeshThreaded(ChunkAction::Priority priority, ChunkAction* nextAction = nullptr);
 	void GenerateTerrain();
-	void GenerateTerrainThreaded(ChunkAction* nextAction = nullptr);
+	void GenerateTerrainThreaded(ChunkAction::Priority priority, ChunkAction* nextAction = nullptr);
 
 	void Fill(const glm::vec4* colors);
 	void CreateSphere(const glm::vec4* colors);

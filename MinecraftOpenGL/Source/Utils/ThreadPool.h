@@ -3,7 +3,8 @@
 #include <thread>
 #include <vector>
 #include <mutex>
-#include <queue>
+#include <unordered_map>
+#include <deque>
 #include <condition_variable>
 #include <chrono>
 
@@ -25,9 +26,21 @@ struct ChunkAction
 		Save
 	};
 
+	enum class Priority {
+		VeryLow = 0,
+		Low = 2,
+		Normal = 5,
+		High = 8,
+		VeryHigh = 10,
+	};
+
 	ChunkAction() {};
-	ChunkAction(ActionType type, Chunk* chunk, ChunkAction* nextAction = nullptr) : 
-		type(type), chunk(chunk), nextAction(nextAction) { SetTimestamp(); };
+	ChunkAction(int null) { isNull = null == NULL; };
+	ChunkAction(ActionType type, Chunk* chunk, Priority priority = Priority::Normal, ChunkAction* nextAction = nullptr) :
+		type(type), chunk(chunk), priority(priority), nextAction(nextAction) { SetTimestamp(); };
+
+	ChunkAction(ActionType type, Chunk* chunk, int priority = (int)Priority::Normal, ChunkAction* nextAction = nullptr) :
+		type(type), chunk(chunk), priority((Priority)priority), nextAction(nextAction) { SetTimestamp(); };
 
 	void SetTimestamp()
 	{
@@ -36,8 +49,10 @@ struct ChunkAction
 		timestamp = duration_cast<std::chrono::microseconds>(system_clock::now().time_since_epoch()).count();
 	}
 
+	bool isNull = false;
 	ActionType type = ActionType::Rebuild;
 	unsigned long long timestamp = 0;
+	Priority priority = Priority::Normal;
 
 	Chunk* chunk = nullptr;
 	ChunkAction* nextAction = nullptr;
@@ -62,7 +77,7 @@ private:
 	std::mutex m_WorkQueueMutex;
 
 	// Queue of requests waiting to be processed
-	std::deque<ChunkAction> m_WorkQueue;
+	std::unordered_map<int, std::deque<ChunkAction>> m_WorkQueue;
 
 	// This will be set to true when the thread pool is shutting down. This tells
 	// the threads to stop looping and finish
@@ -70,4 +85,5 @@ private:
 
 	// Function used by the threads to grab work from the queue
 	void DoWork();
+	ChunkAction GetActionToDo();
 };
