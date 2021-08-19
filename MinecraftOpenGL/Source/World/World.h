@@ -48,6 +48,8 @@ namespace World
 	Chunk* CreateChunk(glm::ivec2 position);
 	Chunk* GenerateNewChunkThreaded(glm::ivec2 position, ChunkAction* nextAction = nullptr);
 
+	Chunk* GetNewChunkNetThreaded(glm::ivec2 position, ChunkAction* nextAction = nullptr);
+
 	Chunk* LoadChunk(glm::ivec2 position);
 
 	void RemoveChunk(Chunk* chunk);

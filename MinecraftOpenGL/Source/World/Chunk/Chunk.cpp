@@ -15,6 +15,7 @@
 #include "../../Utils/ThreadPool.h"
 #include "../../BlockIds.h"
 #include "../../Blocks.h"
+#include "../../NetworkThread.h"
 
 Chunk::Chunk(glm::ivec2 position)
 {
@@ -443,6 +444,23 @@ void Chunk::CreateGenerateAndBuild(ChunkAction::Priority priority, ChunkAction* 
 	m_IsRebuilding = true;
 
 	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::CreateGenerateAndBuild, this, priority, nextAction));
+}
+
+void Chunk::GetDataNet()
+{
+	NetworkThread& net = net.Instance();
+
+	json msg;
+	msg["Type"] = "GetChunk";
+	msg["Data"]["Position"]["X"] = m_Position.x;
+	msg["Data"]["Position"]["Z"] = m_Position.y;
+
+	net.SendJson(msg);
+}
+
+void Chunk::GetDataNetThreaded(ChunkAction::Priority priority, ChunkAction* nextAction)
+{
+
 }
 
 void Chunk::Render()

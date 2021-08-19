@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2050
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31129.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MinecraftOpenGL", "MinecraftOpenGL\MinecraftOpenGL.vcxproj", "{8988AC67-14A4-488C-924C-88F070A259D9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Server", "Server\Server.vcxproj", "{2FF9DF6E-6B20-4691-A089-D55A3303B135}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,14 @@ Global
 		{8988AC67-14A4-488C-924C-88F070A259D9}.Release|x64.Build.0 = Release|x64
 		{8988AC67-14A4-488C-924C-88F070A259D9}.Release|x86.ActiveCfg = Release|Win32
 		{8988AC67-14A4-488C-924C-88F070A259D9}.Release|x86.Build.0 = Release|Win32
+		{2FF9DF6E-6B20-4691-A089-D55A3303B135}.Debug|x64.ActiveCfg = Debug|x64
+		{2FF9DF6E-6B20-4691-A089-D55A3303B135}.Debug|x64.Build.0 = Debug|x64
+		{2FF9DF6E-6B20-4691-A089-D55A3303B135}.Debug|x86.ActiveCfg = Debug|Win32
+		{2FF9DF6E-6B20-4691-A089-D55A3303B135}.Debug|x86.Build.0 = Debug|Win32
+		{2FF9DF6E-6B20-4691-A089-D55A3303B135}.Release|x64.ActiveCfg = Release|x64
+		{2FF9DF6E-6B20-4691-A089-D55A3303B135}.Release|x64.Build.0 = Release|x64
+		{2FF9DF6E-6B20-4691-A089-D55A3303B135}.Release|x86.ActiveCfg = Release|Win32
+		{2FF9DF6E-6B20-4691-A089-D55A3303B135}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

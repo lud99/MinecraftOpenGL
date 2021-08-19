@@ -16,6 +16,7 @@
 #include "../../Utils/Raycast.h"
 #include "../../Utils/Utils.h"
 #include "../../Time.h"
+#include "../../NetworkThread.h"
 
 #include <GLFW/glfw3.h>
 
@@ -154,6 +155,19 @@ void Player::OnFixedUpdate()
 {
 	HandleMovement();
 	HandleCollision();
+
+	// Send position
+	{
+		NetworkThread& net = net.Instance();
+
+		json msg;
+		msg["Type"] = "PlayerPosition";
+		msg["Data"]["X"] = m_Position.x;
+		msg["Data"]["Y"] = m_Position.y;
+		msg["Data"]["Z"] = m_Position.z;
+
+		net.SendJson(msg);
+	}
 
 	UpdateCameraPosition();
 }

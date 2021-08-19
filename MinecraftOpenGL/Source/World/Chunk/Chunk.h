@@ -6,7 +6,11 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-#include <Graphics/Mesh.hpp>
+#ifdef SERVER_BUILD
+	#include "../../Graphics/Graphics/Mesh.hpp"
+#else
+	#include <Graphics/Mesh.hpp>
+#endif
 
 #include <mutex>
 #include <unordered_map>
@@ -45,6 +49,8 @@ public:
 	void RebuildMeshThreaded(ChunkAction::Priority priority, ChunkAction* nextAction = nullptr);
 	void GenerateTerrain();
 	void GenerateTerrainThreaded(ChunkAction::Priority priority, ChunkAction* nextAction = nullptr);
+	void GetDataNet();
+	void GetDataNetThreaded(ChunkAction::Priority priority, ChunkAction* nextAction = nullptr);
 
 	void Fill(const glm::vec4* colors);
 	void CreateSphere(const glm::vec4* colors);

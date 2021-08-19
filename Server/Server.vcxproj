@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{2ff9df6e-6b20-4691-a089-d55a3303b135}</ProjectGuid>
+    <RootNamespace>Server</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IntDir>$(SolutionDir)build\$(ProjectName)\intermediates\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)build\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IntDir>$(SolutionDir)build\$(ProjectName)\intermediates\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)build\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IntDir>$(SolutionDir)build\$(ProjectName)\intermediates\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)build\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IntDir>$(SolutionDir)build\$(ProjectName)\intermediates\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)build\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>GLEW_STATIC;SERVER_BUILD;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source\Common;$(ProjectDir)Source\Temp\Graphics;$(SolutionDir)Dependencies\glfw-3.3.2.Win32\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\irrKlang-32bit-1.6.0\include;$(SolutionDir)Dependencies\enet-1.3.17\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\Win32;$(SolutionDir)Dependencies\glfw-3.3.2.Win32\lib-vc2017;$(SolutionDir)Dependencies\enet-1.3.17\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;enet.lib;ws2_32.lib;winmm.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>GLEW_STATIC;SERVER_BUILD;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source\Common;$(ProjectDir)Source\Temp\Graphics;$(SolutionDir)Dependencies\glfw-3.3.2.Win32\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\irrKlang-32bit-1.6.0\include;$(SolutionDir)Dependencies\enet-1.3.17\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\Win32;$(SolutionDir)Dependencies\glfw-3.3.2.Win32\lib-vc2017;$(SolutionDir)Dependencies\enet-1.3.17\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;enet.lib;ws2_32.lib;winmm.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>GLEW_STATIC;SERVER_BUILD;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source\Common;$(ProjectDir)Source\Temp\Graphics;$(SolutionDir)Dependencies\glfw-3.3.2.Win64\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\irrKlang-64bit-1.6.0\include;$(SolutionDir)Dependencies\enet-1.3.17\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\x64;$(SolutionDir)Dependencies\glfw-3.3.2.Win64\lib-vc2017;$(SolutionDir)Dependencies\enet-1.3.17\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;enet64.lib;ws2_32.lib;winmm.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>GLEW_STATIC;SERVER_BUILD;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source\Common;$(ProjectDir)Source\Temp\Graphics;$(SolutionDir)Dependencies\glfw-3.3.2.Win64\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\irrKlang-64bit-1.6.0\include;$(SolutionDir)Dependencies\enet-1.3.17\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\x64;$(SolutionDir)Dependencies\glfw-3.3.2.Win64\lib-vc2017;$(SolutionDir)Dependencies\enet-1.3.17\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;enet64.lib;ws2_32.lib;winmm.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Common\Common\NetworkMessages.cpp" />
+    <ClCompile Include="Source\Common\Common\NetworkClient.cpp" />
+    <ClCompile Include="Source\MainServer.cpp" />
+    <ClCompile Include="Source\NetworkSession.cpp" />
+    <ClCompile Include="Source\Temp\Blocks.cpp" />
+    <ClCompile Include="Source\Temp\Graphics\Graphics\ModelParser.cpp" />
+    <ClCompile Include="Source\Temp\Graphics\Graphics\Shader.cpp" />
+    <ClCompile Include="Source\Temp\Graphics\Graphics\Textures\Cubemap.cpp" />
+    <ClCompile Include="Source\Temp\Graphics\Graphics\Textures\Texture2D.cpp" />
+    <ClCompile Include="Source\Temp\Graphics\Graphics\Textures\TextureAtlas.cpp" />
+    <ClCompile Include="Source\Temp\Graphics\Graphics\Vertex.cpp" />
+    <ClCompile Include="Source\Temp\InputHandler.cpp" />
+    <ClCompile Include="Source\Temp\Noise\FastNoise.cpp" />
+    <ClCompile Include="Source\Temp\Noise\NoiseGenerator.cpp" />
+    <ClCompile Include="Source\Temp\Utils\Raycast.cpp" />
+    <ClCompile Include="Source\Temp\Utils\ThreadPool.cpp" />
+    <ClCompile Include="Source\Temp\Utils\Utils.cpp" />
+    <ClCompile Include="Source\Temp\World\Chunk\BlockEntity.cpp" />
+    <ClCompile Include="Source\Temp\World\Chunk\Chunk.cpp" />
+    <ClCompile Include="Source\Temp\World\Chunk\ChunkBlock.cpp" />
+    <ClCompile Include="Source\Temp\World\Chunk\ChunkBuilder.cpp" />
+    <ClCompile Include="Source\Temp\World\Chunk\ChunkIO.cpp" />
+    <ClCompile Include="Source\Temp\World\Collider.cpp" />
+    <ClCompile Include="Source\Temp\World\DroppedItem.cpp" />
+    <ClCompile Include="Source\Temp\World\Player\Camera.cpp" />
+    <ClCompile Include="Source\Temp\World\Player\Crosshair.cpp" />
+    <ClCompile Include="Source\Temp\World\Player\Player.cpp" />
+    <ClCompile Include="Source\Temp\World\Skybox.cpp" />
+    <ClCompile Include="Source\Temp\World\World.cpp" />
+    <ClCompile Include="Source\Temp\World\WorldRenderer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Common\Common\json.hpp" />
+    <ClInclude Include="Source\Common\Common\NetworkConstants.h" />
+    <ClInclude Include="Source\Common\Common\NetworkMessages.h" />
+    <ClInclude Include="Source\Common\Common\NetworkClient.h" />
+    <ClInclude Include="Source\NetworkSession.h" />
+    <ClInclude Include="Source\Temp\BlockIds.h" />
+    <ClInclude Include="Source\Temp\Blocks.h" />
+    <ClInclude Include="Source\Temp\Graphics\Graphics\BasicVertices.h" />
+    <ClInclude Include="Source\Temp\Graphics\Graphics\Mesh.hpp" />
+    <ClInclude Include="Source\Temp\Graphics\Graphics\ModelParser.h" />
+    <ClInclude Include="Source\Temp\Graphics\Graphics\Shader.h" />
+    <ClInclude Include="Source\Temp\Graphics\Graphics\Textures\Cubemap.h" />
+    <ClInclude Include="Source\Temp\Graphics\Graphics\Textures\Texture2D.h" />
+    <ClInclude Include="Source\Temp\Graphics\Graphics\Textures\TextureAtlas.h" />
+    <ClInclude Include="Source\Temp\Graphics\Graphics\Vertex.h" />
+    <ClInclude Include="Source\Temp\InputHandler.h" />
+    <ClInclude Include="Source\Temp\Noise\FastNoise.h" />
+    <ClInclude Include="Source\Temp\Noise\NoiseGenerator.h" />
+    <ClInclude Include="Source\Temp\Time.h" />
+    <ClInclude Include="Source\Temp\Utils\Raycast.h" />
+    <ClInclude Include="Source\Temp\Utils\ThreadPool.h" />
+    <ClInclude Include="Source\Temp\Utils\Utils.h" />
+    <ClInclude Include="Source\Temp\World\Chunk\BlockEntity.h" />
+    <ClInclude Include="Source\Temp\World\Chunk\Chunk.h" />
+    <ClInclude Include="Source\Temp\World\Chunk\ChunkBlock.h" />
+    <ClInclude Include="Source\Temp\World\Chunk\ChunkBuilder.h" />
+    <ClInclude Include="Source\Temp\World\Chunk\ChunkIO.h" />
+    <ClInclude Include="Source\Temp\World\Collider.h" />
+    <ClInclude Include="Source\Temp\World\DroppedItem.h" />
+    <ClInclude Include="Source\Temp\World\Player\Camera.h" />
+    <ClInclude Include="Source\Temp\World\Player\Crosshair.h" />
+    <ClInclude Include="Source\Temp\World\Player\Player.h" />
+    <ClInclude Include="Source\Temp\World\Skybox.h" />
+    <ClInclude Include="Source\Temp\World\World.h" />
+    <ClInclude Include="Source\Temp\World\WorldRenderer.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

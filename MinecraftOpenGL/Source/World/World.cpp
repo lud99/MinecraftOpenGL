@@ -70,7 +70,7 @@ void World::HandleCreatingNewChunks()
 
 			// Create the chunk here if a chunk at this position doesn't exist
 			if (!chunk)
-				chunk = GenerateNewChunkThreaded(chunkPos);
+				chunk = GetNewChunkNetThreaded(chunkPos);//GenerateNewChunkThreaded(chunkPos);
 		}
 	}
 
@@ -227,6 +227,21 @@ Chunk* World::GenerateNewChunkThreaded(glm::ivec2 position, ChunkAction* nextAct
 	return chunk;
 }
 
+Chunk* World::GetNewChunkNetThreaded(glm::ivec2 position, ChunkAction* nextAction)
+{
+	std::unique_lock<std::recursive_mutex> lk(m_ChunkMutex);
+
+	Chunk* chunk = new Chunk(position);
+	m_Chunks[position] = chunk;
+	chunk->Init();
+
+	lk.unlock();
+
+	chunk->GetDataNet();
+
+	return chunk;
+}
+
 Chunk* World::LoadChunk(glm::ivec2 position)
 {
 	ChunkFile chunkData = ChunkIO::ReadFile("test.txt");
@@ -336,4 +351,4 @@ irrklang::ISoundEngine* World::SoundEngine;
 
 unsigned int World::m_ChunkCount = 0;
 
-int Settings::RenderDistance = 8;
+int Settings::RenderDistance = 2;
