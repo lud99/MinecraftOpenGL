@@ -11,6 +11,9 @@
 #include "../Utils/Utils.h"
 #include "../Blocks.h"
 #include "Collider.h"
+
+#include "../NetworkThread.h"
+
 #include <mutex>
 #include <GLFW/glfw3.h>
 #include <irrklang/irrKlang.h>
@@ -50,6 +53,23 @@ void World::FixedUpdate()
 	m_Player.OnFixedUpdate();
 }
 
+void World::TickUpdate()
+{
+	// Send position
+	{
+		NetworkThread& net = net.Instance();
+
+		json msg;
+		msg["Type"] = "PlayerPosition";
+		msg["Data"]["X"] = m_Player.m_Position.x;
+		msg["Data"]["Y"] = m_Player.m_Position.y;
+		msg["Data"]["Z"] = m_Player.m_Position.z;
+
+		//net.SendJson(msg);
+	}
+
+}
+
 void World::Render() { m_Renderer->Render(); }
 
 void World::HandleCreatingNewChunks()
@@ -69,8 +89,10 @@ void World::HandleCreatingNewChunks()
 			//ChunkAction* nextAction = new ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk, ChunkAction::Priority::Low);
 
 			// Create the chunk here if a chunk at this position doesn't exist
-			if (!chunk)
+			if (!chunk) {
 				chunk = GetNewChunkNetThreaded(chunkPos);//GenerateNewChunkThreaded(chunkPos);
+				//std::cout << "newchunk\n";
+			}
 		}
 	}
 
@@ -91,6 +113,7 @@ void World::HandleCreatingNewChunks()
 			if (chunk->m_IsInitialized && chunk->IsDirty() && !chunk->m_IsRebuilding)
 			{
 				chunk->RebuildMeshThreaded(ChunkAction::Priority::VeryHigh);
+				std::cout << "rebuild\n";
 				//m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk, ChunkAction::Priority::Low));
 
 				//if (adjacentChunks.West)// && (!westChunkEast || !westChunkEast->m_HasGenerated))

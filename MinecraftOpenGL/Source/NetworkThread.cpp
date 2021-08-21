@@ -2,8 +2,13 @@
 
 #include <iostream>
 
+#include <glm/vec2.hpp>
+
 #include <enet/enet.h>
 #include <Common/NetworkConstants.h>
+
+#include "World/Chunk/Chunk.h"
+#include "World/Chunk/ChunkBlock.h"
 
 NetworkThread::NetworkThread()
 {
@@ -21,35 +26,46 @@ bool NetworkThread::Connect(const std::string& adress, int port)
 	m_Port = port;
 
 	bool success = false;
-	m_Thread = std::thread(&NetworkThread::_ConnectThread, this, &success);
-	m_Thread.join();
+	NetworkThread::_ConnectThread(&success);
+
+	// Setup send thread
+	m_Thread = std::thread([this]() {
+		while (true)
+		{
+			if (m_ShouldExit) break;
+
+			PullPackets();
+
+			std::vector<std::string> queue = m_SendQueue;
+
+			// Send all queued packets
+			for (size_t i = 0; i < queue.size(); i++)
+			{
+				ENetPacket* packet = enet_packet_create(queue[i].c_str(), queue[i].length() + 1, ENET_PACKET_FLAG_RELIABLE);
+				enet_peer_send(m_Connection, 0, packet);
+			}
+
+			// Reset queue
+			if (!m_SendQueue.empty()) m_SendQueue.clear();
+		}
+	});
 
 	return success;
 }
 
 void NetworkThread::SendJson(json& message)
 {
+	std::cout << "Sending message " << message["Type"] << "\n";
 	std::string stringified = message.dump();
 
 	SendString(stringified);
 }
 
-void NetworkThread::Send(const char* data, size_t length)
-{
-	
-}
-
 void NetworkThread::SendString(const std::string& data)
 {
-	std::cout << "Sending message: " << data << "\n";
+	//std::cout << "Sending message: " << data << "\n";
 
-	if (m_Thread.joinable())
-		m_Thread.join();
-
-	m_Thread = std::thread([this, data]() {
-		ENetPacket* packet = enet_packet_create(data.c_str(), data.length() + 1, ENET_PACKET_FLAG_RELIABLE);
-		enet_peer_send(m_Connection, 0, packet);
-	});
+	m_SendQueue.push_back(data);
 }
 
 bool NetworkThread::_ConnectThread(bool* success)
@@ -113,7 +129,7 @@ ENetPacket* NetworkThread::PullPackets()
 	ENetEvent event;
 
 	// The incoming messages are handled by this function. Needs to be called regularly. A 0 timeout means that it's non-blocking
-	int eventStatus = enet_host_service(m_Client, &event, 0);
+	int eventStatus = enet_host_service(m_Client, &event, 1000);
 
 	if (eventStatus > 0)
 	{
@@ -121,28 +137,63 @@ ENetPacket* NetworkThread::PullPackets()
 		{
 		case ENET_EVENT_TYPE_RECEIVE:
 		{
-			printf("(Client) Message from server : %s\n", event.packet->data);
+			json packetJson = json::parse((const char*)event.packet->data);
 
-			return event.packet;
+			std::cout << "Recieved message " << packetJson["Type"] << "\n";
 
-			// Lets broadcast this message to all
-			// enet_host_broadcast(client, 0, event.packet);
-			// temp: enet_packet_destroy(event.packet);
+			if (packetJson["Type"] == "JoinWorld")
+				HandleJoinWorldPacket(packetJson);
+			if (packetJson["Type"] == "ChunkData")
+				HandleChunkDataPacket(packetJson);
+
+			enet_packet_destroy(event.packet);
 			break;
 		}
 
-		case ENET_EVENT_TYPE_DISCONNECT:
+		case ENET_EVENT_TYPE_DISCONNECT: // unused
 			printf("(Client) %s disconnected.\n", event.peer->data);
 			// Reset client's information
 			event.peer->data = NULL;
 			break;
 		}
 	}
+	else
+	{
+		std::cout << "Err packet pull failed\n";
+	}
 
 	// Send queded packets?
 	enet_host_flush(m_Client);
 
 	return nullptr;
+}
+
+void NetworkThread::HandleJoinWorldPacket(json& packet)
+{
+	json msg;
+	msg["Type"] = "JoinWorld";
+	msg["Data"]["SessionName"] = "Minecraft";
+	//SendJson(msg);
+}
+
+void NetworkThread::HandleChunkDataPacket(json& packet)
+{
+	glm::ivec2 pos(packet["Data"]["Position"]["X"], packet["Data"]["Position"]["Z"]);
+
+	Chunk* chunk = World::GetChunkAt(pos);
+	for (int x = 0; x < Chunk::Width; x++)
+	{
+		for (int z = 0; z < Chunk::Depth; z++)
+		{
+			ChunkBlock* block = chunk->GetBlockAt(glm::vec3(x, 0, z));
+			block->m_BlockId = packet["Data"]["Blocks"][x + z];
+		}
+	}
+
+	chunk->SetDirty(true);
+	chunk->m_HasGenerated = true;
+
+	chunk->RebuildMeshThreaded(ChunkAction::Priority::Normal);
 }
 
 NetworkThread::~NetworkThread()

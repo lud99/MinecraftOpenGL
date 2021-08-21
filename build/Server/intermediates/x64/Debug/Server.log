@@ -1,2 +1,12 @@
 ﻿  NetworkClient.cpp
+  MainServer.cpp
+D:\Spel\Programming\C++\MinecraftOpenGL\Server\Source\MainServer.cpp(1,1): warning C4005: 'SERVER_BUILD': macro redefinition
+D:\Spel\Programming\C++\MinecraftOpenGL\Server\Source\MainServer.cpp : message : see previous definition of 'SERVER_BUILD'
+D:\Spel\Programming\C++\MinecraftOpenGL\Server\Source\MainServer.cpp(36,91): warning C4267: 'argument': conversion from 'size_t' to 'enet_uint32', possible loss of data
+D:\Spel\Programming\C++\MinecraftOpenGL\Server\Source\MainServer.cpp(161,12): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'void *'
+D:\Spel\Programming\C++\MinecraftOpenGL\Server\Source\MainServer.cpp(29,12): warning C4101: 'event': unreferenced local variable
+  Generating Code...
+LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'D:\Spel\Programming\C++\MinecraftOpenGL\build\Server\x64\Debug\vc120.pdb'; linking object as if no debug info
   Server.vcxproj -> D:\Spel\Programming\C++\MinecraftOpenGL\build\Server\x64\Debug\Server.exe

@@ -14,10 +14,12 @@ public:
 	bool Connect(const std::string& adress, int port);
 
 	void SendJson(json& message);
-	void Send(const char* data, size_t length);
 	void SendString(const std::string& data);
 
 	ENetPacket* PullPackets();
+
+	void HandleJoinWorldPacket(json& packet);
+	void HandleChunkDataPacket(json& packet);
 
 	~NetworkThread();
 
@@ -37,6 +39,10 @@ public:
 	std::string m_Adress;
 	int m_Port;
 
+	std::vector<std::string> m_SendQueue;
+
 	std::thread m_Thread;
+
+	bool m_ShouldExit = false;
 };
 

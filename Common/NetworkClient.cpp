@@ -12,6 +12,7 @@ NetworkClient::NetworkClient(ENetPeer* connection, int id)
 
 void NetworkClient::SendJson(json& message)
 {
+	std::cout << "Sending message " << message["Type"] << "\n";
 	std::string stringified = message.dump();
 
 	SendString(stringified);
@@ -30,7 +31,7 @@ void NetworkClient::Send(void* data, size_t length)
 
 void NetworkClient::SendString(const std::string& data)
 {
-	std::cout << "Sending message: " << data << "\n";
+	//std::cout << "Sending message: " << data << "\n";
 
 	ENetPacket* packet = enet_packet_create(data.c_str(), data.length() + 1, ENET_PACKET_FLAG_RELIABLE);
 	enet_peer_send(m_Connection, 0, packet);

@@ -46,7 +46,7 @@ int main(int argc, char** argv)
 
 		World::Update();
 
-		while (enet_host_service(server, &event, 0) > 0)
+		while (enet_host_service(server, &event, 1000) > 0)
 		{
 			switch (event.type)
 			{
@@ -58,11 +58,11 @@ int main(int argc, char** argv)
 				break;
 			}
 			case ENET_EVENT_TYPE_RECEIVE: {
-				printf("A packet of length %u containing %s was received from %s on channel %u.\n",
+				/*printf("A packet of length %u containing %s was received from %s on channel %u.\n",
 					event.packet->dataLength,
 					event.packet->data,
 					event.peer->data,
-					event.channelID);
+					event.channelID);*/
 
 				NetworkClient* client = (NetworkClient*)event.peer->data;
 				const char* msgStrData = (char*)event.packet->data;
@@ -70,6 +70,8 @@ int main(int argc, char** argv)
 				// Parse the json message
 				json incomingMessage = json::parse(msgStrData);
 				std::string messageType = incomingMessage["Type"];
+
+				std::cout << "Recieved message " << incomingMessage["Type"] << "\n";
 
 				// Handle all types of messages
 				if (messageType == "JoinWorld")

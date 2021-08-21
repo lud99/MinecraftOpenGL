@@ -1,6 +1,4 @@
-﻿  MainGame.cpp
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
-D:\Spel\Programming\C++\MinecraftOpenGL\Dependencies\glfw-3.3.2.Win64\include\GLFW\glfw3.h(123): message : see previous definition of 'APIENTRY'
-D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\MainGame.cpp(168,34): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\MainGame.cpp(169,39): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+﻿  NetworkThread.cpp
+D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\NetworkThread.cpp(75,89): warning C4267: 'argument': conversion from 'size_t' to 'enet_uint32', possible loss of data
+D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\NetworkThread.cpp(160,12): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'void *'
   MinecraftOpenGL.vcxproj -> D:\Spel\Programming\C++\MinecraftOpenGL\build\MinecraftOpenGL\x64\Debug\MinecraftOpenGL.exe

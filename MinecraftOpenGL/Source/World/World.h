@@ -39,6 +39,7 @@ namespace World
 	void Init(GLFWwindow* window);
 	void Update();
 	void FixedUpdate();
+	void TickUpdate();
 	void Render();
 
 	void HandleCreatingNewChunks();

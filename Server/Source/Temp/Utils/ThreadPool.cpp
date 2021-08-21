@@ -182,7 +182,7 @@ void ThreadPool::DoWork()
 				break;
 			}
 
-			std::cout << "Doing action: " << actionName << ", queue length: " << sum << "\n";
+			//std::cout << "Doing action: " << actionName << ", queue length: " << sum << "\n";
 		};
 
 		// Perform the requested action

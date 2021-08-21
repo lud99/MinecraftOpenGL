@@ -121,6 +121,7 @@ int main()
 	double previousTime = glfwGetTime();
 	double prevTime = glfwGetTime();
 	double prevFixedTimestempTime = glfwGetTime();
+	double prevTickTime = glfwGetTime();
 	int frameCount = 0;
 
 	/* Loop until the user closes the window */
@@ -149,6 +150,13 @@ int main()
 			prevFixedTimestempTime = currentTime;
 		}
 
+		if (currentTime - prevTickTime >= Time::TickRate)
+		{
+			World::TickUpdate();
+			//std::cout << currentTime - prevFixedTimestempTime << "\n";
+			prevTickTime = currentTime;
+		}
+
 		// If a second has passed.
 		if (currentTime - previousTime >= 1.0)
 		{
@@ -171,27 +179,7 @@ int main()
 		prevTime = Time::ElapsedTime;
 
 		// Update everything in the world
-		ENetPacket* packet = net.PullPackets();
-		if (packet != nullptr)
-		{
-			json packetJson = json::parse((const char*)packet->data);
-			if (packetJson["Type"] == "ChunkData")
-			{
-				glm::ivec2 pos(packetJson["Data"]["Position"]["X"], packetJson["Data"]["Position"]["Z"]);
-
-				Chunk* chunk = World::GetChunkAt(pos);
-				for (int x = 0; x < 16; x++)
-				{
-					for (int z = 0; z < 16; z++)
-					{
-						ChunkBlock* block = chunk->GetBlockAt(glm::vec3(x, 0, z));
-						block->m_BlockId = packetJson["Data"]["Blocks"][x + z];
-					}
-				}
-
-				World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, chunk, ChunkAction::Priority::Normal));
-			}
-		}
+		//net.PullPackets();
 
 		World::Update();
 
@@ -219,7 +207,10 @@ int main()
 
 	}
 
-	net.m_Thread.join();
+	net.m_ShouldExit = true;
+
+	if (net.m_Thread.joinable())
+		net.m_Thread.join();
 
 	glfwTerminate();
 	return 0;
