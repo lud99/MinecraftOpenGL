@@ -15,6 +15,8 @@
 #include "Player/Player.h"
 #include "Chunk/ChunkBuilder.h"
 
+#include <Common/NetworkSession.h>
+
 class Chunk;
 class WorldRenderer;
 
@@ -76,6 +78,8 @@ namespace World
 
 	extern irrklang::ISoundEngine* SoundEngine;
 	extern constexpr float Gravity = -0.6f; // -0.6f
+
+	extern std::unordered_map<int, NetworkClient*> m_ConnectedClients;
 
 	namespace {
 		GLFWwindow* m_Window;

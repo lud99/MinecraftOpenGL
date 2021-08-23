@@ -1,8 +1,9 @@
 #include "DroppedItem.h"
 
-#include "World.h"
+#include <Common/World/IWorld.h>
 #include "WorldRenderer.h"
-#include "../Blocks.h"
+#include <Common/Blocks/Blocks.h>
+#include <Graphics/BasicVertices.h>
 
 DroppedItem::DroppedItem()
 {
@@ -27,7 +28,7 @@ DroppedItem::DroppedItem()
 	}
 
 	m_Shader = ShaderLoader::CreateShader("Resources/Shaders/DroppedItem.vert", "Resources/Shaders/DroppedItem.frag");
-	m_Mesh.m_Texture = World::m_TextureAtlas.Texture;
+	m_Mesh.m_Texture = TextureAtlas::Get().Texture;
 
 	m_Mesh.Update();
 }
@@ -41,8 +42,8 @@ void DroppedItem::Render()
 	modelMatrix = glm::rotate(modelMatrix, glm::radians(m_Rotation), glm::vec3(0, 1, 0));
 	modelMatrix = glm::scale(modelMatrix, glm::vec3(0.25f));
 
-	m_Shader.SetUniform("u_ProjectionMatrix", World::m_Renderer->m_ProjectionMatrix);
-	m_Shader.SetUniform("u_ViewMatrix", World::m_Renderer->m_ViewMatrix);
+	m_Shader.SetUniform("u_ProjectionMatrix", WorldRenderer::Get().m_ProjectionMatrix);
+	m_Shader.SetUniform("u_ViewMatrix", WorldRenderer::Get().m_ViewMatrix);
 	m_Shader.SetUniform("u_ModelMatrix", modelMatrix);
 
 	m_Shader.SetUniform("u_Texture", 0);

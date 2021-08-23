@@ -5,7 +5,7 @@
 #include <Graphics/BasicVertices.h>
 #include <Graphics/Textures/Texture2D.h>
 
-#include "../World.h"
+#include <Common/World/IWorld.h>
 
 Crosshair::Crosshair()
 {
@@ -35,12 +35,12 @@ void Crosshair::Init()
 	m_Mesh.Update();
 }
 
-void Crosshair::Render(WorldRenderer* worldRenderer)
+void Crosshair::Render()
 {
 	m_Shader.Bind();
 	m_Texture->Bind();
 
-	m_Shader.SetUniform("u_ProjectionMatrix", worldRenderer->m_ProjectionMatrix);
+	m_Shader.SetUniform("u_ProjectionMatrix", WorldRenderer::Get().m_ProjectionMatrix);
 
 	m_Mesh.Render();
 

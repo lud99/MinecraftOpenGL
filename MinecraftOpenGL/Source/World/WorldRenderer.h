@@ -5,14 +5,15 @@
 
 #include <Graphics/Shader.h>
 
+class ClientWorld;
 class Skybox;
-struct GLFWwindow;
 
 class WorldRenderer 
 {
 public:
-	WorldRenderer();
-	WorldRenderer(GLFWwindow* window);
+	static WorldRenderer& Get();
+
+	void Init();
 
 	void Render();
 
@@ -20,13 +21,15 @@ public:
 
 	~WorldRenderer();
 
-public:
-	GLFWwindow* m_Window = nullptr;
+private:
+	WorldRenderer();
 
+public:
 	glm::mat4 m_ProjectionMatrix = glm::perspective(glm::radians(70.0f), 1920.0f / 1080.0f, 0.1f, 2500.0f);
 	glm::mat4 m_ViewMatrix = glm::mat4(1.0);
 
 	Shader m_ChunkShader;
 
-	Skybox* m_Skybox;
+	ClientWorld* m_World = nullptr;
+	Skybox* m_Skybox = nullptr;
 };

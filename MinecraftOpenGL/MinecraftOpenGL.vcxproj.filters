@@ -18,37 +18,31 @@
     <ClCompile Include="Source\MainGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Noise\FastNoise.cpp">
+    <ClCompile Include="Source\Common\Common\Noise\FastNoise.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\World\World.cpp">
+    <ClCompile Include="Source\World\ClientWorld.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\World\Chunk\Chunk.cpp">
+    <ClCompile Include="Source\Common\Common\Chunk\Chunk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\World\Chunk\ChunkBlock.cpp">
+    <ClCompile Include="Source\Common\Common\Chunk\ChunkBlock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\World\WorldRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\World\Chunk\ChunkBuilder.cpp">
+    <ClCompile Include="Source\Common\Common\Chunk\ChunkBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Noise\NoiseGenerator.cpp">
+    <ClCompile Include="Source\Common\Common\Noise\NoiseGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\World\Player\Camera.cpp">
+    <ClCompile Include="Source\World\Player\ClientPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\World\Player\Player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Utils\ThreadPool.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Utils\Utils.cpp">
+    <ClCompile Include="Source\Common\Common\Utils\Utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\World\Collider.cpp">
@@ -57,7 +51,7 @@
     <ClCompile Include="Source\InputHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Utils\Raycast.cpp">
+    <ClCompile Include="Source\Common\Common\Utils\Raycast.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\World\Chunk\ChunkIO.cpp">
@@ -69,7 +63,7 @@
     <ClCompile Include="Source\World\Player\Crosshair.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\World\Chunk\BlockEntity.cpp">
+    <ClCompile Include="Source\Common\Common\Chunk\BlockEntity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\World\DroppedItem.cpp">
@@ -90,10 +84,10 @@
     <ClCompile Include="Source\Graphics\Graphics\Textures\Texture2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Blocks.cpp">
+    <ClCompile Include="Source\Common\Common\Blocks\Blocks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Time.h">
+    <ClCompile Include="Source\Common\Common\Time.h">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Graphics\Graphics\ModelParser.cpp">
@@ -102,24 +96,48 @@
     <ClCompile Include="Source\Common\Common\NetworkMessages.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\Common\NetworkClient.cpp">
+    <ClCompile Include="Source\Common\Common\NetworkConnection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\NetworkThread.cpp">
+    <ClCompile Include="Source\Common\Common\INetworkThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Common\Common\NetworkSession.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Common\Common\ThreadPool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Network\ClientNetworkThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\World\Chunk\ChunkMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Common\Common\World\IWorld.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Common\Common\Player\IPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Common\Common\Player\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Noise\FastNoise.h">
+    <ClInclude Include="Source\Common\Common\Noise\FastNoise.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\World\World.h">
+    <ClInclude Include="Source\Common\Common\World\IWorld.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\World\Chunk\Chunk.h">
+    <ClInclude Include="Source\Common\Common\Chunk\Chunk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\World\Chunk\ChunkBlock.h">
+    <ClInclude Include="Source\Common\Common\Chunk\ChunkBlock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Graphics\Shaders\Shader.h">
@@ -137,19 +155,13 @@
     <ClInclude Include="Source\World\WorldRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\World\Chunk\ChunkBuilder.h">
+    <ClInclude Include="Source\Common\Common\Chunk\ChunkBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\World\Player\Camera.h">
+    <ClInclude Include="Source\World\Player\ClientPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\World\Player\Player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Utils\ThreadPool.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Utils\Utils.h">
+    <ClInclude Include="Source\Common\Common\Utils\Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\World\Collider.h">
@@ -158,7 +170,7 @@
     <ClInclude Include="Source\InputHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Utils\Raycast.h">
+    <ClInclude Include="Source\Common\Common\Utils\Raycast.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\World\Chunk\ChunkIO.h">
@@ -173,7 +185,7 @@
     <ClInclude Include="Source\World\Player\Crosshair.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\World\Chunk\BlockEntity.h">
+    <ClInclude Include="Source\Common\Common\Chunk\BlockEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\World\DroppedItem.h">
@@ -200,10 +212,10 @@
     <ClInclude Include="Source\Graphics\Graphics\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\BlockIds.h">
+    <ClInclude Include="Source\Common\Common\Blocks\BlockIds.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Blocks.h">
+    <ClInclude Include="Source\Common\Common\Blocks\Blocks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Graphics\Graphics\ModelParser.h">
@@ -215,17 +227,41 @@
     <ClInclude Include="Source\Common\Common\NetworkMessages.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Common\Common\NetworkClient.h">
+    <ClInclude Include="Source\Common\Common\NetworkConnection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Common\Common\json.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\NetworkThread.h">
+    <ClInclude Include="Source\Common\Common\INetworkThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Common\Common\NetworkSession.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Common\Common\ThreadPool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Network\ClientNetworkThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\World\Chunk\ChunkMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\World\ClientWorld.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Common\Common\Player\IPlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Common\Common\Player\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Source\Noise\NoiseGenerator.h" />
+    <None Include="Source\Common\Common\Noise\NoiseGenerator.h" />
   </ItemGroup>
 </Project>

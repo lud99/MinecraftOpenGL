@@ -4,7 +4,7 @@
 
 #include <Graphics/BasicVertices.h>
 
-#include "World.h"
+#include <Common/World/IWorld.h>
 
 Skybox::Skybox()
 {
@@ -43,16 +43,16 @@ void Skybox::Init()
 	m_Mesh.Update();
 }
 
-void Skybox::Render(WorldRenderer* worldRenderer)
+void Skybox::Render()
 {
 	glDepthMask(GL_FALSE);
 	glDepthFunc(GL_LEQUAL); // Makes it possible to draw the skybox last, so that occluded pixels aren't rendered
 
 	m_Shader.Bind();
 
-	glm::mat4 view = glm::mat4(glm::mat3(worldRenderer->m_ViewMatrix)); // Remove translation and keep only the rotation
+	glm::mat4 view = glm::mat4(glm::mat3(WorldRenderer::Get().m_ViewMatrix)); // Remove translation and keep only the rotation
 
-	m_Shader.SetUniform("u_ProjectionMatrix", worldRenderer->m_ProjectionMatrix);
+	m_Shader.SetUniform("u_ProjectionMatrix", WorldRenderer::Get().m_ProjectionMatrix);
 	m_Shader.SetUniform("u_ViewMatrix", view);
 
 	m_Mesh.Render();

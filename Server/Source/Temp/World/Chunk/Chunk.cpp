@@ -4,15 +4,15 @@
 #include <algorithm>
 #include <thread>
 
-#include "../../Noise/FastNoise.h"
+#include <Common/Noise/FastNoise.h>
 #include "ChunkBlock.h"
 #include "../DroppedItem.h"
 #include "BlockEntity.h"
 #include "ChunkIO.h"
 #include "../../Blocks.h"
 #include "../World.h"
-#include "../../Noise/NoiseGenerator.h"
-#include "../../Utils/ThreadPool.h"
+#include <Common/Noise/NoiseGenerator.h>
+#include <Common/ThreadPool.h>
 #include "../../BlockIds.h"
 #include "../../Blocks.h"
 
@@ -440,6 +440,30 @@ void Chunk::GenerateTerrainThreaded(ChunkAction::Priority priority, ChunkAction*
 	m_IsGenerating = true;
 
 	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Generate, this, priority, nextAction));
+}
+
+std::string Chunk::Serialize()
+{
+	json message;
+	message["Type"] = "ChunkData";
+	message["Data"]["Position"]["X"] = m_Position.x;
+	message["Data"]["Position"]["Z"] = m_Position.y;
+
+	message["Data"]["Blocks"] = json::array();
+	json& blocks = message["Data"]["Blocks"];
+	for (int x = 0; x < Chunk::Width; x++)
+	{
+		for (int y = 0; y < Chunk::Height; y++)
+		{
+			for (int z = 0; z < Chunk::Depth; z++)
+			{
+				int index = Utils::BlockPositionToIndex(glm::u8vec3(x, y, z));
+				blocks[index] = GetBlockAt(glm::vec3(x, y, z))->m_BlockId;
+			}
+		}
+	}
+
+	return message.dump();
 }
 
 void Chunk::CreateGenerateAndBuild(ChunkAction::Priority priority, ChunkAction* nextAction)

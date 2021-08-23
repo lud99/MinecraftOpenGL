@@ -14,6 +14,8 @@
 #include <mutex>
 #include <GLFW/glfw3.h>
 
+#include <Common/NetworkThread.h>
+
 #ifndef SERVER_BUILD
 	#include <irrklang/irrKlang.h>
 #endif
@@ -73,10 +75,16 @@ void World::HandleCreatingNewChunks()
 
 			//ChunkAction* nextAction = new ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk, ChunkAction::Priority::Low);
 
+			// Generate chunk and send it to the player
+
 			// Create the chunk here if a chunk at this position doesn't exist
 			if (!chunk)
+			{
+				NetworkThread& net = net.Instance();
+				//ENetPeer* peer = m_ConnectedClients[m_Player.m_ClientId];
+
 				chunk = GenerateNewChunkThreaded(chunkPos);
-		}
+			}		
 	}
 
 	// Generate the terrain

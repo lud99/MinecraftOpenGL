@@ -5,7 +5,7 @@
 #include <Graphics/Mesh.hpp>
 #include <Graphics/Shader.h>
 
-#include "../Blocks.h"
+#include <Common/Blocks/Blocks.h>
 
 class DroppedItem
 {

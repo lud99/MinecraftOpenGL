@@ -16,7 +16,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "../../Utils/ThreadPool.h"
+#include <Common/ThreadPool.h>
 
 class ChunkBlock;
 class BlockEntity;
@@ -49,6 +49,8 @@ public:
 	void RebuildMeshThreaded(ChunkAction::Priority priority, ChunkAction* nextAction = nullptr);
 	void GenerateTerrain();
 	void GenerateTerrainThreaded(ChunkAction::Priority priority, ChunkAction* nextAction = nullptr);
+
+	std::string Serialize();
 
 	void Fill(const glm::vec4* colors);
 	void CreateSphere(const glm::vec4* colors);

@@ -161,8 +161,11 @@
   <ItemGroup>
     <ClCompile Include="Source\Common\Common\NetworkMessages.cpp" />
     <ClCompile Include="Source\Common\Common\NetworkClient.cpp" />
+    <ClCompile Include="Source\Common\Common\NetworkThread.cpp" />
+    <ClCompile Include="Source\Common\Common\Noise\FastNoise.cpp" />
+    <ClCompile Include="Source\Common\Common\Noise\NoiseGenerator.cpp" />
     <ClCompile Include="Source\MainServer.cpp" />
-    <ClCompile Include="Source\NetworkSession.cpp" />
+    <ClCompile Include="Source\Common\Common\NetworkSession.cpp" />
     <ClCompile Include="Source\Temp\Blocks.cpp" />
     <ClCompile Include="Source\Temp\Graphics\Graphics\ModelParser.cpp" />
     <ClCompile Include="Source\Temp\Graphics\Graphics\Shader.cpp" />
@@ -171,10 +174,8 @@
     <ClCompile Include="Source\Temp\Graphics\Graphics\Textures\TextureAtlas.cpp" />
     <ClCompile Include="Source\Temp\Graphics\Graphics\Vertex.cpp" />
     <ClCompile Include="Source\Temp\InputHandler.cpp" />
-    <ClCompile Include="Source\Temp\Noise\FastNoise.cpp" />
-    <ClCompile Include="Source\Temp\Noise\NoiseGenerator.cpp" />
     <ClCompile Include="Source\Temp\Utils\Raycast.cpp" />
-    <ClCompile Include="Source\Temp\Utils\ThreadPool.cpp" />
+    <ClCompile Include="Source\Common\Common\ThreadPool.cpp" />
     <ClCompile Include="Source\Temp\Utils\Utils.cpp" />
     <ClCompile Include="Source\Temp\World\Chunk\BlockEntity.cpp" />
     <ClCompile Include="Source\Temp\World\Chunk\Chunk.cpp" />
@@ -195,7 +196,10 @@
     <ClInclude Include="Source\Common\Common\NetworkConstants.h" />
     <ClInclude Include="Source\Common\Common\NetworkMessages.h" />
     <ClInclude Include="Source\Common\Common\NetworkClient.h" />
-    <ClInclude Include="Source\NetworkSession.h" />
+    <ClInclude Include="Source\Common\Common\NetworkThread.h" />
+    <ClInclude Include="Source\Common\Common\NetworkSession.h" />
+    <ClInclude Include="Source\Common\Common\Noise\FastNoise.h" />
+    <ClInclude Include="Source\Common\Common\Noise\NoiseGenerator.h" />
     <ClInclude Include="Source\Temp\BlockIds.h" />
     <ClInclude Include="Source\Temp\Blocks.h" />
     <ClInclude Include="Source\Temp\Graphics\Graphics\BasicVertices.h" />
@@ -207,11 +211,9 @@
     <ClInclude Include="Source\Temp\Graphics\Graphics\Textures\TextureAtlas.h" />
     <ClInclude Include="Source\Temp\Graphics\Graphics\Vertex.h" />
     <ClInclude Include="Source\Temp\InputHandler.h" />
-    <ClInclude Include="Source\Temp\Noise\FastNoise.h" />
-    <ClInclude Include="Source\Temp\Noise\NoiseGenerator.h" />
     <ClInclude Include="Source\Temp\Time.h" />
     <ClInclude Include="Source\Temp\Utils\Raycast.h" />
-    <ClInclude Include="Source\Temp\Utils\ThreadPool.h" />
+    <ClInclude Include="Source\Common\Common\ThreadPool.h" />
     <ClInclude Include="Source\Temp\Utils\Utils.h" />
     <ClInclude Include="Source\Temp\World\Chunk\BlockEntity.h" />
     <ClInclude Include="Source\Temp\World\Chunk\Chunk.h" />

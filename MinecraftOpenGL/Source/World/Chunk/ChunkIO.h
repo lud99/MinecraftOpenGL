@@ -5,7 +5,7 @@
 
 #include <string>
 
-#include "ChunkBlock.h"
+#include <Common/Chunk/ChunkBlock.h>
 
 class Chunk;
 

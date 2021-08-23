@@ -1,6 +1,6 @@
 #include "ChunkIO.h"
 
-#include "Chunk.h"
+#include <Common/Chunk/Chunk.h>
 
 #include <iostream>
 #include <fstream>

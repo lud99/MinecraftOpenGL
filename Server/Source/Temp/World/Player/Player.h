@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/vec3.hpp>
+#include <Common/NetworkClient.h>
 
 #include "../../InputHandler.h"
 
@@ -44,6 +45,8 @@ public:
 
 	GLFWwindow* m_Window = nullptr;
 	Crosshair m_Crosshair;
+
+	int m_ClientId = -1;
 
 private:
 	InputHandler m_Input;

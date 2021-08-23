@@ -10,30 +10,33 @@
 
 #include <glm/vec3.hpp>
 
-#include "World/World.h"
+#include "World/ClientWorld.h"
+#include "Window.h"
 #include "InputHandler.h"
 #include "World/WorldRenderer.h"
-#include "World/Player/Player.h"
-#include "World/Chunk/ChunkBlock.h"
-#include "World/Chunk/Chunk.h"
-#include "Time.h"
+#include "World/Player/ClientPlayer.h"
+#include <Common/Chunk/ChunkBlock.h>
+#include <Common/Chunk/Chunk.h>
+#include <Common/Time.h>
 #include <Graphics/ModelParser.h>
 
 #include <enet/enet.h>
 
 #include <Common/json.hpp>
 
-#include <Common/NetworkClient.h>
+#include <Common/NetworkConnection.h>
 #include <Common/NetworkMessages.h>
 
-#include "NetworkThread.h"
+#include "Network/ClientNetworkThread.h"
 
 float Time::ElapsedTime;
 float Time::DeltaTime;
 
+ClientWorld* localWorld = nullptr;
+
 void MouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
-	World::GetPlayer().MouseCallback(window, xpos, ypos);
+	localWorld->m_LocalPlayer->MouseCallback(window, xpos, ypos);
 }
 
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
@@ -60,14 +63,15 @@ int main()
 	NetworkThread& net = net.Instance();
 	bool isConnected = net.Connect("127.0.0.1", 7777);
 	if (!isConnected)
-		std::cout << "err!!";
+		std::cout << "err!!\n";
 
-	json msg;
+	/*json msg;
 	msg["Type"] = "JoinWorld";
 	msg["Data"]["SessionName"] = "Minecraft";
-	net.SendJson(msg);
+	net.SendJson(msg);*/
 
-	GLFWwindow* window;
+	GLFWwindow* window = nullptr;
+	Window::Get().m_Window = window;
 
 	/* Initialize the library */
 	if (!glfwInit()) return -1;
@@ -113,7 +117,7 @@ int main()
 
 	InputHandler::Init(window);
 
-	World::Init(window);
+	localWorld = new ClientWorld();
 
 	Mesh<TextureVertex>* door = ModelParser::Parse("Resources/Models/door.obj");
 	Shader sh = ShaderLoader::CreateShader("Resources/Shaders/Collider.vert", "Resources/Shaders/Collider.frag");
@@ -145,14 +149,14 @@ int main()
 
 		if (currentTime - prevFixedTimestempTime >= Time::FixedTimestep)
 		{
-			World::FixedUpdate();
+			localWorld->CommonOnFixedUpdate();
 			//std::cout << currentTime - prevFixedTimestempTime << "\n";
 			prevFixedTimestempTime = currentTime;
 		}
 
 		if (currentTime - prevTickTime >= Time::TickRate)
 		{
-			World::TickUpdate();
+			localWorld->CommonOnTickUpdate();
 			//std::cout << currentTime - prevFixedTimestempTime << "\n";
 			prevTickTime = currentTime;
 		}
@@ -162,7 +166,7 @@ int main()
 		{
 			std::string title = "MinecraftOpenGL | FPS: ";
 
-			glm::vec3 pos = World::GetPlayer().m_Position;
+			glm::vec3 pos = localWorld->m_LocalPlayer->m_Position;
 
 			title.append(std::to_string(frameCount));
 			title.append(" | " + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ", " + std::to_string(pos.z));
@@ -181,16 +185,16 @@ int main()
 		// Update everything in the world
 		//net.PullPackets();
 
-		World::Update();
+		localWorld->CommonOnUpdate();
 
-		World::Render();
+		localWorld->Render();
 
 		glm::mat4 mod(1.0);
 		mod = glm::translate(mod, glm::vec3(0.0f, 55.0f, 0.0f));
 
 		sh.Bind();
-		sh.SetUniform("u_ProjectionMatrix", World::m_Renderer->m_ProjectionMatrix);
-		sh.SetUniform("u_ViewMatrix", World::m_Renderer->m_ViewMatrix);
+		sh.SetUniform("u_ProjectionMatrix", localWorld->m_Renderer->m_ProjectionMatrix);
+		sh.SetUniform("u_ViewMatrix", localWorld->m_Renderer->m_ViewMatrix);
 		sh.SetUniform("u_ModelMatrix", mod);
 		door->Render();
 

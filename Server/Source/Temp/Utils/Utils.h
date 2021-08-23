@@ -27,7 +27,7 @@ namespace Utils
 
 	namespace Math
 	{
-		inline float Clamp(float value, float min, float max) { return std::max(min, std::min(value, max)); }
+		//inline float Clamp(float value, float min, float max) { return std::max(min, std::min(value, max)); }
 		inline int Sign(float x) { return (x > 0) - (x < 0); }
 		inline float Lerp(float a, float b, float f) { return a + f * (b - a); };
  	}

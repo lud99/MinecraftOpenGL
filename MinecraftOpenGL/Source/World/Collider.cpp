@@ -5,7 +5,6 @@
 #include <Graphics/Shader.h>
 #include <Graphics/BasicVertices.h>
 
-#include "World.h"
 #include "WorldRenderer.h"
 
 Collider::Collider()
@@ -37,8 +36,8 @@ void Collider::RenderHitbox()
 
 	m_Shader.Bind();
 
-	m_Shader.SetUniform("u_ProjectionMatrix", World::m_Renderer->m_ProjectionMatrix);
-	m_Shader.SetUniform("u_ViewMatrix", World::m_Renderer->m_ViewMatrix);
+	m_Shader.SetUniform("u_ProjectionMatrix", WorldRenderer::Get().m_ProjectionMatrix);
+	m_Shader.SetUniform("u_ViewMatrix", WorldRenderer::Get().m_ViewMatrix);
 	m_Shader.SetUniform("u_ModelMatrix", glm::translate(glm::mat4(1.0), m_Position));
 
 	m_Mesh.Render();

@@ -13,7 +13,7 @@ public:
 
 	void Init();
 
-	void Render(WorldRenderer* worldRenderer);
+	void Render();
 
 	~Crosshair();
 

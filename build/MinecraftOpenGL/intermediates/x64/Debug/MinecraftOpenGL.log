@@ -1,4 +1,1 @@
-﻿  NetworkThread.cpp
-D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\NetworkThread.cpp(75,89): warning C4267: 'argument': conversion from 'size_t' to 'enet_uint32', possible loss of data
-D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\NetworkThread.cpp(160,12): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'void *'
-  MinecraftOpenGL.vcxproj -> D:\Spel\Programming\C++\MinecraftOpenGL\build\MinecraftOpenGL\x64\Debug\MinecraftOpenGL.exe
+﻿  MinecraftOpenGL.vcxproj -> D:\Spel\Programming\C++\MinecraftOpenGL\build\MinecraftOpenGL\x64\Debug\MinecraftOpenGL.exe
