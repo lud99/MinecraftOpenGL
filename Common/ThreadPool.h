@@ -27,7 +27,7 @@ struct ChunkAction
 		RebuildAdjacentChunks,
 		Generate,
 		Serialize,
-
+		SendChunk,
 		Save
 	};
 

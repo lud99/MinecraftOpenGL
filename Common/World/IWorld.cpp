@@ -13,7 +13,7 @@
 #include <Common/Player/IPlayer.h>
 //#include "Collider.h"
 
-#include <Common/INetworkThread.h>
+#include <Common/Net/INetworkThread.h>
 
 #include <mutex>
 #include <GLFW/glfw3.h>
@@ -41,7 +41,7 @@
 
 IWorld::IWorld()
 {
-	CommonOnInit();
+	//CommonOnInit();
 }
 
 void IWorld::CommonOnInit()
@@ -51,6 +51,9 @@ void IWorld::CommonOnInit()
 
 void IWorld::CommonOnUpdate()
 {
+	if (!m_IsInitialized)
+		OnInit();
+
 	HandleCreatingNewChunks();
 	UnloadChunksOutsideRenderDistance();
 
@@ -90,7 +93,8 @@ void IWorld::HandleCreatingNewChunks()
 {
 	using namespace Settings;
 
-	IPlayer* player = m_Players[0];
+	IPlayer* player = GetPlayer(0);
+	if (!player) return;
 
 	glm::ivec3 position = glm::floor(player->m_Position);
 
@@ -185,7 +189,8 @@ void IWorld::UnloadChunksOutsideRenderDistance()
 {
 	using namespace Settings;
 
-	IPlayer* player = m_Players[0];
+	IPlayer* player = GetPlayer(0);
+	if (!player) return;
 
 	// Iterate through all chunks
 	for (auto& entry : m_Chunks)
@@ -382,8 +387,48 @@ ChunkBlock* IWorld::GetBlockAt(glm::vec3 position)
 	return GetBlockAt((glm::ivec3) glm::floor(position));
 }
 
+void IWorld::AddPlayer(IPlayer* player)
+{
+	std::lock_guard<std::mutex> lk(m_PlayersMutex);
+
+	// Player already exists
+	if (m_Players.count(player->m_Id) == 1)
+		std::cout << "Error: Player already exists!\n";
+
+	m_Players[player->m_Id] = player;
+}
+
+IPlayer* IWorld::GetPlayer(int id)
+{
+	std::lock_guard<std::mutex> lk(m_PlayersMutex);
+
+	IPlayer* player = nullptr;
+
+	if (m_Players.count(id) == 1)
+		player = m_Players[id];
+
+	return player;
+}
+
+PlayersMap& IWorld::GetPlayers()
+{
+	return m_Players;
+}
+
+void IWorld::RemovePlayer(int id)
+{
+	std::lock_guard<std::mutex> lk(m_PlayersMutex);
+
+	// Player doesn't exist
+	if (m_Players.count(id) == 0)
+		std::cout << "Error: Player doesnt exist!\n";
+
+	m_Players.erase(id);
+}
+
 IWorld::~IWorld()
 {
+	std::cout << "World destroy\n";
 }
 
 int Settings::RenderDistance = 2;

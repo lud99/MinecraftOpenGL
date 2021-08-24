@@ -6,8 +6,6 @@
 #include "Chunk.h"
 //#include "../World.h"
 #include <Common/Blocks/Blocks.h>
-#include <Graphics/Mesh.hpp>
-#include <Graphics/Textures/TextureAtlas.h>
 
 #ifndef SERVER_BUILD
 #include "../../../World/Chunk/ChunkMesh.h"

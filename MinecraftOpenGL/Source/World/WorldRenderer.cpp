@@ -97,7 +97,8 @@ void WorldRenderer::Render()
 
 
 
-	m_World->m_LocalPlayer->m_Crosshair.Render();
+	if (m_World->m_LocalPlayer)
+		m_World->m_LocalPlayer->m_Crosshair.Render();
 
 	m_Skybox->Render();
 
@@ -108,6 +109,8 @@ void WorldRenderer::Render()
 
 void WorldRenderer::UpdateViewMatrix()
 {
+	if (!m_World->m_LocalPlayer) return;
+
 	Camera& camera = m_World->m_LocalPlayer->GetCamera();
 	glm::vec3 cameraPosition = camera.m_Position;
 

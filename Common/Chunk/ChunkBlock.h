@@ -7,7 +7,7 @@
 
 #include <Common/World/IWorld.h>
 #include <Common/Blocks/Blocks.h>
-#include <Graphics/Vertex.h>
+#include <Common/Graphics/Vertex.h>
 //#include "../Collider.h"
 
 class Chunk;

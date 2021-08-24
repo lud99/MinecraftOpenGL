@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Texture2D.h"
+#ifndef SERVER_BUILD
+#include <Graphics/Textures/Texture2D.h>
+#endif
 
 #include <map>
 
@@ -38,7 +40,9 @@ private:
 	TextureAtlas();
 
 public:
+#ifndef SERVER_BUILD
 	Texture2D* Texture = nullptr;
+#endif
 
 	const int Size = 128;
 	const int BlockSize = 16;

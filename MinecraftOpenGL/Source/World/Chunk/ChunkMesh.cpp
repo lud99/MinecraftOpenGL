@@ -10,7 +10,8 @@
 #include <Common/Chunk/Chunk.h>
 #include <Common/Chunk/ChunkBlock.h>
 #include <Common/Noise/FastNoise.h>
-#include <Graphics/BasicVertices.h>
+#include <Common/Graphics/BasicVertices.h>
+#include <Graphics/Textures/TextureAtlas.h>
 
 ChunkMesh::ChunkMesh()
 {

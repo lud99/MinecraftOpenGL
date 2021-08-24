@@ -6,8 +6,6 @@
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 
-#include <Graphics/Textures/Texture2D.h>
-
 #include "BlockIds.h"
 
 class IWorld;

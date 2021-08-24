@@ -3,7 +3,7 @@
 #include <GL/glewh.h>
 
 #include <Graphics/Shader.h>
-#include <Graphics/BasicVertices.h>
+#include <Common/Graphics/BasicVertices.h>
 
 #include "WorldRenderer.h"
 

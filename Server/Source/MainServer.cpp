@@ -1,34 +1,39 @@
-#define SERVER_BUILD
 #define STB_IMAGE_IMPLEMENTATION
 
 #include <stdio.h>
 #include <enet/enet.h>
 #include <iostream>
 
-#include "Temp/Utils/Utils.h"
-
 #include <Common/json.hpp>
 
-#include <Common/NetworkMessages.h>
-#include <Common/NetworkThread.h>
+#include <Common/Net/NetworkMessages.h>
+#include <Common/Net/NetworkSession.h>
+#include <Common/Net/NetworkClient.h>
 
-#include <Common/NetworkClient.h>
+#include "Net/ServerNetworkThread.h"
 
-#include "Temp/World/Chunk/Chunk.h"
-#include "Temp/World/Chunk/ChunkBlock.h"
-#include "Temp/World/Player/Player.h"
+#include "World/ServerWorld.h"
 
 int main(int argc, char** argv)
 {
 	// Start the server
-	NetworkThread& net = net.Instance();
+	NetworkThread& net = NetworkThread::Get();
 	bool serverIsRunning = net.StartServer(7777);
-
-	std::unordered_map<std::string, NetworkSession> sessions;
 
 	while (true)
 	{
-		World::Update();
+		// Iterate through all sessions and update the worlds
+		for (auto& entry : net.m_Sessions)
+		{
+			ServerWorld* world = (ServerWorld*)entry.second.m_World;
+			if (!world) continue;
+
+			if (!world->m_IsInitialized) world->OnInit();
+
+			world->CommonOnUpdate();
+
+			// Todo: tick update
+		}
 	}
 
 	// gameloop

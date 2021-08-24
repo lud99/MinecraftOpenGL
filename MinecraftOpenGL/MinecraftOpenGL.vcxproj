@@ -160,11 +160,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Common\Common\NetworkSession.cpp" />
-    <ClCompile Include="Source\Common\Common\INetworkThread.cpp" />
     <ClCompile Include="Source\Common\Common\Blocks\Blocks.cpp" />
-    <ClCompile Include="Source\Common\Common\NetworkConnection.cpp" />
-    <ClCompile Include="Source\Common\Common\NetworkMessages.cpp" />
+    <ClCompile Include="Source\Common\Common\Graphics\Vertex.cpp" />
+    <ClCompile Include="Source\Common\Common\Net\INetworkThread.cpp" />
+    <ClCompile Include="Source\Common\Common\Net\NetworkClient.cpp" />
+    <ClCompile Include="Source\Common\Common\Net\NetworkMessages.cpp" />
+    <ClCompile Include="Source\Common\Common\Net\NetworkSession.cpp" />
     <ClCompile Include="Source\Common\Common\Player\Camera.cpp" />
     <ClCompile Include="Source\Common\Common\Player\IPlayer.cpp" />
     <ClCompile Include="Source\Common\Common\ThreadPool.cpp" />
@@ -174,7 +175,6 @@
     <ClCompile Include="Source\Graphics\Graphics\Textures\Cubemap.cpp" />
     <ClCompile Include="Source\Graphics\Graphics\Textures\Texture2D.cpp" />
     <ClCompile Include="Source\Graphics\Graphics\Textures\TextureAtlas.cpp" />
-    <ClCompile Include="Source\Graphics\Graphics\Vertex.cpp" />
     <ClCompile Include="Source\Network\ClientNetworkThread.cpp" />
     <ClCompile Include="Source\Common\Common\Time.h" />
     <ClCompile Include="Source\Common\Common\Utils\Raycast.cpp" />
@@ -199,25 +199,25 @@
     <ClCompile Include="Source\World\WorldRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Common\Common\NetworkSession.h" />
-    <ClInclude Include="Source\Common\Common\INetworkThread.h" />
+    <ClInclude Include="Source\Common\Common\Graphics\BasicVertices.h" />
+    <ClInclude Include="Source\Common\Common\Graphics\Vertex.h" />
     <ClInclude Include="Source\Common\Common\json.hpp" />
-    <ClInclude Include="Source\Common\Common\NetworkConnection.h" />
-    <ClInclude Include="Source\Common\Common\NetworkConstants.h" />
-    <ClInclude Include="Source\Common\Common\NetworkMessages.h" />
+    <ClInclude Include="Source\Common\Common\Net\INetworkThread.h" />
+    <ClInclude Include="Source\Common\Common\Net\NetworkClient.h" />
+    <ClInclude Include="Source\Common\Common\Net\NetworkConstants.h" />
+    <ClInclude Include="Source\Common\Common\Net\NetworkMessages.h" />
+    <ClInclude Include="Source\Common\Common\Net\NetworkSession.h" />
     <ClInclude Include="Source\Common\Common\Player\Camera.h" />
     <ClInclude Include="Source\Common\Common\Player\IPlayer.h" />
     <ClInclude Include="Source\Common\Common\ThreadPool.h" />
     <ClInclude Include="Source\Window.h" />
     <ClInclude Include="Source\World\ClientWorld.h" />
-    <ClInclude Include="Source\Graphics\Graphics\BasicVertices.h" />
     <ClInclude Include="Source\Graphics\Graphics\Mesh.hpp" />
     <ClInclude Include="Source\Graphics\Graphics\ModelParser.h" />
     <ClInclude Include="Source\Graphics\Graphics\Shader.h" />
     <ClInclude Include="Source\Graphics\Graphics\Textures\Cubemap.h" />
     <ClInclude Include="Source\Graphics\Graphics\Textures\Texture2D.h" />
     <ClInclude Include="Source\Graphics\Graphics\Textures\TextureAtlas.h" />
-    <ClInclude Include="Source\Graphics\Graphics\Vertex.h" />
     <ClInclude Include="Source\Graphics\Textures\Cubemap.h" />
     <ClInclude Include="Source\Network\ClientNetworkThread.h" />
     <ClInclude Include="Source\Common\Common\Utils\Raycast.h" />

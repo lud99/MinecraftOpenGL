@@ -24,19 +24,17 @@
 
 #include <Common/json.hpp>
 
-#include <Common/NetworkConnection.h>
-#include <Common/NetworkMessages.h>
+#include <Common/Net/NetworkClient.h>
+#include <Common/Net/NetworkMessages.h>
 
 #include "Network/ClientNetworkThread.h"
 
 float Time::ElapsedTime;
 float Time::DeltaTime;
 
-ClientWorld* localWorld = nullptr;
-
 void MouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
-	localWorld->m_LocalPlayer->MouseCallback(window, xpos, ypos);
+	//localWorld->m_LocalPlayer->MouseCallback(window, xpos, ypos);
 }
 
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
@@ -59,22 +57,11 @@ int main()
 {
 	test();
 
-	// connect
-	NetworkThread& net = net.Instance();
-	bool isConnected = net.Connect("127.0.0.1", 7777);
-	if (!isConnected)
-		std::cout << "err!!\n";
-
-	/*json msg;
-	msg["Type"] = "JoinWorld";
-	msg["Data"]["SessionName"] = "Minecraft";
-	net.SendJson(msg);*/
+	/* Initialize the library */
+	if (!glfwInit()) return -1;
 
 	GLFWwindow* window = nullptr;
 	Window::Get().m_Window = window;
-
-	/* Initialize the library */
-	if (!glfwInit()) return -1;
 
 	/* Create a windowed mode window and its OpenGL context */
 	window = glfwCreateWindow(1280, 720, "MinecraftOpenGL", NULL, NULL);
@@ -115,9 +102,18 @@ int main()
 	// Print the OpenGL version
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
-	InputHandler::Init(window);
 
-	localWorld = new ClientWorld();
+	// connect
+	bool isConnected = NetworkThread::Get().Connect("127.0.0.1", 7777);
+	if (!isConnected)
+		std::cout << "err!!\n";
+
+	json msg;
+	msg["Type"] = "JoinWorld";
+	msg["Data"]["SessionName"] = "Minecraft";
+	NetworkThread::Get().SendJson(msg, NetworkThread::Get().m_ThisClient);
+
+	InputHandler::Init(window);
 
 	Mesh<TextureVertex>* door = ModelParser::Parse("Resources/Models/door.obj");
 	Shader sh = ShaderLoader::CreateShader("Resources/Shaders/Collider.vert", "Resources/Shaders/Collider.frag");
@@ -143,20 +139,25 @@ int main()
 		if (InputHandler::IsKeyPressed(GLFW_KEY_ESCAPE))
 			glfwSetWindowShouldClose(window, true);
 
+		ClientWorld* localWorld = nullptr;
+		NetworkThread& net = NetworkThread::Get();
+		if (net.m_ThisClient && net.m_ThisClient->m_HasJoinedSession)
+			localWorld = NetworkThread::Get().GetThisWorld();
+
 		// Calcuate FPS
 		double currentTime = glfwGetTime();
 		frameCount++;
 
 		if (currentTime - prevFixedTimestempTime >= Time::FixedTimestep)
 		{
-			localWorld->CommonOnFixedUpdate();
+			if (localWorld) localWorld->CommonOnFixedUpdate();
 			//std::cout << currentTime - prevFixedTimestempTime << "\n";
 			prevFixedTimestempTime = currentTime;
 		}
 
 		if (currentTime - prevTickTime >= Time::TickRate)
 		{
-			localWorld->CommonOnTickUpdate();
+			if (localWorld) localWorld->CommonOnTickUpdate();
 			//std::cout << currentTime - prevFixedTimestempTime << "\n";
 			prevTickTime = currentTime;
 		}
@@ -165,13 +166,16 @@ int main()
 		if (currentTime - previousTime >= 1.0)
 		{
 			std::string title = "MinecraftOpenGL | FPS: ";
-
-			glm::vec3 pos = localWorld->m_LocalPlayer->m_Position;
-
 			title.append(std::to_string(frameCount));
-			title.append(" | " + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ", " + std::to_string(pos.z));
 
-			glfwSetWindowTitle(window, title.c_str());
+			if (localWorld && localWorld->m_LocalPlayer)
+			{
+				glm::vec3 pos = localWorld->m_LocalPlayer->m_Position;
+
+				title.append(" | " + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ", " + std::to_string(pos.z));
+
+				glfwSetWindowTitle(window, title.c_str());
+			}
 
 			frameCount = 0;
 			previousTime = currentTime;
@@ -182,21 +186,21 @@ int main()
 
 		prevTime = Time::ElapsedTime;
 
-		// Update everything in the world
-		//net.PullPackets();
+		if (localWorld)
+		{
+			localWorld->CommonOnUpdate();
 
-		localWorld->CommonOnUpdate();
-
-		localWorld->Render();
+			localWorld->Render();
+		}
 
 		glm::mat4 mod(1.0);
 		mod = glm::translate(mod, glm::vec3(0.0f, 55.0f, 0.0f));
 
-		sh.Bind();
-		sh.SetUniform("u_ProjectionMatrix", localWorld->m_Renderer->m_ProjectionMatrix);
-		sh.SetUniform("u_ViewMatrix", localWorld->m_Renderer->m_ViewMatrix);
+		/*sh.Bind();
+		sh.SetUniform("u_ProjectionMatrix", WorldRenderer::Get().m_ProjectionMatrix);
+		sh.SetUniform("u_ViewMatrix", WorldRenderer::Get().m_ViewMatrix);
 		sh.SetUniform("u_ModelMatrix", mod);
-		door->Render();
+		door->Render();*/
 
 		GLenum err;
 		while ((err = glGetError()) != GL_NO_ERROR)
@@ -211,10 +215,10 @@ int main()
 
 	}
 
-	net.m_ShouldExit = true;
+	NetworkThread::Get().m_ShouldExit = true;
 
-	if (net.m_Thread.joinable())
-		net.m_Thread.join();
+	if (NetworkThread::Get().m_Thread.joinable())
+		NetworkThread::Get().m_Thread.join();
 
 	glfwTerminate();
 	return 0;

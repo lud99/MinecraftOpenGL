@@ -5,8 +5,8 @@
 
 #include <cstdint>
 
-#include <Graphics/Textures/Texture2D.h>
-#include <Graphics/Textures/TextureAtlas.h>
+//#include <Graphics/Textures/Texture2D.h>
+//#include <Graphics/Textures/TextureAtlas.h>
 #include <Common/World/IWorld.h>
 #include <Common/Blocks/Blocks.h>
 

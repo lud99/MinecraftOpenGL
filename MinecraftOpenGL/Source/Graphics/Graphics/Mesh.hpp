@@ -10,7 +10,7 @@
 
 #include <glm/vec3.hpp>
 
-#include "Vertex.h"
+#include <Common/Graphics/Vertex.h>
 #include "Textures/Texture2D.h"
 
 template <typename VertexT>

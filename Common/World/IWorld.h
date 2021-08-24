@@ -12,20 +12,16 @@
 //#include "Player/Player.h"
 #include <Common/Chunk/ChunkBuilder.h>
 #include <Common/ThreadPool.h>
-#include <Graphics/Textures/TextureAtlas.h>
 
 class IPlayer;
 class Chunk;
 class ChunkBlock;
 class WorldRenderer;
-class NetworkConnection;
-
-//namespace irrklang
-//{
-//	class ISoundEngine;
-//};
+class NetworkClient;
 
 typedef std::unordered_map<glm::ivec2, Chunk*> ChunkMap;
+typedef std::unordered_map<int, IPlayer*> PlayersMap;
+//typedef	std::unordered_map<int, NetworkClient*> ClientsMap;
 
 enum Directions {
 	West,
@@ -77,32 +73,32 @@ public:
 	ChunkBlock* GetBlockAt(glm::ivec3 position);
 	ChunkBlock* GetBlockAt(glm::vec3 position);
 
+	// Players
+	void AddPlayer(IPlayer* player);
+	IPlayer* GetPlayer(int id);
+	PlayersMap& GetPlayers();
+	void RemovePlayer(int id);
+
 	~IWorld();
+
+private:
+	PlayersMap m_Players;
+	std::mutex m_PlayersMutex;
 
 public:
 	//Player& GetPlayer();
 
 	//Collider m_LookingAtCollider;
 
-	//extern irrklang::ISoundEngine* SoundEngine;
 	static constexpr float Gravity = -0.6f;
 
-	std::unordered_map<int, NetworkConnection*> m_ConnectedClients;
-	std::unordered_map<int, IPlayer*> m_Players;
+	//ConnectionsMap m_ConnectedClients;
+
+	bool m_IsInitialized = false;
 
 	ChunkMap m_Chunks;
 
 	std::recursive_mutex m_ChunkMutex;
-
-	/*namespace {
-		GLFWwindow* m_Window;
-
-		ChunkMap m_Chunks;
-
-		Player m_Player;
-
-		std::recursive_mutex m_ChunkMutex;
-	}*/
 };
 
 namespace Settings 

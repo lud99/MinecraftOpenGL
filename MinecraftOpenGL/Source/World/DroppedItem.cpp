@@ -3,7 +3,8 @@
 #include <Common/World/IWorld.h>
 #include "WorldRenderer.h"
 #include <Common/Blocks/Blocks.h>
-#include <Graphics/BasicVertices.h>
+#include <Common/Graphics/BasicVertices.h>
+#include <Graphics/Textures/TextureAtlas.h>
 
 DroppedItem::DroppedItem()
 {

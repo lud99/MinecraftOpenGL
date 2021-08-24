@@ -15,29 +15,28 @@
 #include <Common/Utils/Raycast.h>
 #include <Common/Utils/Utils.h>
 #include <Common/Time.h>
-#include <Common/INetworkThread.h>
+#include <Common/Net/INetworkThread.h>
 
-#include <Common/NetworkConnection.h>
+#include <Common/Net/NetworkClient.h>
 #include <Common/World/IWorld.h>
 
 #include <GLFW/glfw3.h>
 
 ClientPlayer::ClientPlayer()
 {
+
 }
 
 void ClientPlayer::OnInit()
 {
 	m_Crosshair.Init();
-
-	for (int i = 0; i < HotbarSlots; i++)
-	{
-		m_Hotbar[i] = i;
-	}
 }
 
 void ClientPlayer::OnUpdate()
 {
+	if (!m_IsInitialized)
+		Init();
+
 	// Update hotbar slot
 	if (InputHandler::IsKeyPressed(GLFW_KEY_1))
 		m_CurrentHotbarSlot = 0;
@@ -165,7 +164,7 @@ void ClientPlayer::OnTickUpdate()
 		msg["Data"]["Y"] = m_Position.y;
 		msg["Data"]["Z"] = m_Position.z;
 
-		m_Connection->SendJson(msg);
+		//m_Connection->SendJson(msg);
 	}
 }
 
@@ -210,16 +209,16 @@ void ClientPlayer::HandleMovement()
 	// Jump
 	//if (m_Input.IsKeyPressed(GLFW_KEY_SPACE))
 	//	m_Velocity.y = 0.212132034356f;//6.f * Time::FixedTimestep * m_Acceleration;
-	if (m_Input.IsKeyPressed(GLFW_KEY_LEFT_SHIFT))
+	if (InputHandler::IsKeyPressed(GLFW_KEY_LEFT_SHIFT))
 		m_Velocity.y = -6.f * Time::FixedTimestep * m_Acceleration;
 
 	// Increase and decrease movement speed
-	if (m_Input.IsKeyHeld(GLFW_KEY_E))
+	if (InputHandler::IsKeyHeld(GLFW_KEY_E))
 	{
 		m_MaxVelocity += 50.0f * Time::FixedTimestep;
 		m_BaseAcceleration += m_BaseAcceleration * Time::FixedTimestep;
 	}
-	if (m_Input.IsKeyHeld(GLFW_KEY_Q))
+	if (InputHandler::IsKeyHeld(GLFW_KEY_Q))
 	{
 		m_MaxVelocity -= 50.0f * Time::FixedTimestep;
 		m_BaseAcceleration -= m_BaseAcceleration * Time::FixedTimestep;
@@ -234,7 +233,7 @@ void ClientPlayer::HandleMovement()
 	}
 
 	// Fly
-	if (m_Input.IsKeyHeld(GLFW_KEY_SPACE))
+	if (InputHandler::IsKeyHeld(GLFW_KEY_SPACE))
 		m_Velocity.y = 0.212132034356f; // v0 = sqrt(2*g*h)
 
 	m_Velocity += newMovementDirection * m_Acceleration;
@@ -481,12 +480,6 @@ void ClientPlayer::HandleBlockPlacing()
 	}
 }
    
-void ClientPlayer::SetWindow(GLFWwindow* window)
-{
-	m_Window = window;
-	m_Input.SetWindow(window);
-}
-
 ClientPlayer::~ClientPlayer()
 {
 }

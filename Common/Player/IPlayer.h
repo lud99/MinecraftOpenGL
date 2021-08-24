@@ -15,7 +15,7 @@
 
 class Chunk;
 class ChunkBlock;
-class NetworkConnection;
+class NetworkClient;
 class IWorld;
 //struct GLFWwindow;
 
@@ -50,6 +50,8 @@ private:
 public:
 	glm::vec3 m_Position = glm::vec3(0.0f, 70.0f, 0.0f);
 
+	int m_Id = -1;
+	 
 	IWorld* m_World;
 	//glm::vec3 m_LookingAtPosition = glm::vec3(0.0f); 
 	//glm::vec3 m_LastLookingAtPosition = glm::vec3(0.0f);
@@ -63,7 +65,7 @@ public:
 	//ChunkBlock* m_HighlightedBlock = nullptr;
 	//Chunk* m_HighlightedBlockChunk = nullptr;
 
-	NetworkConnection* m_Connection = nullptr;
+	NetworkClient* m_NetClient = nullptr;
 
 	glm::vec3 m_Velocity = glm::vec3(0.0f);
 	float m_MovementSpeed = 0.0f;
@@ -76,6 +78,8 @@ public:
 
 	float m_EyeOffset = 1.62f;
 	float m_Height = 1.85f;
+
+	bool m_IsInitialized = false;
 
 	/*float m_BlockBreakProgress = 0.0f;
 	ChunkBlock* m_PrevBreakingBlock = nullptr;*/

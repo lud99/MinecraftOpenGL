@@ -10,7 +10,7 @@
 
 class Chunk;
 class ChunkBlock;
-class NetworkConnection;
+class NetworkClient;
 struct GLFWwindow;
 
 class ClientPlayer : public IPlayer
@@ -26,8 +26,6 @@ public:
 
 	void MouseCallback(GLFWwindow* window, double xpos, double ypos);
 
-	void SetWindow(GLFWwindow* window);
-
 	~ClientPlayer();
 
 private:
@@ -40,18 +38,15 @@ public:
 	//glm::vec3 m_Position = glm::vec3(0.0f, 70.0f, 0.0f);
 	glm::vec3 m_LookingAtPosition = glm::vec3(0.0f); 
 	glm::vec3 m_LastLookingAtPosition = glm::vec3(0.0f);
-
-	GLFWwindow* m_Window = nullptr;
 	Crosshair m_Crosshair;
 
+	NetworkClient* m_Connection = nullptr;
+
 private:
-	InputHandler m_Input;
 	Camera m_Camera;
 
 	ChunkBlock* m_HighlightedBlock = nullptr;
 	Chunk* m_HighlightedBlockChunk = nullptr;
-
-	NetworkConnection* m_Connection = nullptr;
 
 	//glm::vec3 m_Velocity = glm::vec3(0.0f);
 	//float m_MovementSpeed = 0.0f;

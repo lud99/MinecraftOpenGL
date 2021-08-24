@@ -11,7 +11,7 @@
 #include <Common/Utils/Utils.h>
 #include <Graphics/Textures/TextureAtlas.h>
 #include <Graphics/Mesh.hpp>
-#include <Graphics/BasicVertices.h>
+#include <Common/Graphics/BasicVertices.h>
 #include "Collider.h"
 #include "Player/ClientPlayer.h"
 #include <Common/Chunk/ChunkBuilder.h>
@@ -28,10 +28,12 @@ namespace irrklang
 class ClientWorld : public IWorld
 {
 public:
-	virtual void OnInit() override;
-	virtual void OnUpdate() override;
-	virtual void OnFixedUpdate() override;
-	virtual void OnTickUpdate() override;
+	ClientWorld();
+
+	void OnInit() override;
+	void OnUpdate() override;
+	void OnFixedUpdate() override;
+	void OnTickUpdate() override;
 
 	void Render();
 

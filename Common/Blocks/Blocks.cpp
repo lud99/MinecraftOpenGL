@@ -3,8 +3,9 @@
 #include <iostream>
 #include <math.h>
 
-#include <Graphics/Mesh.hpp>
-#include <Graphics/BasicVertices.h>
+//#include <Graphics/Textures/Texture2D.h>
+//#include <Graphics/Mesh.hpp>
+#include <Common/Graphics/BasicVertices.h>
 
 #include <Common/World/IWorld.h>
 #include <Common/Chunk/Chunk.h>

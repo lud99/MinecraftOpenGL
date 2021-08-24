@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include <Common/json.hpp>
-#include <Common/INetworkThread.h>
+#include <Common/Net/INetworkThread.h>
 
 #include <Common/Chunk/Chunk.h>
 #include <Common/Chunk/ChunkBlock.h>
@@ -11,6 +11,8 @@
 
 #ifndef SERVER_BUILD
 #include "../../World/Chunk/ChunkMesh.h"
+#else
+#include "../Net/ServerNetworkThread.h"
 #endif
 
 ThreadPool::ThreadPool()
@@ -212,12 +214,7 @@ void ThreadPool::DoWork()
 			QueueWork(ChunkAction(ChunkAction::ActionType::Rebuild, action.chunk, ChunkAction::Priority::Low));
 			QueueWork(ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, action.chunk, ChunkAction::Priority::Low));
 #else
-			NetworkThread& net = net.Instance();
-			NetworkClient* client = net.m_Sessions["Minecraft"].GetClient(World::GetPlayer().m_ClientId);
 
-			std::string& serialized = action.chunk->Serialize();
-
-			net.SendString(serialized, client->m_Peer);
 #endif
 
 			break;
@@ -264,6 +261,17 @@ void ThreadPool::DoWork()
 
 			action.runWhenDone(action, (void*)serialized.c_str());
 
+			break;
+		}
+
+		case ChunkAction::ActionType::SendChunk:
+		{
+#ifdef SERVER_BUILD
+			NetworkClient* client = (NetworkClient*)action.extraData;
+
+			std::string serialized = action.chunk->Serialize();
+			client->SendString(serialized);
+#endif
 			break;
 		}
 

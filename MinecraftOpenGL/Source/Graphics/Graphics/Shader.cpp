@@ -96,6 +96,12 @@ std::string ShaderLoader::ParseShader(const std::string& filepath)
 Shader ShaderLoader::CreateShader(const std::string& vertexPath, const std::string& fragmentPath)
 {
 	unsigned int program = glCreateProgram();
+
+	if (program == 0)
+	{
+		abort();
+	}
+
 	unsigned int vertex = CompileShader(GL_VERTEX_SHADER, ParseShader(vertexPath));
 	unsigned int fragment = CompileShader(GL_FRAGMENT_SHADER, ParseShader(fragmentPath));
 

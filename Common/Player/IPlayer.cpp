@@ -16,10 +16,10 @@
 #include <Common/Utils/Raycast.h>
 #include <Common/Utils/Utils.h>
 #include <Common/Time.h>
-#include <Common/INetworkThread.h>
+#include <Common/Net/INetworkThread.h>
 #include <Common/World/IWorld.h>
 
-#include <Common/NetworkConnection.h>
+#include <Common/Net/NetworkClient.h>
 
 //#include <GLFW/glfw3.h>
 
@@ -35,12 +35,14 @@ IPlayer::IPlayer()
 
 void IPlayer::Init()
 {
-	//m_Crosshair.Init();
-
 	for (int i = 0; i < HotbarSlots; i++)
 	{
 		m_Hotbar[i] = i;
 	}
+
+	OnInit();
+
+	m_IsInitialized = true;
 }
 
 void IPlayer::OnInit()
@@ -49,6 +51,9 @@ void IPlayer::OnInit()
 
 void IPlayer::OnUpdate()
 {
+	if (!m_IsInitialized)
+		Init();
+
 	// Update hotbar slot
 	//if (InputHandler::IsKeyPressed(GLFW_KEY_1))
 	//	m_CurrentHotbarSlot = 0;
@@ -176,7 +181,7 @@ void IPlayer::OnTickUpdate()
 		msg["Data"]["Y"] = m_Position.y;
 		msg["Data"]["Z"] = m_Position.z;
 
-		m_Connection->SendJson(msg);
+		m_NetClient->SendJson(msg);
 	}
 }
 

@@ -6,12 +6,6 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-#ifdef SERVER_BUILD
-	#include "../../Graphics/Graphics/Mesh.hpp"
-#else
-	#include <Graphics/Mesh.hpp>
-#endif
-
 #include <mutex>
 #include <unordered_map>
 #include <vector>
@@ -101,7 +95,9 @@ public:
 
 	uint8_t m_HeightMap[Width][Depth];
 
+#ifndef SERVER_BUILD
 	ChunkMesh* m_ChunkMesh = nullptr;
+#endif
 	IWorld* m_World = nullptr;
 
 private:
