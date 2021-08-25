@@ -15,7 +15,29 @@
 #include <Common/Noise/NoiseGenerator.h>
 #include <Common/ThreadPool.h>
 #include <Common/json.hpp>
+#include <fstream>
 //#include NetworkThread.h
+
+
+size_t string_split(const std::string& txt, std::vector<std::string>& strs, char ch)
+{
+	size_t pos = txt.find(ch);
+	size_t initialPos = 0;
+	strs.clear();
+
+	// Decompose statement
+	while (pos != std::string::npos) {
+		strs.push_back(txt.substr(initialPos, pos - initialPos));
+		initialPos = pos + 1;
+
+		pos = txt.find(ch, initialPos);
+	}
+
+	// Add the last one
+	strs.push_back(txt.substr(initialPos, std::min(pos, txt.size()) - initialPos + 1));
+
+	return strs.size();
+}
 
 Chunk::Chunk(glm::ivec2 position, IWorld* world)
 {
@@ -401,7 +423,9 @@ json Chunk::Serialize()
 	message["Data"]["Position"]["Z"] = m_Position.y;
 
 	message["Data"]["Blocks"] = json::array();
-	json& blocks = message["Data"]["Blocks"];
+
+	int* blocks = new int[Chunk::BlockCount];
+
 	for (int x = 0; x < Chunk::Width; x++)
 	{
 		for (int y = 0; y < Chunk::Height; y++)
@@ -414,7 +438,108 @@ json Chunk::Serialize()
 		}
 	}
 
+	// Do run length encoding
+	// Example format: ${blockid} ${count},${blockid} ${count},
+	// 'Repeat 0 5 times'
+
+	std::string encoded = "";
+	int currentBlockId = -1;
+	int currentOffset = 0;
+	std::vector<int> currentBatchOfBlocks;
+	while (true)
+	{
+		int endOffset = -1;
+
+		int i = currentOffset;
+		for (i = currentOffset; i < Chunk::BlockCount; i++)
+		{
+			int block = blocks[i];
+
+			// If the current iterated block is different from the others. Marks the end of the current batch
+			if (block != currentBlockId && currentBlockId != -1 /* Don't exit on first iteration */)
+			{
+				endOffset = i;
+				break;
+			}
+
+			currentBlockId = block;
+
+			// If reached the end of the array (last iteration)
+			if (i == Chunk::BlockCount - 1)
+			{
+				endOffset = i;
+				break;
+			}
+		}
+
+		if (endOffset == -1) // An error has occured
+			abort();
+
+		// End the loop. Reached the end because the current offset hasn't increased from the last iteration
+		if (currentOffset == endOffset)
+		{
+			// Remove the last comma from the encoded string
+			encoded = encoded.substr(0, encoded.size() - 1);
+			break;
+		}
+	
+		// Encode the current batch into the string    ${blockid} ${times},
+		encoded += std::to_string(currentBlockId); // Block id
+		encoded += " ";
+		encoded += std::to_string(endOffset - currentOffset); // Times
+		encoded += ",";
+
+		// Save new start position for next iteration
+		currentOffset = endOffset;
+
+		currentBlockId = -1;
+	}
+
+	message["Data"]["Blocks"] = encoded;
+
 	return message;
+}
+
+json Chunk::Unserialize(json& packet)
+{
+	// Do run length encoding
+	// Example format: ${blockid} ${count},
+	// 'Repeat 0 5 times'
+
+	json decodedPacket = packet;
+	decodedPacket["Data"]["Blocks"] = json::array();
+
+	const std::string& encoded = packet["Data"]["Blocks"];
+
+	// Split the encoded data by the commas
+	std::vector<int> decoded;
+	std::vector<std::string> entries;
+	string_split(encoded, entries, ',');
+
+	// TODO: Last block is missing for some reason. Work around this by adding a extra air block
+
+	// Iterate each entry
+	for (int i = 0; i < entries.size(); i++)
+	{
+		// Split by the spaces
+		std::vector<std::string> numbersStr;
+		string_split(entries[i], numbersStr, ' ');
+
+		int blockId = std::stoi(numbersStr[0]);
+		int count = std::stoi(numbersStr[1]);
+
+		for (int j = 0; j < count; j++)
+		{
+			decoded.push_back(blockId);
+		}
+	}
+
+	// workaround
+	decoded.push_back(BlockIds::Air);
+
+	decodedPacket["Data"]["Blocks"] = decoded;
+
+	return decodedPacket;
 }
 
 void Chunk::SetBlockAt(glm::ivec3 position, ChunkBlock* newBlock)

@@ -48,6 +48,7 @@ public:
 	void GetDataNetThreaded(ChunkAction::Priority priority, ChunkAction* nextAction = nullptr);
 
 	json Serialize();
+	static json Unserialize(json& packet);
 
 	void Fill(const glm::vec4* colors);
 	void CreateSphere(const glm::vec4* colors);

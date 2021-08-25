@@ -114,7 +114,7 @@ void ClientWorld::HandleCreatingNewChunks()
 		AdjacentChunks adjacentChunks = chunk->GetAdjacentChunks();
 
 		// Rebuild the chunk if changes has occured and it's not already rebuilding. For example if a block has been broken
-		if (chunk->m_IsInitialized && chunk->IsDirty() && !chunk->m_IsRebuilding)
+		if (chunk->m_IsInitialized && chunk->m_ChunkMesh && chunk->IsDirty() && !chunk->m_IsRebuilding)
 		{
 			chunk->m_ChunkMesh->RebuildMeshThreaded(ChunkAction::Priority::VeryHigh);
 			std::cout << "rebuild\n";

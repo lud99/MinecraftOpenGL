@@ -44,7 +44,7 @@ void INetworkThread::SetupThread()
 
 void INetworkThread::SendJson(json& message, NetworkClient* conn)
 {
-	//std::cout << "Sending message " << message["Type"] << "\n";
+	std::cout << "Sending message " << message["Type"] << "\n";
 	std::string stringified = message.dump();
 
 	SendString(stringified, conn);
@@ -53,7 +53,7 @@ void INetworkThread::SendJson(json& message, NetworkClient* conn)
 void INetworkThread::SendString(const std::string& data, NetworkClient* conn)
 {
 	m_QueueLock.lock();
-	std::cout << "Sending message " << data << "\n";
+	//std::cout << "Sending message " << data << "\n";
 	m_SendQueue.emplace_back(data, conn);
 	m_QueueLock.unlock();
 }
@@ -63,7 +63,7 @@ ENetPacket* INetworkThread::PullPackets()
 	ENetEvent event;
 
 	// The incoming messages are handled by this function. Needs to be called regularly. A 0 timeout means that it's non-blocking
-	int eventStatus = enet_host_service(m_EnetClient, &event, 1000);
+	int eventStatus = enet_host_service(m_EnetClient, &event, 100);
 
 	if (eventStatus > 0)
 	{
