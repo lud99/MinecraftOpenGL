@@ -187,6 +187,9 @@ void ThreadPool::DoWork()
 			case ChunkAction::ActionType::Serialize:
 				actionName = "Serialize";
 				break;
+			case ChunkAction::ActionType::UnserializeAndApply:
+				actionName = "UnserializeAndApply";
+				break;
 			case ChunkAction::ActionType::SendChunk:
 				actionName = "SendChunk";
 				break;
@@ -263,6 +266,26 @@ void ThreadPool::DoWork()
 			std::string serialized = action.chunk->Serialize().dump();
 
 			action.runWhenDone(action, (void*)serialized.c_str());
+
+			break;
+		}
+
+		case ChunkAction::ActionType::UnserializeAndApply:
+		{
+			std::string serialized = action.stringData;
+
+			// Unserialize the chunk data
+			json unserializedPacket = Chunk::Unserialize(serialized);
+
+			for (int i = 0; i < Chunk::BlockCount; i++)
+			{
+				glm::u8vec3 position = Utils::BlockIndexToPosition(i);
+				ChunkBlock* block = action.chunk->GetBlockAt(position);
+				block->m_BlockId = unserializedPacket["Data"]["Blocks"][i];
+			}
+
+			action.chunk->SetDirty(true);
+			action.chunk->m_HasGenerated = true;
 
 			break;
 		}

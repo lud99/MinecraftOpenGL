@@ -5,6 +5,7 @@
 #include "../World/Player/ClientPlayer.h"
 #include <Common/Chunk/Chunk.h>
 #include <Common/Chunk/ChunkBlock.h>
+#include <Common/ThreadPool.h>
 
 #include <Common/Net/NetworkConstants.h>
 
@@ -84,7 +85,7 @@ void ClientNetworkThread::HandlePacket(json& packet, NetworkClient* me)
 	{
 		OnChunkData(packet, me);
 	}
-	else 
+	else
 	{
 		std::cout << "Other packet: " << packet["Type"] << "\n";
 	}
@@ -144,18 +145,25 @@ void ClientNetworkThread::OnChunkData(json& packet, NetworkClient* conn)
 	if (!chunk)
 		chunk = world->CreateChunk(pos, (IWorld*)world);
 
-	// Unserialize the chunk data
-	json unserializedPacket = Chunk::Unserialize(packet);
-		
-	for (int i = 0; i < Chunk::BlockCount; i++)
-	{
-		glm::u8vec3 position = Utils::BlockIndexToPosition(i);
-		ChunkBlock* block = chunk->GetBlockAt(position);
-		block->m_BlockId = unserializedPacket["Data"]["Blocks"][i];
-	}
+	ChunkAction action(ChunkAction::ActionType::UnserializeAndApply, chunk, ChunkAction::Priority::High);
 
-	chunk->SetDirty(true);
-	chunk->m_HasGenerated = true;
+	const std::string& serialized = packet["Data"]["Blocks"];
+	action.stringData = packet["Data"]["Blocks"];
+
+	ChunkBuilder::Get().AddToQueue(action);
+
+	//// Unserialize the chunk data
+	//json unserializedPacket = Chunk::Unserialize(packet);
+	//	
+	//for (int i = 0; i < Chunk::BlockCount; i++)
+	//{
+	//	glm::u8vec3 position = Utils::BlockIndexToPosition(i);
+	//	ChunkBlock* block = chunk->GetBlockAt(position);
+	//	block->m_BlockId = unserializedPacket["Data"]["Blocks"][i];
+	//}
+
+	//chunk->SetDirty(true);
+	//chunk->m_HasGenerated = true;
 
 	//chunk->m_ChunkMesh->RebuildMeshThreaded(ChunkAction::Priority::Normal);
 }

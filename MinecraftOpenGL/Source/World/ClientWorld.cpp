@@ -117,7 +117,7 @@ void ClientWorld::HandleCreatingNewChunks()
 		if (chunk->m_IsInitialized && chunk->m_ChunkMesh && chunk->IsDirty() && !chunk->m_IsRebuilding)
 		{
 			chunk->m_ChunkMesh->RebuildMeshThreaded(ChunkAction::Priority::VeryHigh);
-			std::cout << "rebuild\n";
+
 			//m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk, ChunkAction::Priority::Low));
 
 			//if (adjacentChunks.West)// && (!westChunkEast || !westChunkEast->m_HasGenerated))

@@ -27,6 +27,7 @@ struct ChunkAction
 		RebuildAdjacentChunks,
 		Generate,
 		Serialize,
+		UnserializeAndApply,
 		SendChunk,
 		Save
 	};
@@ -63,6 +64,8 @@ struct ChunkAction
 	ChunkAction* nextAction = nullptr;
 
 	void* extraData = nullptr;
+
+	std::string stringData;
 
 	OnChunkActionDone runWhenDone;
 };

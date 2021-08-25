@@ -75,6 +75,8 @@ void ChunkMesh::RebuildMeshThreaded(ChunkAction::Priority priority, ChunkAction*
 {
 	if (!m_Chunk->m_IsInitialized) std::cout << "Not int\n";
 
+	m_Chunk->m_IsRebuilding = true;
+
 	ChunkBuilder::Get().AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, m_Chunk, priority, nextAction));
 }
 

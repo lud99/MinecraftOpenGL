@@ -32,6 +32,8 @@ void INetworkThread::SetupThread()
 				enet_peer_send(entry.client->m_Peer, 0, packet);
 				m_SendingOnChannel++;
 				if (m_SendingOnChannel >= ENET_PROTOCOL_MAXIMUM_CHANNEL_COUNT) m_SendingOnChannel = 0;
+
+				std::cout << "Sent\n";
 			}
 
 			// Reset queue
@@ -44,7 +46,7 @@ void INetworkThread::SetupThread()
 
 void INetworkThread::SendJson(json& message, NetworkClient* conn)
 {
-	std::cout << "Sending message " << message["Type"] << "\n";
+	std::cout << "Sending message " << message["Type"] << "... ";
 	std::string stringified = message.dump();
 
 	SendString(stringified, conn);

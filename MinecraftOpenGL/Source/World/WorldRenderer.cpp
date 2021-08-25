@@ -43,6 +43,8 @@ void WorldRenderer::Render()
 	ChunkMap& chunks = m_World->GetChunks();
 	for (auto const& entry : chunks)
 	{
+		if (!entry.second->m_ChunkMesh) continue;
+
 		ClientPlayer* player = m_World->m_LocalPlayer;
 		glm::vec2 front(player->GetCamera().m_Front2D.x, player->GetCamera().m_Front2D.z);
 
@@ -65,6 +67,8 @@ void WorldRenderer::Render()
 
 	for (auto const& entry : chunks) 
 	{
+		if (!entry.second->m_ChunkMesh) continue;
+
 		ClientPlayer* player = m_World->m_LocalPlayer;
 		glm::vec2 front(player->GetCamera().m_Front2D.x, player->GetCamera().m_Front2D.z);
 

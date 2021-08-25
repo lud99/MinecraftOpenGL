@@ -500,21 +500,19 @@ json Chunk::Serialize()
 	return message;
 }
 
-json Chunk::Unserialize(json& packet)
+json Chunk::Unserialize(const std::string& serialized)
 {
 	// Do run length encoding
 	// Example format: ${blockid} ${count},
 	// 'Repeat 0 5 times'
 
-	json decodedPacket = packet;
-	decodedPacket["Data"]["Blocks"] = json::array();
-
-	const std::string& encoded = packet["Data"]["Blocks"];
+	json unserializedPacket;
+	unserializedPacket["Data"] ["Blocks"] = json::array();
 
 	// Split the encoded data by the commas
-	std::vector<int> decoded;
+	std::vector<int> unserialized;
 	std::vector<std::string> entries;
-	string_split(encoded, entries, ',');
+	string_split(serialized, entries, ',');
 
 	// TODO: Last block is missing for some reason. Work around this by adding a extra air block
 
@@ -530,16 +528,16 @@ json Chunk::Unserialize(json& packet)
 
 		for (int j = 0; j < count; j++)
 		{
-			decoded.push_back(blockId);
+			unserialized.push_back(blockId);
 		}
 	}
 
 	// workaround
-	decoded.push_back(BlockIds::Air);
+	unserialized.push_back(BlockIds::Air);
 
-	decodedPacket["Data"]["Blocks"] = decoded;
+	unserializedPacket["Data"]["Blocks"] = unserialized;
 
-	return decodedPacket;
+	return unserializedPacket;
 }
 
 void Chunk::SetBlockAt(glm::ivec3 position, ChunkBlock* newBlock)
