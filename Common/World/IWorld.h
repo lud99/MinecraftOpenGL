@@ -49,13 +49,13 @@ public:
 	virtual void HandleCreatingNewChunks();
 	void UnloadChunksOutsideRenderDistance();
 
-	Chunk* CreateEmptyChunk(glm::ivec2 position);
-	Chunk* CreateChunk(glm::ivec2 position);
-	Chunk* GenerateNewChunkThreaded(glm::ivec2 position, ChunkAction* nextAction = nullptr);
+	Chunk* CreateEmptyChunk(glm::ivec2 position, IWorld* world);
+	Chunk* CreateChunk(glm::ivec2 position, IWorld* world);
+	Chunk* GenerateNewChunkThreaded(glm::ivec2 position, IWorld* world, ChunkAction* nextAction = nullptr);
 
-	Chunk* GetNewChunkNetThreaded(glm::ivec2 position, ChunkAction* nextAction = nullptr);
+	Chunk* GetNewChunkNetThreaded(glm::ivec2 position, IWorld* world, ChunkAction* nextAction = nullptr);
 
-	Chunk* LoadChunk(glm::ivec2 position);
+	Chunk* LoadChunk(glm::ivec2 position, IWorld* world);
 
 	void RemoveChunk(Chunk* chunk);
 	void RemoveChunk(glm::ivec2 position);
@@ -81,24 +81,19 @@ public:
 
 	~IWorld();
 
-private:
+protected:
 	PlayersMap m_Players;
 	std::mutex m_PlayersMutex;
+	std::recursive_mutex m_ChunkMutex;
 
 public:
-	//Player& GetPlayer();
-
 	//Collider m_LookingAtCollider;
 
 	static constexpr float Gravity = -0.6f;
 
-	//ConnectionsMap m_ConnectedClients;
-
 	bool m_IsInitialized = false;
 
 	ChunkMap m_Chunks;
-
-	std::recursive_mutex m_ChunkMutex;
 };
 
 namespace Settings 

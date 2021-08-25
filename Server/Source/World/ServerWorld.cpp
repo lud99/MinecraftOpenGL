@@ -63,13 +63,14 @@ void ServerWorld::HandleCreatingNewChunks()
 			glm::ivec2 chunkPos = Utils::WorldPositionToChunkPosition(glm::vec3(x, 0, z) + 8.0f);
 			Chunk* chunk = GetChunkAt(chunkPos);
 
-			ChunkAction* nextAction = new ChunkAction(ChunkAction::ActionType::SendChunk, chunk, ChunkAction::Priority::Low);
-			nextAction->extraData = player->m_NetClient;
-
 			// Create the chunk here if a chunk at this position doesn't exist
 			if (!chunk) {
-				chunk = GenerateNewChunkThreaded(chunkPos);
-				//std::cout << "newchunk\n";
+				chunk = CreateChunk(chunkPos, (IWorld*)this);
+
+				ChunkAction* nextAction = new ChunkAction(ChunkAction::ActionType::SendChunk, chunk, ChunkAction::Priority::Low);
+				nextAction->extraData = player->m_NetClient;
+
+				chunk->CreateAndGenerateTerrain(ChunkAction::Priority::High, nextAction);
 			}
 		}
 	}

@@ -238,20 +238,20 @@ void IWorld::UnloadChunksOutsideRenderDistance()
 	}
 }
 
-Chunk* IWorld::CreateEmptyChunk(glm::ivec2 position)
+Chunk* IWorld::CreateEmptyChunk(glm::ivec2 position, IWorld* world)
 {
 	std::lock_guard<std::recursive_mutex> lk(m_ChunkMutex);
 
-	m_Chunks[position] = new Chunk(position);
+	m_Chunks[position] = new Chunk(position, world);
 
 	return GetChunkAt(position);
 }
 
-Chunk* IWorld::CreateChunk(glm::ivec2 position)
+Chunk* IWorld::CreateChunk(glm::ivec2 position, IWorld* world)
 {
 	std::lock_guard<std::recursive_mutex> lk(m_ChunkMutex);
 
-	Chunk* chunk = new Chunk(position);
+	Chunk* chunk = new Chunk(position, world);
 	chunk->Init();
 
 	m_Chunks[position] = chunk;
@@ -259,25 +259,25 @@ Chunk* IWorld::CreateChunk(glm::ivec2 position)
 	return chunk;
 }
 
-Chunk* IWorld::GenerateNewChunkThreaded(glm::ivec2 position, ChunkAction* nextAction)
+Chunk* IWorld::GenerateNewChunkThreaded(glm::ivec2 position, IWorld* world, ChunkAction* nextAction)
 {
 	std::unique_lock<std::recursive_mutex> lk(m_ChunkMutex);
 
-	Chunk* chunk = new Chunk(position);
+	Chunk* chunk = new Chunk(position, world);
 	m_Chunks[position] = chunk;
 
 	lk.unlock();
 
-	//chunk->CreateGenerateAndBuild(ChunkAction::Priority::High, nextAction);
+	chunk->CreateAndGenerateTerrain(ChunkAction::Priority::High, nextAction);
 
 	return chunk;
 }
 
-Chunk* IWorld::GetNewChunkNetThreaded(glm::ivec2 position, ChunkAction* nextAction)
+Chunk* IWorld::GetNewChunkNetThreaded(glm::ivec2 position, IWorld* world, ChunkAction* nextAction)
 {
 	std::unique_lock<std::recursive_mutex> lk(m_ChunkMutex);
 
-	Chunk* chunk = new Chunk(position);
+	Chunk* chunk = new Chunk(position, world);
 	m_Chunks[position] = chunk;
 	chunk->Init();
 
@@ -392,22 +392,20 @@ void IWorld::AddPlayer(IPlayer* player)
 	std::lock_guard<std::mutex> lk(m_PlayersMutex);
 
 	// Player already exists
-	if (m_Players.count(player->m_Id) == 1)
+	if (m_Players.count(player->m_NetClient->m_Id) == 1)
 		std::cout << "Error: Player already exists!\n";
 
-	m_Players[player->m_Id] = player;
+	m_Players[player->m_NetClient->m_Id] = player;
 }
 
 IPlayer* IWorld::GetPlayer(int id)
 {
 	std::lock_guard<std::mutex> lk(m_PlayersMutex);
 
-	IPlayer* player = nullptr;
-
 	if (m_Players.count(id) == 1)
-		player = m_Players[id];
+		return m_Players[id];
 
-	return player;
+	return nullptr;
 }
 
 PlayersMap& IWorld::GetPlayers()
@@ -430,5 +428,6 @@ IWorld::~IWorld()
 {
 	std::cout << "World destroy\n";
 }
+
 
 int Settings::RenderDistance = 2;

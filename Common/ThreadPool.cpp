@@ -187,6 +187,9 @@ void ThreadPool::DoWork()
 			case ChunkAction::ActionType::Serialize:
 				actionName = "Serialize";
 				break;
+			case ChunkAction::ActionType::SendChunk:
+				actionName = "SendChunk";
+				break;
 			case ChunkAction::ActionType::Save:
 				actionName = "Save";
 				break;
@@ -257,7 +260,7 @@ void ThreadPool::DoWork()
 
 		case ChunkAction::ActionType::Serialize:
 		{
-			std::string serialized = action.chunk->Serialize();
+			std::string serialized = action.chunk->Serialize().dump();
 
 			action.runWhenDone(action, (void*)serialized.c_str());
 
@@ -269,8 +272,9 @@ void ThreadPool::DoWork()
 #ifdef SERVER_BUILD
 			NetworkClient* client = (NetworkClient*)action.extraData;
 
-			std::string serialized = action.chunk->Serialize();
-			client->SendString(serialized);
+			json serialized = action.chunk->Serialize();
+
+			client->SendJson(serialized);
 #endif
 			break;
 		}

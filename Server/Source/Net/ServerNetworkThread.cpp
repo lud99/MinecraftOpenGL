@@ -53,7 +53,12 @@ void ServerNetworkThread::HandlePacket(json& packet, NetworkClient* client)
 	{
 		OnClientJoinWorld(packet, client);
 	}
-	else {
+	if (packet["Type"] == "PlayerPosition")
+	{
+		OnClientPositionUpdate(packet, client);
+	}
+	else 
+	{
 		std::cout << "Other packet: " << packet["Type"] << "\n";
 	}
 }
@@ -97,4 +102,14 @@ void ServerNetworkThread::OnClientJoinWorld(json& packet, NetworkClient* client)
 	responsePacket["Data"]["SessionName"] = sessionName;
 	responsePacket["Data"]["ClientId"] = client->m_Id;
 	client->SendJson(responsePacket);
+}
+
+void ServerNetworkThread::OnClientPositionUpdate(json& packet, NetworkClient* client)
+{
+	int clientId = packet["Data"]["ClientId"];
+	ServerPlayer* player = (ServerPlayer*)m_Sessions["Minecraft"].m_World->GetPlayer(clientId);
+
+	glm::vec3 newPosition(packet["Data"]["X"], packet["Data"]["Y"], packet["Data"]["Z"]);
+
+	player->m_Position = newPosition;
 }

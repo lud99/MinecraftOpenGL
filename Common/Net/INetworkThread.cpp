@@ -44,7 +44,7 @@ void INetworkThread::SetupThread()
 
 void INetworkThread::SendJson(json& message, NetworkClient* conn)
 {
-	std::cout << "Sending message " << message["Type"] << "\n";
+	//std::cout << "Sending message " << message["Type"] << "\n";
 	std::string stringified = message.dump();
 
 	SendString(stringified, conn);

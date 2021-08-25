@@ -160,11 +160,12 @@ void ClientPlayer::OnTickUpdate()
 	{
 		json msg;
 		msg["Type"] = "PlayerPosition";
+		msg["Data"]["ClientId"] = m_NetClient->m_Id;
 		msg["Data"]["X"] = m_Position.x;
 		msg["Data"]["Y"] = m_Position.y;
 		msg["Data"]["Z"] = m_Position.z;
 
-		//m_Connection->SendJson(msg);
+		m_NetClient->SendJson(msg);
 	}
 }
 
@@ -282,7 +283,8 @@ void ClientPlayer::HandleCollision()
 	Chunk* inChunk = m_World->GetChunkAt(Utils::WorldPositionToChunkPosition(m_Position));
 	if (!inChunk || !inChunk->m_HasGenerated)
 	{
-		m_Velocity = glm::vec3(0.0f);
+		m_Velocity.y = 0.0f;//m_Velocity.y = glm::vec3(0.0f);
+		m_Position += m_Velocity;
 		return;
 	}
 

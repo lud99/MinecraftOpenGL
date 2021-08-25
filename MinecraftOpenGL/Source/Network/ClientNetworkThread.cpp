@@ -80,7 +80,12 @@ void ClientNetworkThread::HandlePacket(json& packet, NetworkClient* me)
 	{
 		OnJoinWorld(packet, me);
 	}
-	else {
+	else if (packet["Type"] == "ChunkData")
+	{
+		OnChunkData(packet, me);
+	}
+	else 
+	{
 		std::cout << "Other packet: " << packet["Type"] << "\n";
 	}
 }
@@ -115,7 +120,7 @@ void ClientNetworkThread::OnJoinWorld(json& packet, NetworkClient* me)
 
 	// Add a player
 	ClientPlayer* player = new ClientPlayer();
-	player->m_Connection = me;
+	player->m_NetClient = me;
 	player->m_Id = me->m_Id;
 	player->m_World = session.m_World;
 	session.m_World->AddPlayer((IPlayer*)player);
@@ -130,7 +135,15 @@ void ClientNetworkThread::OnChunkData(json& packet, NetworkClient* conn)
 {
 	glm::ivec2 pos(packet["Data"]["Position"]["X"], packet["Data"]["Position"]["Z"]);
 
-	Chunk* chunk = GetThisWorld()->GetChunkAt(pos);
+	ClientWorld* world = GetThisWorld();
+	assert(world);
+
+	Chunk* chunk = world->GetChunkAt(pos);
+
+	// Create the chunk if this is new terrain
+	if (!chunk)
+		chunk = world->CreateChunk(pos, (IWorld*)world);
+		
 	for (int i = 0; i < Chunk::BlockCount; i++)
 	{
 		glm::u8vec3 position = Utils::BlockIndexToPosition(i);
@@ -141,7 +154,7 @@ void ClientNetworkThread::OnChunkData(json& packet, NetworkClient* conn)
 	chunk->SetDirty(true);
 	chunk->m_HasGenerated = true;
 
-	chunk->m_ChunkMesh->RebuildMeshThreaded(ChunkAction::Priority::Normal);
+	//chunk->m_ChunkMesh->RebuildMeshThreaded(ChunkAction::Priority::Normal);
 }
 
 NetworkSession* ClientNetworkThread::GetThisSession()

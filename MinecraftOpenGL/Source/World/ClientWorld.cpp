@@ -53,7 +53,16 @@ void ClientWorld::OnInit()
 
 void ClientWorld::OnUpdate()
 {
-
+	// Iterate through all chunks to create the meshes, if not done. Main thread
+	for (auto& entry : m_Chunks)
+	{
+		Chunk* chunk = entry.second;
+		if (!chunk->m_ChunkMesh)
+		{
+			chunk->m_ChunkMesh = new ChunkMesh();
+			chunk->m_ChunkMesh->m_Chunk = chunk;
+		}
+	}
 }
 
 void ClientWorld::OnFixedUpdate()

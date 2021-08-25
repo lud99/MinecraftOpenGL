@@ -15,6 +15,7 @@ public:
 	virtual void HandlePacket(json& packet, NetworkClient* client) override;
 
 	void OnClientJoinWorld(json& packet, NetworkClient* client);
+	void OnClientPositionUpdate(json& packet, NetworkClient* client);
 	//void OnChunkData(json& packet, NetworkConnection* conn);
 
 private:

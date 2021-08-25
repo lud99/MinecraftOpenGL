@@ -40,11 +40,7 @@ public:
 	glm::vec3 m_LastLookingAtPosition = glm::vec3(0.0f);
 	Crosshair m_Crosshair;
 
-	NetworkClient* m_Connection = nullptr;
-
 private:
-	Camera m_Camera;
-
 	ChunkBlock* m_HighlightedBlock = nullptr;
 	Chunk* m_HighlightedBlockChunk = nullptr;
 

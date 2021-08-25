@@ -1,2 +1,6 @@
-﻿  ServerPlayer.cpp
+﻿  ServerWorld.cpp
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\functional(13,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
+D:\Spel\Programming\C++\MinecraftOpenGL\Dependencies\glm\glm\gtx\hash.hpp(23,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
+D:\Spel\Programming\C++\MinecraftOpenGL\Server\Source\World\ServerWorld.h(6,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
+D:\Spel\Programming\C++\MinecraftOpenGL\Server\Source\World\ServerWorld.cpp(1,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
   Server.vcxproj -> D:\Spel\Programming\C++\MinecraftOpenGL\build\Server\x64\Debug\Server.exe

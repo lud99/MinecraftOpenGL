@@ -10,6 +10,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include <Common/json.hpp>
+
 #include <Common/ThreadPool.h>
 
 class IWorld;
@@ -35,7 +37,7 @@ typedef std::unordered_map<uint16_t, BlockEntity*> BlockEntitiesMap;
 class Chunk
 {
 public:
-	Chunk(glm::ivec2 position);
+	Chunk(glm::ivec2 position, IWorld* world);
 	
 	void Init();
 	void CreateAndGenerateTerrain(ChunkAction::Priority priority, ChunkAction* nextAction = nullptr);
@@ -45,7 +47,7 @@ public:
 	void GetDataNet();
 	void GetDataNetThreaded(ChunkAction::Priority priority, ChunkAction* nextAction = nullptr);
 
-	std::string Serialize();
+	json Serialize();
 
 	void Fill(const glm::vec4* colors);
 	void CreateSphere(const glm::vec4* colors);

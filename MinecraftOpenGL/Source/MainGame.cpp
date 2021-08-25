@@ -34,7 +34,11 @@ float Time::DeltaTime;
 
 void MouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
-	//localWorld->m_LocalPlayer->MouseCallback(window, xpos, ypos);
+	ClientWorld* world = NetworkThread::Get().GetThisWorld();
+	if (!world) return;
+	if (!world->m_LocalPlayer) return;
+
+	world->m_LocalPlayer->MouseCallback(window, xpos, ypos);
 }
 
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
@@ -62,6 +66,8 @@ int main()
 
 	GLFWwindow* window = nullptr;
 	Window::Get().m_Window = window;
+
+	InputHandler::SetWindow(window);
 
 	/* Create a windowed mode window and its OpenGL context */
 	window = glfwCreateWindow(1280, 720, "MinecraftOpenGL", NULL, NULL);

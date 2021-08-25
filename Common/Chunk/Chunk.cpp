@@ -17,9 +17,11 @@
 #include <Common/json.hpp>
 //#include NetworkThread.h
 
-Chunk::Chunk(glm::ivec2 position)
+Chunk::Chunk(glm::ivec2 position, IWorld* world)
 {
 	SetPosition(position);
+
+	m_World = world;
 
 	//m_AdjacentChunksWhenLastRebuilt = GetAdjacentChunks();
 }
@@ -391,7 +393,7 @@ void Chunk::GetDataNetThreaded(ChunkAction::Priority priority, ChunkAction* next
 
 }
 
-std::string Chunk::Serialize()
+json Chunk::Serialize()
 {
 	json message;
 	message["Type"] = "ChunkData";
@@ -412,7 +414,7 @@ std::string Chunk::Serialize()
 		}
 	}
 
-	return message.dump();
+	return message;
 }
 
 void Chunk::SetBlockAt(glm::ivec3 position, ChunkBlock* newBlock)
