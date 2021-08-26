@@ -53,13 +53,13 @@ void ServerNetworkThread::HandlePacket(json& packet, NetworkClient* client)
 	{
 		OnClientJoinWorld(packet, client);
 	}
-	if (packet["Type"] == "PlayerPosition")
+	else if (packet["Type"] == "PlayerPosition")
 	{
 		OnClientPositionUpdate(packet, client);
 	}
 	else 
 	{
-		std::cout << "Other packet: " << packet["Type"] << "\n";
+		std::cout << "Other packet: " + packet["Type"] + std::string("\n");
 	}
 }
 

@@ -52,6 +52,7 @@ void ServerWorld::HandleCreatingNewChunks()
 
 	IPlayer* player = GetPlayer(0);
 	if (!player) return;
+	if (!player->m_NetClient->m_HasJoinedSession) return;
 
 	glm::ivec3 position = glm::floor(player->m_Position);
 

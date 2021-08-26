@@ -173,16 +173,7 @@ void IPlayer::OnFixedUpdate()
 
 void IPlayer::OnTickUpdate()
 {
-	// Send position
-	{
-		json msg;
-		msg["Type"] = "PlayerPosition";
-		msg["Data"]["X"] = m_Position.x;
-		msg["Data"]["Y"] = m_Position.y;
-		msg["Data"]["Z"] = m_Position.z;
 
-		m_NetClient->SendJson(msg);
-	}
 }
 
 void IPlayer::UpdateCameraPosition()

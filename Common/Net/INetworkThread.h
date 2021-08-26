@@ -20,11 +20,11 @@ struct NetworkPacket
 class INetworkThread
 {
 public:
-	void SendJson(json& message, NetworkClient* conn);
-	void SendString(const std::string& data, NetworkClient* conn);
+	void SendJson(json& message, NetworkClient* client);
+	void SendString(const std::string& data, NetworkClient* client);
 
 	ENetPacket* PullPackets();
-	virtual void HandlePacket(json& packet, NetworkClient* conn) = 0;
+	virtual void HandlePacket(json& packet, NetworkClient* client) = 0;
 
 	void SetupThread();
 

@@ -3,6 +3,7 @@
 
 #include <GL/glewh.h>
 #include <GLFW/glfw3.h>
+#include <optick.h>
 
 #include <iostream>
 #include <chrono> 
@@ -91,7 +92,7 @@ int main()
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwWindowHint(GLFW_SAMPLES, 4);
-	glfwSwapInterval(0); // Vsync
+	glfwSwapInterval(1); // Vsync
 
 	//glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
@@ -108,16 +109,19 @@ int main()
 	// Print the OpenGL version
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
-
 	// connect
 	bool isConnected = NetworkThread::Get().Connect("127.0.0.1", 7777);
 	if (!isConnected)
+	{
 		std::cout << "err!!\n";
-
-	json msg;
-	msg["Type"] = "JoinWorld";
-	msg["Data"]["SessionName"] = "Minecraft";
-	NetworkThread::Get().SendJson(msg, NetworkThread::Get().m_ThisClient);
+	}
+	else
+	{
+		json msg;
+		msg["Type"] = "JoinWorld";
+		msg["Data"]["SessionName"] = "Minecraft";
+		NetworkThread::Get().SendJson(msg, NetworkThread::Get().m_ThisClient);
+	}
 
 	InputHandler::Init(window);
 
@@ -133,6 +137,8 @@ int main()
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
+		OPTICK_FRAME("MainThread");
+
 		/* Render here */
 		glClearColor(1, 1, 1, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -192,6 +198,8 @@ int main()
 
 		prevTime = Time::ElapsedTime;
 
+		net.PullPackets();
+
 		if (localWorld)
 		{
 			localWorld->CommonOnUpdate();
@@ -220,6 +228,8 @@ int main()
 		InputHandler::Clear();
 
 	}
+
+	OPTICK_SHUTDOWN();
 
 	NetworkThread::Get().m_ShouldExit = true;
 

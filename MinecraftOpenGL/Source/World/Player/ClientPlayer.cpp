@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <optick.h>
 
 #include <glm/gtc/matrix_transform.hpp> 
 
@@ -34,6 +35,8 @@ void ClientPlayer::OnInit()
 
 void ClientPlayer::OnUpdate()
 {
+	OPTICK_EVENT();
+
 	if (!m_IsInitialized)
 		Init();
 
@@ -78,7 +81,7 @@ void ClientPlayer::OnUpdate()
 		if (m_HighlightedBlock && m_HighlightedBlockChunk)
 		{
 			// Remember to de-aloc when done!
-			Block* block = m_HighlightedBlock->GetBlock(m_HighlightedBlockChunk);
+			Block* block = m_HighlightedBlock->GetBlock(m_World, m_HighlightedBlockChunk);
 
 			if (block)
 			{
@@ -148,6 +151,7 @@ void ClientPlayer::OnUpdate()
 
 void ClientPlayer::OnFixedUpdate()
 {
+	OPTICK_EVENT();
 	HandleMovement();
 	HandleCollision();
 
@@ -176,6 +180,7 @@ void ClientPlayer::UpdateCameraPosition()
 
 void ClientPlayer::HandleMovement()
 {
+	OPTICK_EVENT();
 	float friction = 0.0f;
 
 	ChunkBlock* blockBelow = m_World->GetBlockAt(glm::floor(m_Position - glm::vec3(0, ChunkBlock::Size, 0)));
@@ -277,6 +282,7 @@ void ClientPlayer::HandleMovement()
 
 void ClientPlayer::HandleCollision()
 {
+	OPTICK_EVENT();
 	m_IsStandingOnGround = false;
 
 	// Don't do collision checks if not inside a chunk or it hasn't generated the terrain yet
@@ -370,6 +376,8 @@ void ClientPlayer::MouseCallback(GLFWwindow* window, double xpos, double ypos)
 
 void ClientPlayer::HandleBlockBreaking()
 {
+	OPTICK_EVENT();
+
 	float blockBreakSpeed = 6.0f * Time::DeltaTime;
 	if (!m_HighlightedBlock)
 	{
@@ -389,7 +397,7 @@ void ClientPlayer::HandleBlockBreaking()
 		m_BlockBreakProgress = 0.0f;
 
 		// Remember to de-aloc when done!
-		Block* block = m_HighlightedBlock->GetBlock(m_HighlightedBlockChunk);
+		Block* block = m_HighlightedBlock->GetBlock(m_World, m_HighlightedBlockChunk);
 
 		if (!block) return;
 
@@ -404,6 +412,8 @@ void ClientPlayer::HandleBlockBreaking()
 
 void ClientPlayer::HandleBlockPlacing()
 {
+	OPTICK_EVENT();
+
 	//if (World::ChunkExistsAt(glm::vec2(0, 0)))
 	//{
 
@@ -458,7 +468,7 @@ void ClientPlayer::HandleBlockPlacing()
 
 		if (blockToReplace)
 		{
-			Block* block = blockToReplace->GetBlock(m_HighlightedBlockChunk);
+			Block* block = blockToReplace->GetBlock(m_World, m_HighlightedBlockChunk);
 
 			if (block)
 			{

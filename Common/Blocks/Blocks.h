@@ -50,7 +50,7 @@ namespace BlockTypes {
 class Block
 {
 public:
-	Block(Chunk* chunk, ChunkBlock* chunkBlock);
+	Block(IWorld* world, Chunk* chunk, ChunkBlock* chunkBlock);
 
 	virtual bool OnBlockClick();
 	virtual bool OnBlockLeftClick();

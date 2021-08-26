@@ -1,6 +1,7 @@
 #include "IWorld.h"
 
 #include <iostream>
+#include <optick.h>
 
 #include <glm/vec3.hpp>
 
@@ -51,6 +52,7 @@ void IWorld::CommonOnInit()
 
 void IWorld::CommonOnUpdate()
 {
+	OPTICK_EVENT();
 	if (!m_IsInitialized)
 		OnInit();
 
@@ -69,6 +71,7 @@ void IWorld::CommonOnUpdate()
 
 void IWorld::CommonOnFixedUpdate()
 {
+	OPTICK_EVENT();
 	for (auto const& entry : m_Players)
 	{
 		entry.second->OnFixedUpdate();
@@ -79,6 +82,7 @@ void IWorld::CommonOnFixedUpdate()
 
 void IWorld::CommonOnTickUpdate()
 {
+	OPTICK_EVENT();
 	for (auto const& entry : m_Players)
 	{
 		entry.second->OnTickUpdate();
@@ -91,6 +95,7 @@ void IWorld::CommonOnTickUpdate()
 
 void IWorld::HandleCreatingNewChunks()
 {
+	OPTICK_EVENT();
 	using namespace Settings;
 
 	IPlayer* player = GetPlayer(0);
@@ -187,6 +192,7 @@ void IWorld::HandleCreatingNewChunks()
 
 void IWorld::UnloadChunksOutsideRenderDistance()
 {
+	OPTICK_EVENT();
 	using namespace Settings;
 
 	IPlayer* player = GetPlayer(0);

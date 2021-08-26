@@ -264,7 +264,7 @@ BlockType* ChunkBlock::GetBlockType()
 	return &BlockTypes::Blocks[m_BlockId]; 
 }
 
-Block* ChunkBlock::GetBlock(Chunk* chunk)
+Block* ChunkBlock::GetBlock(IWorld* world, Chunk* chunk)
 {
 	using namespace BlockIds;
 
@@ -278,10 +278,10 @@ Block* ChunkBlock::GetBlock(Chunk* chunk)
 	case Grass:
 		break;
 	case Dirt:
-		block = new Blocks::DirtBlock(chunk, this);
+		block = new Blocks::DirtBlock(world, chunk, this);
 		break;
 	case Stone:
-		block = new Blocks::StoneBlock(chunk, this);
+		block = new Blocks::StoneBlock(world, chunk, this);
 		break;
 	case Water:
 		break;
@@ -296,7 +296,7 @@ Block* ChunkBlock::GetBlock(Chunk* chunk)
 	case Chest:
 		break;
 	case Noteblock:
-		block = new Blocks::NoteBlock(chunk, this);
+		block = new Blocks::NoteBlock(world, chunk, this);
 		break;
 	
 	default:
@@ -305,7 +305,7 @@ Block* ChunkBlock::GetBlock(Chunk* chunk)
 
 	if (block) return block;
 
-	return new Block(chunk, this);
+	return new Block(world, chunk, this);
 }
 
 ChunkBlock::~ChunkBlock()

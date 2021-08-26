@@ -1,6 +1,7 @@
 #include "ClientWorld.h"
 
 #include <iostream>
+#include <optick.h>
 
 #include <glm/vec3.hpp>
 
@@ -53,6 +54,7 @@ void ClientWorld::OnInit()
 
 void ClientWorld::OnUpdate()
 {
+	OPTICK_EVENT();
 	// Iterate through all chunks to create the meshes, if not done. Main thread
 	for (auto& entry : m_Chunks)
 	{

@@ -1,6 +1,7 @@
 #include "ThreadPool.h"
 
 #include <iostream>
+#include <optick.h>
 
 #include <Common/json.hpp>
 #include <Common/Net/INetworkThread.h>
@@ -134,6 +135,8 @@ ChunkAction ThreadPool::GetActionToDo()
 
 void ThreadPool::DoWork()
 {
+	OPTICK_THREAD("ThreadPoolThread");
+
 	// Loop while the queue is not destructing
 	while (!m_Done) {
 		ChunkAction action;

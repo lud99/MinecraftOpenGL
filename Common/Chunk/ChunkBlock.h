@@ -42,7 +42,7 @@ public:
 	Gets a block instance corresponding to the correct block type.
 	Remember to deallocate when done!
 	**/
-	Block* GetBlock(Chunk* chunk);
+	Block* GetBlock(IWorld* world, Chunk* chunk);
 
 	~ChunkBlock();
 

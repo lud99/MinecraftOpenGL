@@ -3,6 +3,7 @@
 #include <iostream>
 #include <algorithm>
 #include <thread>
+#include <optick.h>
 
 #include <Common/Noise/FastNoise.h>
 #include "ChunkBlock.h"
@@ -50,6 +51,7 @@ Chunk::Chunk(glm::ivec2 position, IWorld* world)
 
 void Chunk::Init()
 {
+	OPTICK_EVENT();
 	/*BlockEntity* chest = new BlockEntity();
 	chest->m_BlockId = BlockIds::Chest;
 	chest->SetLocalPosition(glm::u8vec3(0, 60, 0));
@@ -119,6 +121,7 @@ void Chunk::CreateSphere(const glm::vec4* colors)
 
 void Chunk::GenerateTerrain()
 {
+	OPTICK_EVENT();
 	m_IsGenerating = true;
 
 	//std::mutex mutex;
@@ -417,6 +420,7 @@ void Chunk::GetDataNetThreaded(ChunkAction::Priority priority, ChunkAction* next
 
 json Chunk::Serialize()
 {
+	OPTICK_EVENT();
 	json message;
 	message["Type"] = "ChunkData";
 	message["Data"]["Position"]["X"] = m_Position.x;
@@ -502,6 +506,7 @@ json Chunk::Serialize()
 
 json Chunk::Unserialize(const std::string& serialized)
 {
+	OPTICK_EVENT();
 	// Do run length encoding
 	// Example format: ${blockid} ${count},
 	// 'Repeat 0 5 times'

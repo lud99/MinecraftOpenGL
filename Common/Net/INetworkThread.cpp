@@ -1,6 +1,7 @@
 #include "INetworkThread.h"
 
 #include <iostream>
+#include <optick.h>
 
 #include <glm/vec2.hpp>
 
@@ -16,11 +17,12 @@ void INetworkThread::SetupThread()
 {
 	// Setup send thread
 	m_Thread = std::thread([this]() {
+		OPTICK_THREAD("NetworkThread");
 		while (true)
 		{
 			if (m_ShouldExit) break;
 
-			PullPackets();
+			//PullPackets();
 
 			std::vector<NetworkPacket> queue = m_SendQueue; // Make a local copy
 
@@ -28,12 +30,12 @@ void INetworkThread::SetupThread()
 			for (size_t i = 0; i < queue.size(); i++)
 			{
 				NetworkPacket& entry = queue[i];
-				ENetPacket* packet = enet_packet_create(entry.data.c_str(), entry.data.length() + 1, ENET_PACKET_FLAG_RELIABLE);
-				enet_peer_send(entry.client->m_Peer, 0, packet);
+				//ENetPacket* packet = enet_packet_create(entry.data.c_str(), entry.data.length() + 1, ENET_PACKET_FLAG_RELIABLE);
+				//enet_peer_send(entry.client->m_Peer, 0, packet);
 				m_SendingOnChannel++;
 				if (m_SendingOnChannel >= ENET_PROTOCOL_MAXIMUM_CHANNEL_COUNT) m_SendingOnChannel = 0;
 
-				std::cout << "Sent\n";
+				//std::cout << "Sent\n";
 			}
 
 			// Reset queue
@@ -44,28 +46,34 @@ void INetworkThread::SetupThread()
 	});
 }
 
-void INetworkThread::SendJson(json& message, NetworkClient* conn)
+void INetworkThread::SendJson(json& message, NetworkClient* client)
 {
-	std::cout << "Sending message " << message["Type"] << "... ";
+	std::string s = message["Type"];
+	std::cout << "Sending message " + s + std::string("... ");
 	std::string stringified = message.dump();
 
-	SendString(stringified, conn);
+	SendString(stringified, client);
 }
 
-void INetworkThread::SendString(const std::string& data, NetworkClient* conn)
+void INetworkThread::SendString(const std::string& data, NetworkClient* client)
 {
-	m_QueueLock.lock();
+	OPTICK_EVENT();
+//	m_QueueLock.lock();
+	ENetPacket* packet = enet_packet_create(data.c_str(), data.length() + 1, ENET_PACKET_FLAG_RELIABLE);
+	enet_peer_send(client->m_Peer, 0, packet);
+	std::cout << "Sent\n";
 	//std::cout << "Sending message " << data << "\n";
-	m_SendQueue.emplace_back(data, conn);
-	m_QueueLock.unlock();
+	//m_SendQueue.emplace_back(data, conn);
+	//m_QueueLock.unlock();
 }
 
 ENetPacket* INetworkThread::PullPackets()
 {
+	OPTICK_EVENT();
 	ENetEvent event;
 
 	// The incoming messages are handled by this function. Needs to be called regularly. A 0 timeout means that it's non-blocking
-	int eventStatus = enet_host_service(m_EnetClient, &event, 100);
+	int eventStatus = enet_host_service(m_EnetClient, &event, 0);
 
 	if (eventStatus > 0)
 	{

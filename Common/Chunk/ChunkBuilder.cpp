@@ -2,6 +2,7 @@
 
 #include <shared_mutex>
 #include <queue>
+#include <optick.h>
 
 #include "Chunk.h"
 #ifndef SERVER_BUILD
@@ -37,6 +38,7 @@ ChunkBuilder& ChunkBuilder::Get()
 
 void ChunkBuilder::ProcessQueue()
 {
+	OPTICK_EVENT();
 	// Check for chunks that have finished processing in the threadpool
 	for (unsigned int i = 0; i < m_ProcessedChunks.size(); i++)
 	{

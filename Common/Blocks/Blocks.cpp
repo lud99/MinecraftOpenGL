@@ -107,8 +107,9 @@ void BlockTypes::CreateBlocks()
 
 BlockType BlockTypes::Blocks[BlockIds::Count];
 
-Block::Block(Chunk* chunk, ChunkBlock* chunkBlock)
+Block::Block(IWorld* world, Chunk* chunk, ChunkBlock* chunkBlock)
 {
+	m_World = world;
 	m_Chunk = chunk;
 	m_ChunkBlock = chunkBlock;
 
@@ -131,6 +132,7 @@ void Block::Break()
 	glm::ivec2 chunkPosition = m_Chunk->GetPosition();
 	std::vector<Chunk*> adjacentChunks;
 
+	// TODO: check for null
 	// Logic to get the chunk at edge depending on the block position
 	if (m_Position.x == 0)
 		adjacentChunks.push_back(m_World->GetChunkAt(chunkPosition + glm::ivec2(-1, 0)));

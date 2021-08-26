@@ -1,5 +1,6 @@
 #include "ClientNetworkThread.h"
 
+#include <optick.h>
 #include "../World/ClientWorld.h"
 #include "../World/Chunk/ChunkMesh.h"
 #include "../World/Player/ClientPlayer.h"
@@ -76,6 +77,8 @@ bool ClientNetworkThread::Connect(const std::string& adress, int port)
 
 void ClientNetworkThread::HandlePacket(json& packet, NetworkClient* me)
 {
+	OPTICK_EVENT();
+
 	me = m_ThisClient;
 	if (packet["Type"] == "JoinWorld")
 	{
@@ -93,6 +96,8 @@ void ClientNetworkThread::HandlePacket(json& packet, NetworkClient* me)
 
 void ClientNetworkThread::OnJoinWorld(json& packet, NetworkClient* me)
 {
+	OPTICK_EVENT();
+
 	if (me->m_HasJoinedSession)
 	{
 		std::cout << "Client joining world, but is already in session: " << me->m_SessionName << "\n";
@@ -134,6 +139,8 @@ void ClientNetworkThread::OnJoinWorld(json& packet, NetworkClient* me)
 
 void ClientNetworkThread::OnChunkData(json& packet, NetworkClient* conn)
 {
+	OPTICK_EVENT();
+
 	glm::ivec2 pos(packet["Data"]["Position"]["X"], packet["Data"]["Position"]["Z"]);
 
 	ClientWorld* world = GetThisWorld();

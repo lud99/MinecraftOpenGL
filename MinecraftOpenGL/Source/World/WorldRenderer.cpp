@@ -1,6 +1,7 @@
 #include "WorldRenderer.h"
 
 #include <map>
+#include <optick.h>
 
 #include "Player/ClientPlayer.h"
 #include "ClientWorld.h"
@@ -30,6 +31,8 @@ void WorldRenderer::Init()
 
 void WorldRenderer::Render()
 {
+	OPTICK_EVENT();
+	
 	auto start = std::chrono::high_resolution_clock::now();
 
 	// Update the view matrix

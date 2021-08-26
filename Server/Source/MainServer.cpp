@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <enet/enet.h>
 #include <iostream>
+#include <optick.h>
 
 #include <Common/json.hpp>
 
@@ -22,6 +23,10 @@ int main(int argc, char** argv)
 
 	while (true)
 	{
+		//OPTICK_FRAME("MainThread");
+		
+		net.PullPackets();
+
 		// Iterate through all sessions and update the worlds
 		for (auto& entry : net.m_Sessions)
 		{

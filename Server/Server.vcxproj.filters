@@ -39,9 +39,6 @@
     <ClCompile Include="Source\Common\Common\Net\INetworkThread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\Common\Net\NetworkConnection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Common\Common\Net\NetworkMessages.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -81,6 +78,9 @@
     <ClCompile Include="Source\World\ServerWorld.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Common\Common\Net\NetworkClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Common\Common\Blocks\BlockIds.h">
@@ -108,9 +108,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Common\Common\Net\INetworkThread.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Common\Common\Net\NetworkConnection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Common\Common\Net\NetworkConstants.h">
@@ -159,6 +156,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\World\ServerWorld.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Common\Common\Net\NetworkClient.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

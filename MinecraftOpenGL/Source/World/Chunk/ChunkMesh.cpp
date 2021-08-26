@@ -3,6 +3,7 @@
 #include <iostream>
 #include <algorithm>
 #include <thread>
+#include <optick.h>
 
 #include <Common/World/IWorld.h>
 
@@ -21,6 +22,7 @@ ChunkMesh::ChunkMesh()
 
 void ChunkMesh::RebuildMesh()
 {
+	OPTICK_EVENT();
 	//SetDirty(true);
 	m_Chunk->m_IsRebuilding = true;
 
