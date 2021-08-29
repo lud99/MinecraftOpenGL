@@ -255,6 +255,8 @@ Chunk* IWorld::CreateEmptyChunk(glm::ivec2 position, IWorld* world)
 
 Chunk* IWorld::CreateChunk(glm::ivec2 position, IWorld* world)
 {
+	OPTICK_EVENT();
+
 	std::lock_guard<std::recursive_mutex> lk(m_ChunkMutex);
 
 	Chunk* chunk = new Chunk(position, world);

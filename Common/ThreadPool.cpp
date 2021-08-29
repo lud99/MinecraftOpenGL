@@ -56,6 +56,7 @@ ThreadPool::~ThreadPool()
 
 void ThreadPool::QueueWork(ChunkAction action)
 {
+	OPTICK_EVENT();
 	// Grab the mutex
 	std::lock_guard<std::mutex> g(m_WorkQueueMutex); // Auto releases when going out of scope
 
