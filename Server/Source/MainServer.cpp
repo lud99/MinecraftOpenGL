@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 	{
 		//OPTICK_FRAME("MainThread");
 		
-		net.PullPackets();
+		//net.PullPackets();
 
 		// Iterate through all sessions and update the worlds
 		for (auto& entry : net.m_Sessions)

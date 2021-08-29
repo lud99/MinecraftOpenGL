@@ -18,11 +18,17 @@ void INetworkThread::SetupThread()
 	// Setup send thread
 	m_Thread = std::thread([this]() {
 		OPTICK_THREAD("NetworkThread");
+
+		// Lower means packets are send and recieved more often, but will take up bandwidth and (maybe result in packet loss)
+		int netRefreshRateMs = 1000/60; // 60fps
+
 		while (true)
 		{
 			if (m_ShouldExit) break;
 
-			//PullPackets();
+			std::this_thread::sleep_for(std::chrono::milliseconds(netRefreshRateMs));
+
+			PullPackets();
 
 			std::vector<NetworkPacket> queue = m_SendQueue; // Make a local copy
 

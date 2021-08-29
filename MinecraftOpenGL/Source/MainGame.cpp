@@ -198,7 +198,7 @@ int main()
 
 		prevTime = Time::ElapsedTime;
 
-		net.PullPackets();
+		//net.PullPackets();
 
 		if (localWorld)
 		{

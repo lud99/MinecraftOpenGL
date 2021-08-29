@@ -438,4 +438,4 @@ IWorld::~IWorld()
 }
 
 
-int Settings::RenderDistance = 2;
+int Settings::RenderDistance = 16;
