@@ -84,6 +84,10 @@ void ClientNetworkThread::HandlePacket(json& packet, NetworkClient* me)
 	{
 		OnJoinWorld(packet, me);
 	}
+	else if (packet["Type"] == "PlayerPosition")
+	{
+		OnPlayerPosition(packet, me);
+	}
 	else if (packet["Type"] == "ChunkData")
 	{
 		OnChunkData(packet, me);
@@ -135,6 +139,19 @@ void ClientNetworkThread::OnJoinWorld(json& packet, NetworkClient* me)
 
 	std::cout << "Me (" << me->m_Id << ") joined world " << sessionName << ". ";
 	std::cout << session.m_World->GetPlayers().size() << " players are connected\n";
+}
+
+void ClientNetworkThread::OnPlayerPosition(json& packet, NetworkClient* me)
+{
+	int clientId = packet["Data"]["ClientId"];
+	glm::vec3 position(packet["Data"]["X"], packet["Data"]["Y"], packet["Data"]["Z"]);
+
+	ClientWorld* world = GetThisWorld();
+	IPlayer* player = world->GetPlayer(clientId);
+
+	assert(player);
+
+	player->m_Position = position;
 }
 
 void ClientNetworkThread::OnChunkData(json& packet, NetworkClient* conn)

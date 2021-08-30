@@ -8,6 +8,7 @@
 #include <enet/enet.h>
 #include "NetworkConstants.h"
 #include <Common/ThreadPool.h>
+#include <Common/Player/IPlayer.h>
 
 INetworkThread::INetworkThread()
 {
@@ -55,7 +56,7 @@ void INetworkThread::SetupThread()
 void INetworkThread::SendJson(json& message, NetworkClient* client)
 {
 	std::string s = message["Type"];
-	std::cout << "Sending message " + s + std::string("... ");
+	std::cout << "Sending message " + s + + " to client " + std::to_string(client->m_Id) + std::string("... ");
 	std::string stringified = message.dump();
 
 	SendString(stringified, client);
@@ -71,6 +72,29 @@ void INetworkThread::SendString(const std::string& data, NetworkClient* client)
 	//std::cout << "Sending message " << data << "\n";
 	//m_SendQueue.emplace_back(data, conn);
 	//m_QueueLock.unlock();
+}
+
+void INetworkThread::Broadcast(json& packet, const std::string& sessionName, int clientToExclude)
+{
+	if (m_Sessions.count(sessionName) == 0)
+	{
+		std::cout << "Broadcasting to session " + sessionName + " that doesn't exist\n";
+		return;
+	}
+
+	PlayersMap players = m_Sessions[sessionName].m_World->GetPlayers();
+	for (auto& entry : players)
+	{
+		IPlayer* player = entry.second;
+		if (!player) continue;
+
+		// Exclude the player that for example sent the original message
+		if (player->m_NetClient->m_Id == clientToExclude)
+			continue;
+
+		// Send to this client
+		SendJson(packet, player->m_NetClient);
+	}
 }
 
 ENetPacket* INetworkThread::PullPackets()

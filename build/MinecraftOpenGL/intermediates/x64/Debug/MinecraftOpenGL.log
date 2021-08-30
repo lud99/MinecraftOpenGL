@@ -1,3 +1,28 @@
-﻿  ThreadPool.cpp
+﻿  INetworkThread.cpp
+  NetworkClient.cpp
+  NetworkSession.cpp
+  IPlayer.cpp
+  ThreadPool.cpp
+  Time.h
+  IWorld.cpp
+  MainGame.cpp
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\functional(13,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\Common\Common\World\IWorld.cpp)
+D:\Spel\Programming\C++\MinecraftOpenGL\Dependencies\glm\glm\gtx\hash.hpp(23,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\Common\Common\World\IWorld.cpp)
+  ClientNetworkThread.cpp
+D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\Common\Common\World\IWorld.h(6,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\Common\Common\World\IWorld.cpp)
+D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\Common\Common\World\IWorld.cpp(1,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
 D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\Common\Common\ThreadPool.cpp(171,41): warning C4267: '+=': conversion from 'size_t' to 'int', possible loss of data
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition (compiling source file Source\MainGame.cpp)
+D:\Spel\Programming\C++\MinecraftOpenGL\Dependencies\glfw-3.3.2.Win64\include\GLFW\glfw3.h(123): message : see previous definition of 'APIENTRY' (compiling source file Source\MainGame.cpp)
+  ClientWorld.cpp
+  ClientPlayer.cpp
+D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\MainGame.cpp(196,34): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\MainGame.cpp(197,39): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\functional(13,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\World\ClientWorld.cpp)
+D:\Spel\Programming\C++\MinecraftOpenGL\Dependencies\glm\glm\gtx\hash.hpp(23,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\World\ClientWorld.cpp)
+D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\World\ClientWorld.h(6,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\World\ClientWorld.cpp)
+D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\World\ClientWorld.cpp(1,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
+LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'D:\Spel\Programming\C++\MinecraftOpenGL\build\MinecraftOpenGL\x64\Debug\vc120.pdb'; linking object as if no debug info
   MinecraftOpenGL.vcxproj -> D:\Spel\Programming\C++\MinecraftOpenGL\build\MinecraftOpenGL\x64\Debug\MinecraftOpenGL.exe

@@ -15,6 +15,8 @@ public:
 	void SendJson(json& message);
 	void SendString(const std::string& data);
 
+	void Broadcast(json& packet);
+
 	~NetworkClient();
 
 public:

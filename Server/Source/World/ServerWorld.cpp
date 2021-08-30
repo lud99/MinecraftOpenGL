@@ -48,7 +48,7 @@ void ServerWorld::OnTickUpdate()
 
 void ServerWorld::HandleCreatingNewChunks()
 {
-	// TODO: m_ViewedByPlayers, remember to remove player when removing chunk
+	// TODO: m_ViewedByPlayers, remember to remove when player unloads it
 	using namespace Settings;
 
 	for (auto& entry : m_Players)

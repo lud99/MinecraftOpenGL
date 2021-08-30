@@ -115,4 +115,10 @@ void ServerNetworkThread::OnClientPositionUpdate(json& packet, NetworkClient* cl
 	glm::vec3 newPosition(packet["Data"]["X"], packet["Data"]["Y"], packet["Data"]["Z"]);
 
 	player->m_Position = newPosition;
+
+	// Broadcast the position update to the other players
+	json packetToBroadcast;
+	packetToBroadcast = packet;
+	packetToBroadcast["Data"]["ClientId"] = client->m_Id;
+	Broadcast(packetToBroadcast, client->m_SessionName);
 }

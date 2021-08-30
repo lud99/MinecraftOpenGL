@@ -23,6 +23,8 @@ public:
 	void SendJson(json& message, NetworkClient* client);
 	void SendString(const std::string& data, NetworkClient* client);
 
+	void Broadcast(json& packet, const std::string& sessionName, int clientToExclude = -1);
+
 	ENetPacket* PullPackets();
 	virtual void HandlePacket(json& packet, NetworkClient* client) = 0;
 

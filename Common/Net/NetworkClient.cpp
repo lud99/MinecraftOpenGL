@@ -32,6 +32,11 @@ void NetworkClient::SendString(const std::string& data)
 	NetworkThread::Get().SendString(data, this);
 }
 
+void NetworkClient::Broadcast(json& packet)
+{
+	NetworkThread::Get().Broadcast(packet, m_SessionName);
+}
+
 NetworkClient::~NetworkClient()
 {
 
