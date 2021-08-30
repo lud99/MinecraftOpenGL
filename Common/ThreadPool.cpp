@@ -9,6 +9,7 @@
 #include <Common/Chunk/Chunk.h>
 #include <Common/Chunk/ChunkBlock.h>
 #include <Common/Chunk/ChunkBuilder.h>
+#include <Common/Player/IPlayer.h>
 
 #ifndef SERVER_BUILD
 #include "../../World/Chunk/ChunkMesh.h"
@@ -297,11 +298,47 @@ void ThreadPool::DoWork()
 		case ChunkAction::ActionType::SendChunk:
 		{
 #ifdef SERVER_BUILD
-			NetworkClient* client = (NetworkClient*)action.extraData;
+			//using namespace Settings;
 
+			//// Find all the players who can see the chunk that should be sent
+			//IWorld* world = (IWorld*)action.extraData;
+			//for (auto& entry : world->GetPlayers())
+			//{
+			//	IPlayer* player = (IPlayer*)entry.second;
+
+			//		if (!player) continue;
+			//	if (!player->m_NetClient->m_HasJoinedSession) continue;
+
+			//	glm::ivec3 playerPosition = glm::floor(player->m_Position);
+
+			//	// Check all the chunks in a box around the player. Create new ones when necessary
+			//	for (int x = playerPosition.x - RenderDistance * Chunk::Width; x < playerPosition.x + RenderDistance * Chunk::Width; x += Chunk::Width)
+			//	{
+			//		for (int z = playerPosition.z - RenderDistance * Chunk::Depth; z < playerPosition.z + RenderDistance * Chunk::Depth; z += Chunk::Depth)
+			//		{
+			//			glm::ivec2 chunkPos = Utils::WorldPositionToChunkPosition(glm::vec3(x, 0, z) + 8.0f);
+			//			Chunk* chunk = world->GetChunkAt(chunkPos);
+
+			//			// The chunk to send is inside the player render distance
+			//			if (chunk != nullptr && chunk == action.chunk)
+			//			{
+			//				// Send to the player
+			//				json serialized = action.chunk->Serialize();
+
+			//				player->m_NetClient->SendJson(serialized);
+			//			}
+			//		}
+			//	}
+			//}
+
+			// Send to the player
+			IPlayer* player = (IPlayer*)action.extraData;
 			json serialized = action.chunk->Serialize();
 
-			client->SendJson(serialized);
+			player->m_NetClient->SendJson(serialized);
+
+#else
+			abort();
 #endif
 			break;
 		}

@@ -36,8 +36,8 @@ public:
 public:
 	ENetHost* m_EnetClient = nullptr;
 
-	std::string m_Adress;
-	int m_Port;
+	std::string m_Adress = "";
+	int m_Port = 0;
 
 	int m_SendingOnChannel = 0;
 

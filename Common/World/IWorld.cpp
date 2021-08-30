@@ -95,153 +95,153 @@ void IWorld::CommonOnTickUpdate()
 
 void IWorld::HandleCreatingNewChunks()
 {
-	OPTICK_EVENT();
-	using namespace Settings;
+	//OPTICK_EVENT();
+	//using namespace Settings;
 
-	IPlayer* player = GetPlayer(0);
-	if (!player) return;
+	//IPlayer* player = GetPlayer(0);
+	//if (!player) return;
 
-	glm::ivec3 position = glm::floor(player->m_Position);
+	//glm::ivec3 position = glm::floor(player->m_Position);
 
-	// Check all the chunks in a box around the player
-	for (int x = position.x - RenderDistance * Chunk::Width; x < position.x + RenderDistance * Chunk::Width; x += Chunk::Width)
-	{
-		for (int z = position.z - RenderDistance * Chunk::Depth; z < position.z + RenderDistance * Chunk::Depth; z += Chunk::Depth)
-		{
-			glm::ivec2 chunkPos = Utils::WorldPositionToChunkPosition(glm::vec3(x, 0, z) + 8.0f);
-			Chunk* chunk = GetChunkAt(chunkPos);
+	//// Check all the chunks in a box around the player
+	//for (int x = position.x - RenderDistance * Chunk::Width; x < position.x + RenderDistance * Chunk::Width; x += Chunk::Width)
+	//{
+	//	for (int z = position.z - RenderDistance * Chunk::Depth; z < position.z + RenderDistance * Chunk::Depth; z += Chunk::Depth)
+	//	{
+	//		glm::ivec2 chunkPos = Utils::WorldPositionToChunkPosition(glm::vec3(x, 0, z) + 8.0f);
+	//		Chunk* chunk = GetChunkAt(chunkPos);
 
-			//ChunkAction* nextAction = new ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk, ChunkAction::Priority::Low);
+	//		//ChunkAction* nextAction = new ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk, ChunkAction::Priority::Low);
 
-			// Create the chunk here if a chunk at this position doesn't exist
-			if (!chunk) {
-				//chunk = (chunkPos);//GenerateNewChunkThreaded(chunkPos);
-				//std::cout << "newchunk\n";
-			}
-		}
-	}
+	//		// Create the chunk here if a chunk at this position doesn't exist
+	//		if (!chunk) {
+	//			//chunk = (chunkPos);//GenerateNewChunkThreaded(chunkPos);
+	//			//std::cout << "newchunk\n";
+	//		}
+	//	}
+	//}
 
-	// Generate the terrain
-	for (int x = position.x - RenderDistance * Chunk::Width; x < position.x + RenderDistance * Chunk::Width; x += Chunk::Width)
-	{
-		for (int z = position.z - RenderDistance * Chunk::Depth; z < position.z + RenderDistance * Chunk::Depth; z += Chunk::Depth)
-		{
-			glm::ivec2 chunkPos = Utils::WorldPositionToChunkPosition(glm::vec3(x, 0, z) + 8.0f);
+	//// Generate the terrain
+	//for (int x = position.x - RenderDistance * Chunk::Width; x < position.x + RenderDistance * Chunk::Width; x += Chunk::Width)
+	//{
+	//	for (int z = position.z - RenderDistance * Chunk::Depth; z < position.z + RenderDistance * Chunk::Depth; z += Chunk::Depth)
+	//	{
+	//		glm::ivec2 chunkPos = Utils::WorldPositionToChunkPosition(glm::vec3(x, 0, z) + 8.0f);
 
-			Chunk* chunk = GetChunkAt(chunkPos);
-			if (!chunk)
-				continue;
+	//		Chunk* chunk = GetChunkAt(chunkPos);
+	//		if (!chunk)
+	//			continue;
 
-			AdjacentChunks adjacentChunks = chunk->GetAdjacentChunks();
+	//		AdjacentChunks adjacentChunks = chunk->GetAdjacentChunks();
 
-			// Rebuild the chunk if changes has occured and it's not already rebuilding. For example if a block has been broken
-			if (chunk->m_IsInitialized && chunk->IsDirty() && !chunk->m_IsRebuilding)
-			{
-				//chunk->RebuildMeshThreaded(ChunkAction::Priority::VeryHigh);
-				std::cout << "rebuild\n";
-				//m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk, ChunkAction::Priority::Low));
+	//		// Rebuild the chunk if changes has occured and it's not already rebuilding. For example if a block has been broken
+	//		if (chunk->m_IsInitialized && chunk->IsDirty() && !chunk->m_IsRebuilding)
+	//		{
+	//			//chunk->RebuildMeshThreaded(ChunkAction::Priority::VeryHigh);
+	//			std::cout << "rebuild\n";
+	//			//m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk, ChunkAction::Priority::Low));
 
-				//if (adjacentChunks.West)// && (!westChunkEast || !westChunkEast->m_HasGenerated))
-				//	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, adjacentChunks.West, ChunkAction::Priority::Low));
-				//if (adjacentChunks.East)// && (!eastChunkWest || !eastChunkWest->m_HasGenerated))
-				//	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, adjacentChunks.East, ChunkAction::Priority::Low));
-				//if (adjacentChunks.North)// && (!northChunkSouth || !northChunkSouth->m_HasGenerated))
-				//	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, adjacentChunks.North, ChunkAction::Priority::Low));
-				//if (adjacentChunks.South)//&& (!southChunkNorth || !southChunkNorth->m_HasGenerated))
-				//	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, adjacentChunks.South, ChunkAction::Priority::Low));
+	//			//if (adjacentChunks.West)// && (!westChunkEast || !westChunkEast->m_HasGenerated))
+	//			//	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, adjacentChunks.West, ChunkAction::Priority::Low));
+	//			//if (adjacentChunks.East)// && (!eastChunkWest || !eastChunkWest->m_HasGenerated))
+	//			//	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, adjacentChunks.East, ChunkAction::Priority::Low));
+	//			//if (adjacentChunks.North)// && (!northChunkSouth || !northChunkSouth->m_HasGenerated))
+	//			//	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, adjacentChunks.North, ChunkAction::Priority::Low));
+	//			//if (adjacentChunks.South)//&& (!southChunkNorth || !southChunkNorth->m_HasGenerated))
+	//			//	World::m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::Rebuild, adjacentChunks.South, ChunkAction::Priority::Low));
 
-				/*if (adjacentChunks.South && !adjacentChunks.South->m_AdjacentChunksWhenLastRebuilt.North)
-					adjacentChunks.South->SetDirty(true);
-				if (adjacentChunks.North && !adjacentChunks.North->m_AdjacentChunksWhenLastRebuilt.South)
-					adjacentChunks.North->SetDirty(true);
-				if (adjacentChunks.West && !adjacentChunks.West->m_AdjacentChunksWhenLastRebuilt.East)
-					adjacentChunks.West->SetDirty(true);
-				if (adjacentChunks.East && !adjacentChunks.East->m_AdjacentChunksWhenLastRebuilt.West)
-					adjacentChunks.East->SetDirty(true);*/
-			}
+	//			/*if (adjacentChunks.South && !adjacentChunks.South->m_AdjacentChunksWhenLastRebuilt.North)
+	//				adjacentChunks.South->SetDirty(true);
+	//			if (adjacentChunks.North && !adjacentChunks.North->m_AdjacentChunksWhenLastRebuilt.South)
+	//				adjacentChunks.North->SetDirty(true);
+	//			if (adjacentChunks.West && !adjacentChunks.West->m_AdjacentChunksWhenLastRebuilt.East)
+	//				adjacentChunks.West->SetDirty(true);
+	//			if (adjacentChunks.East && !adjacentChunks.East->m_AdjacentChunksWhenLastRebuilt.West)
+	//				adjacentChunks.East->SetDirty(true);*/
+	//		}
 
-			/*if (!chunk->m_IsInitialized) // Only generate if the chunk exists and has been initalized properly
-				continue;
+	//		/*if (!chunk->m_IsInitialized) // Only generate if the chunk exists and has been initalized properly
+	//			continue;
 
-			if (chunk->m_HasGenerated || chunk->m_IsGenerating) // Don't generate the terrain twice
-				continue;
+	//		if (chunk->m_HasGenerated || chunk->m_IsGenerating) // Don't generate the terrain twice
+	//			continue;
 
-			AdjacentChunks adjacentChunks = chunk->GetAdjacentChunks();
-			if (adjacentChunks.West && !adjacentChunks.West->m_IsInitialized)
-				continue;
-			if (adjacentChunks.North && !adjacentChunks.North->m_IsInitialized)
-				continue;
-			if (adjacentChunks.East && !adjacentChunks.East->m_IsInitialized)
-				continue;
-			if (adjacentChunks.South && !adjacentChunks.South->m_IsInitialized)
-				continue;
+	//		AdjacentChunks adjacentChunks = chunk->GetAdjacentChunks();
+	//		if (adjacentChunks.West && !adjacentChunks.West->m_IsInitialized)
+	//			continue;
+	//		if (adjacentChunks.North && !adjacentChunks.North->m_IsInitialized)
+	//			continue;
+	//		if (adjacentChunks.East && !adjacentChunks.East->m_IsInitialized)
+	//			continue;
+	//		if (adjacentChunks.South && !adjacentChunks.South->m_IsInitialized)
+	//			continue;
 
-			std::cout << "Generate: " << chunkPos.x << "; " << chunkPos.y << "\n";*/
+	//		std::cout << "Generate: " << chunkPos.x << "; " << chunkPos.y << "\n";*/
 
-			// Add a action to be run after the generation is completed, which is to rebuild the adjacent chunks
-			//ChunkAction* nextAction = new ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk);
-			//nextAction->type = ChunkAction::ActionType::Rebuild;// RebuildAdjacentChunks;
-			//nextAction->chunk = chunk;
-			//nextAction->SetTimestamp();
-			//m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk, ChunkAction::Priority::Low));
+	//		// Add a action to be run after the generation is completed, which is to rebuild the adjacent chunks
+	//		//ChunkAction* nextAction = new ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk);
+	//		//nextAction->type = ChunkAction::ActionType::Rebuild;// RebuildAdjacentChunks;
+	//		//nextAction->chunk = chunk;
+	//		//nextAction->SetTimestamp();
+	//		//m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk, ChunkAction::Priority::Low));
 
-			//chunk->GenerateTerrainThreaded(nextAction);*/
-		}
-	}
+	//		//chunk->GenerateTerrainThreaded(nextAction);*/
+	//	}
+	//}
 }
 
 void IWorld::UnloadChunksOutsideRenderDistance()
 {
-	OPTICK_EVENT();
-	using namespace Settings;
+	//OPTICK_EVENT();
+	//using namespace Settings;
 
-	IPlayer* player = GetPlayer(0);
-	if (!player) return;
+	////IPlayer* player = GetPlayer(0);
+	////if (!player) return;
 
-	// Iterate through all chunks
-	for (auto& entry : m_Chunks)
-	{
-		Chunk* chunk = entry.second;
+	//// Iterate through all chunks
+	//for (auto& entry : m_Chunks)
+	//{
+	//	Chunk* chunk = entry.second;
 
-		glm::vec2 pos = Utils::WorldPositionToChunkPosition(player->m_Position + 8.0f);
+	//	glm::vec2 pos = Utils::WorldPositionToChunkPosition(player->m_Position + 8.0f);
 
-		float left = pos.x - RenderDistance - 1;
-		float right = pos.x + RenderDistance;
-		float top = pos.y - RenderDistance - 1;
-		float bottom = pos.y + RenderDistance;
+	//	float left = pos.x - RenderDistance - 1;
+	//	float right = pos.x + RenderDistance;
+	//	float top = pos.y - RenderDistance - 1;
+	//	float bottom = pos.y + RenderDistance;
 
-		glm::vec2 chunkPosition = chunk->GetPosition();
+	//	glm::vec2 chunkPosition = chunk->GetPosition();
 
-		if (chunkPosition.x > left && chunkPosition.x < right && chunkPosition.y > top && chunkPosition.y < bottom)
-		{
+	//	if (chunkPosition.x > left && chunkPosition.x < right && chunkPosition.y > top && chunkPosition.y < bottom)
+	//	{
 
-		}
-		else
-		{
-			//chunk->m_ShouldBeRemoved = true;
-			//std::cout << "removing chunk " << chunkPosition.x << ", " << chunkPosition.y << "\n";
-			//World::RemoveChunk(chunk);
-		}
+	//	}
+	//	else
+	//	{
+	//		//chunk->m_ShouldBeRemoved = true;
+	//		//std::cout << "removing chunk " << chunkPosition.x << ", " << chunkPosition.y << "\n";
+	//		//World::RemoveChunk(chunk);
+	//	}
 
-		// Check all the chunks in a box around the player
-		/*for (int x = m_Position.x - renderDistance * Chunk::Width; x < m_Position.x + renderDistance * Chunk::Width; x += Chunk::Width)
-		{
-			for (int z = m_Position.z - renderDistance * Chunk::Depth; z < m_Position.z + renderDistance * Chunk::Depth; z += Chunk::Depth)
-			{
-				glm::ivec2 chunkPosition = Utils::WorldPositionToChunkPosition(glm::vec3(x, 0, z) + 8.0f);
-			}
-		}
+	//	// Check all the chunks in a box around the player
+	//	/*for (int x = m_Position.x - renderDistance * Chunk::Width; x < m_Position.x + renderDistance * Chunk::Width; x += Chunk::Width)
+	//	{
+	//		for (int z = m_Position.z - renderDistance * Chunk::Depth; z < m_Position.z + renderDistance * Chunk::Depth; z += Chunk::Depth)
+	//		{
+	//			glm::ivec2 chunkPosition = Utils::WorldPositionToChunkPosition(glm::vec3(x, 0, z) + 8.0f);
+	//		}
+	//	}
 
-		glm::ivec2 chunkPosition = chunk->GetWorldPosition() + Chunk::Width / 2;
+	//	glm::ivec2 chunkPosition = chunk->GetWorldPosition() + Chunk::Width / 2;
 
-		glm::ivec2 delta = chunkPosition - glm::ivec2(m_Position.x, m_Position.z);
-		int distanceToChunk = std::abs(delta.x) + std::abs(delta.y);
+	//	glm::ivec2 delta = chunkPosition - glm::ivec2(m_Position.x, m_Position.z);
+	//	int distanceToChunk = std::abs(delta.x) + std::abs(delta.y);
 
-		if (distanceToChunk > renderDistance * 2 * Chunk::Width)
-		{
-			World::RemoveChunk(chunk);
-		}*/
-	}
+	//	if (distanceToChunk > renderDistance * 2 * Chunk::Width)
+	//	{
+	//		World::RemoveChunk(chunk);
+	//	}*/
+	//}
 }
 
 Chunk* IWorld::CreateEmptyChunk(glm::ivec2 position, IWorld* world)
@@ -438,4 +438,4 @@ IWorld::~IWorld()
 }
 
 
-int Settings::RenderDistance = 16;
+int Settings::RenderDistance = 2;

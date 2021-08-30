@@ -9,10 +9,12 @@
 #include <mutex>
 #include <unordered_map>
 #include <vector>
+#include <set>
 
 #include <Common/json.hpp>
 
 #include <Common/ThreadPool.h>
+#include <set>
 
 class IWorld;
 class ChunkBlock;
@@ -52,8 +54,6 @@ public:
 
 	void Fill(const glm::vec4* colors);
 	void CreateSphere(const glm::vec4* colors);
-
-	void Render();
 
 	void SetBlockAt(glm::ivec3 position, ChunkBlock* newBlock);
 	void SetBlockAt(glm::vec3 position, ChunkBlock* newBlock);
@@ -95,6 +95,8 @@ public:
 	ChunkBlock* m_Blocks;
 	BlockEntitiesMap m_BlockEntities;
 	std::vector<DroppedItem*> m_DroppedItems;
+
+	std::set<int> m_ViewedByPlayers;
 
 	uint8_t m_HeightMap[Width][Depth];
 

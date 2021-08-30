@@ -164,7 +164,6 @@ void ClientPlayer::OnTickUpdate()
 	{
 		json msg;
 		msg["Type"] = "PlayerPosition";
-		msg["Data"]["ClientId"] = m_NetClient->m_Id;
 		msg["Data"]["X"] = m_Position.x;
 		msg["Data"]["Y"] = m_Position.y;
 		msg["Data"]["Z"] = m_Position.z;

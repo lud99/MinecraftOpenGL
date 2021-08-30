@@ -97,6 +97,7 @@ ENetPacket* INetworkThread::PullPackets()
 
 			NetworkClient* conn = (NetworkClient*)event.peer->data;
 			if (!conn) conn = new NetworkClient(event.peer); // Create a default client
+			event.peer->data = (void*)conn;
 
 			HandlePacket(packet, conn);
 

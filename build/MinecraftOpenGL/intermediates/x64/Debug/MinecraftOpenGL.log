@@ -1,9 +1,3 @@
-﻿  ChunkBuilder.cpp
-  IPlayer.cpp
-  IWorld.cpp
-  ClientPlayer.cpp
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\functional(13,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\Common\Common\World\IWorld.cpp)
-D:\Spel\Programming\C++\MinecraftOpenGL\Dependencies\glm\glm\gtx\hash.hpp(23,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\Common\Common\World\IWorld.cpp)
-D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\Common\Common\World\IWorld.h(6,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\Common\Common\World\IWorld.cpp)
-D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\Common\Common\World\IWorld.cpp(1,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
+﻿  ThreadPool.cpp
+D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\Common\Common\ThreadPool.cpp(171,41): warning C4267: '+=': conversion from 'size_t' to 'int', possible loss of data
   MinecraftOpenGL.vcxproj -> D:\Spel\Programming\C++\MinecraftOpenGL\build\MinecraftOpenGL\x64\Debug\MinecraftOpenGL.exe

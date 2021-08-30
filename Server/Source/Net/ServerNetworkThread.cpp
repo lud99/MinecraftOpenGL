@@ -67,12 +67,14 @@ void ServerNetworkThread::OnClientJoinWorld(json& packet, NetworkClient* client)
 {
 	std::string sessionName = packet["Data"]["SessionName"];
 
-	// The data is null if it is the first time the client connected
-	if (!client->m_HasJoinedSession)
+	if (client->m_HasJoinedSession)
 	{
-		int clientId = 0;// rand() % 65535;
-		client->m_Id = clientId;
+		std::cout << "Error: Client " << client->m_Id << " has already joined another session\n";
+		return;
 	}
+
+	client->m_Id = rand() % 65535;
+	client->m_SessionName = sessionName;
 
 	// Create the session if it doesn't exist
 	if (m_Sessions.count(sessionName) == 0)
@@ -96,6 +98,8 @@ void ServerNetworkThread::OnClientJoinWorld(json& packet, NetworkClient* client)
 	std::cout << "Client " << client->m_Id << " joined world " << sessionName << ". ";
 	std::cout << session.m_World->GetPlayers().size() << " players are connected\n";
 
+	//// Serialize the existing chunks
+
 	// Send back a join packet
 	json responsePacket;
 	responsePacket["Type"] = "JoinWorld";
@@ -106,8 +110,7 @@ void ServerNetworkThread::OnClientJoinWorld(json& packet, NetworkClient* client)
 
 void ServerNetworkThread::OnClientPositionUpdate(json& packet, NetworkClient* client)
 {
-	int clientId = packet["Data"]["ClientId"];
-	ServerPlayer* player = (ServerPlayer*)m_Sessions["Minecraft"].m_World->GetPlayer(clientId);
+	ServerPlayer* player = (ServerPlayer*)m_Sessions[client->m_SessionName].m_World->GetPlayer(client->m_Id);
 
 	glm::vec3 newPosition(packet["Data"]["X"], packet["Data"]["Y"], packet["Data"]["Z"]);
 
