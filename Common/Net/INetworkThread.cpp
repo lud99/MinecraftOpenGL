@@ -56,7 +56,11 @@ void INetworkThread::SetupThread()
 void INetworkThread::SendJson(json& message, NetworkClient* client)
 {
 	std::string s = message["Type"];
-	std::cout << "Sending message " + s + + " to client " + std::to_string(client->m_Id) + std::string("... ");
+#ifdef SERVER_BUILD
+	std::cout << "Sending message " + s +" to client " + std::to_string(client->m_Id) + std::string("... ");
+#else
+	std::cout << "Sending message " + s + std::string("... ");
+#endif
 	std::string stringified = message.dump();
 
 	SendString(stringified, client);
@@ -119,11 +123,17 @@ ENetPacket* INetworkThread::PullPackets()
 
 			std::cout << "Recieved packet " << packet["Type"] << "\n";
 
+			// For the server, create a NetworkClient and attatch it to the enet peer, for easy access
+#ifdef SERVER_BUILD
 			NetworkClient* conn = (NetworkClient*)event.peer->data;
 			if (!conn) conn = new NetworkClient(event.peer); // Create a default client
 			event.peer->data = (void*)conn;
 
-			HandlePacket(packet, conn);
+			HandlePacket(packet, conn, event.peer);
+#else
+			// For the client, use the 'me' client member variable in the ClientNetworkThread
+			HandlePacket(packet, nullptr /* to use the 'me' client*/, event.peer);
+#endif
 
 			enet_packet_destroy(event.packet);
 			break;

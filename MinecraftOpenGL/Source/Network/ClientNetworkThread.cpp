@@ -56,7 +56,7 @@ bool ClientNetworkThread::Connect(const std::string& adress, int port)
 	if (enet_host_service(m_EnetClient, &event, 5000) > 0 && event.type == ENET_EVENT_TYPE_CONNECT)
 	{
 		std::cout << "Connection to " << m_Adress << " succeeded \n";
-		m_ThisClient = new NetworkClient(connection);
+		m_Me = new NetworkClient(connection);
 	}
 	else
 	{
@@ -75,22 +75,25 @@ bool ClientNetworkThread::Connect(const std::string& adress, int port)
 }
 
 
-void ClientNetworkThread::HandlePacket(json& packet, NetworkClient* me)
+void ClientNetworkThread::HandlePacket(json& packet, NetworkClient* me /* unused */, ENetPeer* peer)
 {
 	OPTICK_EVENT();
 
-	me = m_ThisClient;
 	if (packet["Type"] == "JoinWorld")
 	{
-		OnJoinWorld(packet, me);
+		OnJoinWorld(packet, m_Me, peer);
+	}
+	else if (packet["Type"] == "NewPlayer")
+	{
+		OnNewPlayerJoined(packet, m_Me, peer);
 	}
 	else if (packet["Type"] == "PlayerPosition")
 	{
-		OnPlayerPosition(packet, me);
+		OnPlayerPosition(packet, m_Me, peer);
 	}
 	else if (packet["Type"] == "ChunkData")
 	{
-		OnChunkData(packet, me);
+		OnChunkData(packet, m_Me, peer);
 	}
 	else
 	{
@@ -98,55 +101,58 @@ void ClientNetworkThread::HandlePacket(json& packet, NetworkClient* me)
 	}
 }
 
-void ClientNetworkThread::OnJoinWorld(json& packet, NetworkClient* me)
+void ClientNetworkThread::OnJoinWorld(json& packet, NetworkClient* me, ENetPeer* peer)
 {
 	OPTICK_EVENT();
 
-	if (me->m_HasJoinedSession)
-	{
-		std::cout << "Client joining world, but is already in session: " << me->m_SessionName << "\n";
-		return;
-	}
-
+	int clientId = packet["Data"]["ClientId"];
 	std::string sessionName = packet["Data"]["SessionName"];
-
-	me->m_Id = packet["Data"]["ClientId"];
-	me->m_SessionName = sessionName;
-
-	// Create the session if it doesn't exist
-	if (m_Sessions.count(sessionName) == 0)
-	{
-		m_Sessions[sessionName] = NetworkSession(sessionName);
-	}
-
-	NetworkSession& session = m_Sessions[sessionName];
+	NetworkSession& session = JoinSession(me, sessionName, clientId);
 
 	// Create the world
 	session.m_World = (IWorld*)new ClientWorld();
 
-	me->m_HasJoinedSession = true;
-
-	std::cout << "Joining session " << sessionName << "\n";
-
 	// Add a player
-	ClientPlayer* player = new ClientPlayer();
-	player->m_NetClient = me;
-	player->m_Id = me->m_Id;
-	player->m_World = session.m_World;
-	session.m_World->AddPlayer((IPlayer*)player);
+	ClientPlayer* player = CreatePlayer(me);
+	player->m_IsMe = true;
 
 	GetThisWorld()->m_LocalPlayer = player;
 
-	std::cout << "Me (" << me->m_Id << ") joined world " << sessionName << ". ";
-	std::cout << session.m_World->GetPlayers().size() << " players are connected\n";
+	// Add the other players in the world
+	std::vector<int> otherClientIds = packet["Data"]["OtherClients"];
+	for (unsigned int i = 0; i < otherClientIds.size(); i++)
+	{
+		NetworkClient* newClient = new NetworkClient(peer);
+		JoinSession(newClient, m_Me->m_SessionName, otherClientIds[i]);
+
+		CreatePlayer(newClient);
+	}
 }
 
-void ClientNetworkThread::OnPlayerPosition(json& packet, NetworkClient* me)
+void ClientNetworkThread::OnNewPlayerJoined(json& packet, NetworkClient* me, ENetPeer* peer)
+{
+	int clientId = packet["Data"]["ClientId"];
+	
+	ClientWorld* world = GetThisWorld();
+	assert(world);
+
+	NetworkClient* newClient = new NetworkClient(peer);
+	JoinSession(newClient, m_Me->m_SessionName, clientId);
+
+	// Add the new player to the world
+	ClientPlayer* player = CreatePlayer(newClient);
+	player->m_IsMe = false;
+}
+
+void ClientNetworkThread::OnPlayerPosition(json& packet, NetworkClient* me, ENetPeer* peer)
 {
 	int clientId = packet["Data"]["ClientId"];
 	glm::vec3 position(packet["Data"]["X"], packet["Data"]["Y"], packet["Data"]["Z"]);
 
 	ClientWorld* world = GetThisWorld();
+	
+	assert(world);
+
 	IPlayer* player = world->GetPlayer(clientId);
 
 	assert(player);
@@ -154,7 +160,7 @@ void ClientNetworkThread::OnPlayerPosition(json& packet, NetworkClient* me)
 	player->m_Position = position;
 }
 
-void ClientNetworkThread::OnChunkData(json& packet, NetworkClient* conn)
+void ClientNetworkThread::OnChunkData(json& packet, NetworkClient* conn, ENetPeer* peer)
 {
 	OPTICK_EVENT();
 
@@ -177,12 +183,55 @@ void ClientNetworkThread::OnChunkData(json& packet, NetworkClient* conn)
 	ChunkBuilder::Get().AddToQueue(action);
 }
 
+ClientPlayer* ClientNetworkThread::CreatePlayer(NetworkClient* client)
+{
+	if (!client->m_HasJoinedSession) abort();
+
+	NetworkSession& session = m_Sessions[client->m_SessionName];
+
+	// Add a player
+	ClientPlayer* player = new ClientPlayer();
+	player->m_NetClient = client;
+	player->m_Id = client->m_Id;
+	player->m_World = session.m_World;
+	session.m_World->AddPlayer((IPlayer*)player);
+
+	std::cout << "Client (" << client->m_Id << ") joined world " << client->m_SessionName << ". ";
+	std::cout << session.m_World->GetPlayers().size() << " players are connected\n";
+
+	return player;
+}
+
+NetworkSession& ClientNetworkThread::JoinSession(NetworkClient* client, const std::string& sessionName, int clientId)
+{
+	if (client->m_HasJoinedSession)
+	{
+		std::cout << "Client " << client->m_Id << " tried joining session, but is already in session: " << client->m_SessionName << "\n";
+		abort();
+	}
+
+	if (clientId != -1)
+		client->m_Id = clientId;
+
+	client->m_SessionName = sessionName;
+
+	// Create the session if it doesn't exist
+	if (m_Sessions.count(sessionName) == 0)
+		m_Sessions[sessionName] = NetworkSession(sessionName);
+
+	client->m_HasJoinedSession = true;
+
+	std::cout << "Joining session " << sessionName << "\n";
+
+	return m_Sessions[sessionName];
+}
+
 NetworkSession* ClientNetworkThread::GetThisSession()
 {
-	if (m_Sessions.count(m_ThisClient->m_SessionName) == 0)
+	if (m_Sessions.count(m_Me->m_SessionName) == 0)
 		return nullptr;
 
-	return &m_Sessions[m_ThisClient->m_SessionName];
+	return &m_Sessions[m_Me->m_SessionName];
 }
 
 ClientWorld* ClientNetworkThread::GetThisWorld()
@@ -200,5 +249,5 @@ ClientPlayer* ClientNetworkThread::GetThisPlayer()
 
 	if (!session) return nullptr;
 
-	return (ClientPlayer*)session->m_World->GetPlayer(m_ThisClient->m_Id);
+	return (ClientPlayer*)session->m_World->GetPlayer(m_Me->m_Id);
 }

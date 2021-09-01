@@ -3,12 +3,16 @@
 #include <map>
 #include <optick.h>
 
+#include "../Window.h"
 #include "Player/ClientPlayer.h"
+#include <Common/Net/NetworkClient.h>
 #include "ClientWorld.h"
 #include "Chunk/ChunkMesh.h"
 #include "Skybox.h"
 #include <Common/Chunk/Chunk.h>
 #include "DroppedItem.h"
+
+#include <GLFW/glfw3.h>
 
 WorldRenderer::WorldRenderer()
 {
@@ -23,6 +27,7 @@ WorldRenderer& WorldRenderer::Get()
 void WorldRenderer::Init()
 {
 	m_ChunkShader = ShaderLoader::CreateShader("Resources/Shaders/Chunk.vert", "Resources/Shaders/Chunk.frag");
+	m_PlayerModelShader = ShaderLoader::CreateShader("Resources/Shaders/Collider.vert", "Resources/Shaders/Collider.frag");
 	//m_Fog.Init();
 
 	m_Skybox = new Skybox();
@@ -35,12 +40,20 @@ void WorldRenderer::Render()
 	
 	auto start = std::chrono::high_resolution_clock::now();
 
-	// Update the view matrix
-	UpdateViewMatrix();
-
 	m_ChunkShader.Bind();
 
-	glm::mat4 mvp = m_ProjectionMatrix * m_ViewMatrix;
+	if (!m_World->m_LocalPlayer)
+		return;
+
+	Camera& camera = m_World->m_LocalPlayer->GetCamera();
+
+	// Update the matricies
+	int windowWidth, windowHeight;
+	glfwGetWindowSize(InputHandler::GetWindow(), &windowWidth, &windowHeight);
+
+	camera.UpdateMatrices(windowWidth, windowHeight);
+
+	glm::mat4 mvp = camera.m_ProjectionMatrix * camera.m_ViewMatrix;
 	m_ChunkShader.SetUniform("u_MVP", mvp);
 
 	ChunkMap& chunks = m_World->GetChunks();
@@ -102,26 +115,34 @@ void WorldRenderer::Render()
 
 	//m_Fog.Render(this);
 
-
-
 	if (m_World->m_LocalPlayer)
 		m_World->m_LocalPlayer->m_Crosshair.Render();
+
+	// Render all players
+	m_PlayerModelShader.Bind();
+
+	for (auto& entry : m_World->GetPlayers())
+	{
+		ClientPlayer* player = (ClientPlayer*)entry.second;
+		if (!player) continue;
+		if (player->m_IsMe) continue; // Don't render the local player
+
+		// Set the player position as a uniform
+		glm::mat4 modelMatrix(1.0f);
+		modelMatrix = glm::translate(modelMatrix, player->m_Position);
+
+		m_PlayerModelShader.SetUniform("u_ProjectionMatrix", camera.m_ProjectionMatrix);
+		m_PlayerModelShader.SetUniform("u_ViewMatrix", camera.m_ViewMatrix);
+		m_PlayerModelShader.SetUniform("u_ModelMatrix", modelMatrix);
+
+		player->m_PlayerModel->Render();
+	}
 
 	m_Skybox->Render();
 
 	auto stop = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 	//std::cout << "Render took " << duration.count() << " ms\n";
-}
-
-void WorldRenderer::UpdateViewMatrix()
-{
-	if (!m_World->m_LocalPlayer) return;
-
-	Camera& camera = m_World->m_LocalPlayer->GetCamera();
-	glm::vec3 cameraPosition = camera.m_Position;
-
-	m_ViewMatrix = glm::lookAt(cameraPosition, cameraPosition + camera.m_Front, camera.m_Up);
 }
 
 WorldRenderer::~WorldRenderer()

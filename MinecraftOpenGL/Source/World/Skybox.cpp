@@ -2,6 +2,8 @@
 
 #include "WorldRenderer.h"
 
+#include "Player/ClientPlayer.h"
+
 #include <Common/Graphics/BasicVertices.h>
 
 #include <Common/World/IWorld.h>
@@ -50,9 +52,9 @@ void Skybox::Render()
 
 	m_Shader.Bind();
 
-	glm::mat4 view = glm::mat4(glm::mat3(WorldRenderer::Get().m_ViewMatrix)); // Remove translation and keep only the rotation
+	glm::mat4 view = glm::mat4(glm::mat3(ClientPlayer::GetCamera().m_ViewMatrix)); // Remove translation and keep only the rotation
 
-	m_Shader.SetUniform("u_ProjectionMatrix", WorldRenderer::Get().m_ProjectionMatrix);
+	m_Shader.SetUniform("u_ProjectionMatrix", ClientPlayer::GetCamera().m_ProjectionMatrix);
 	m_Shader.SetUniform("u_ViewMatrix", view);
 
 	m_Mesh.Render();

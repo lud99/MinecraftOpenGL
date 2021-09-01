@@ -12,7 +12,7 @@ public:
 
 	bool StartServer(int port);
 
-	virtual void HandlePacket(json& packet, NetworkClient* client) override;
+	virtual void HandlePacket(json& packet, NetworkClient* client, ENetPeer* peer) override;
 
 	void OnClientJoinWorld(json& packet, NetworkClient* client);
 	void OnClientPositionUpdate(json& packet, NetworkClient* client);

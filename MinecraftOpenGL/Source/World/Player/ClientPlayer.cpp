@@ -8,6 +8,7 @@
 
 #include <glm/gtc/matrix_transform.hpp> 
 
+#include <Graphics/ModelParser.h>
 #include <Common/Blocks/Blocks.h>
 #include <Common/World/IWorld.h>
 #include <Common/Chunk/Chunk.h>
@@ -30,7 +31,10 @@ ClientPlayer::ClientPlayer()
 
 void ClientPlayer::OnInit()
 {
-	m_Crosshair.Init();
+	if (m_IsMe) 
+		m_Crosshair.Init();
+
+	m_PlayerModel = ModelParser::Parse("Resources/Models/door.obj");
 }
 
 void ClientPlayer::OnUpdate()
@@ -39,6 +43,8 @@ void ClientPlayer::OnUpdate()
 
 	if (!m_IsInitialized)
 		Init();
+
+	if (!m_IsMe) return;
 
 	// Update hotbar slot
 	if (InputHandler::IsKeyPressed(GLFW_KEY_1))
@@ -152,6 +158,9 @@ void ClientPlayer::OnUpdate()
 void ClientPlayer::OnFixedUpdate()
 {
 	OPTICK_EVENT();
+
+	if (!m_IsMe) return;
+
 	HandleMovement();
 	HandleCollision();
 
@@ -160,6 +169,8 @@ void ClientPlayer::OnFixedUpdate()
 
 void ClientPlayer::OnTickUpdate()
 {
+	if (!m_IsMe) return;
+
 	// Send position
 	{
 		json msg;
@@ -490,7 +501,11 @@ void ClientPlayer::HandleBlockPlacing()
 		raycast.Stop();
 	}
 }
+
+Camera& ClientPlayer::GetCamera() { return m_Camera; }
    
 ClientPlayer::~ClientPlayer()
 {
 }
+
+Camera ClientPlayer::m_Camera;

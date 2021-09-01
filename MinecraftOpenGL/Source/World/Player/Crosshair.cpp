@@ -6,6 +6,7 @@
 #include <Graphics/Textures/Texture2D.h>
 
 #include <Common/World/IWorld.h>
+#include "ClientPlayer.h"
 
 Crosshair::Crosshair()
 {
@@ -40,7 +41,7 @@ void Crosshair::Render()
 	m_Shader.Bind();
 	m_Texture->Bind();
 
-	m_Shader.SetUniform("u_ProjectionMatrix", WorldRenderer::Get().m_ProjectionMatrix);
+	m_Shader.SetUniform("u_ProjectionMatrix", m_Player->GetCamera().m_ProjectionMatrix);
 
 	m_Mesh.Render();
 

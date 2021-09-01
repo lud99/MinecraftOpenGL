@@ -47,7 +47,7 @@ ServerNetworkThread::ServerNetworkThread()
 {
 }
 
-void ServerNetworkThread::HandlePacket(json& packet, NetworkClient* client)
+void ServerNetworkThread::HandlePacket(json& packet, NetworkClient* client, ENetPeer* peer)
 {
 	if (packet["Type"] == "JoinWorld")
 	{
@@ -105,12 +105,33 @@ void ServerNetworkThread::OnClientJoinWorld(json& packet, NetworkClient* client)
 	responsePacket["Type"] = "JoinWorld";
 	responsePacket["Data"]["SessionName"] = sessionName;
 	responsePacket["Data"]["ClientId"] = client->m_Id;
+
+	// Iterate all players
+	std::vector<int> otherClients;
+	for (auto& entry : session.m_World->GetPlayers())
+	{
+		int id = entry.second->m_NetClient->m_Id;
+
+		if (id != client->m_Id)
+			otherClients.push_back(id);
+	}
+
+	responsePacket["Data"]["OtherClients"] = otherClients;
+
 	client->SendJson(responsePacket);
+
+	// Broadcast to all other clients
+	json broadcastPacket;
+	broadcastPacket["Type"] = "NewPlayer";
+	broadcastPacket["Data"]["ClientId"] = client->m_Id;
+	Broadcast(broadcastPacket, sessionName, client->m_Id /* Exclude */);
 }
 
 void ServerNetworkThread::OnClientPositionUpdate(json& packet, NetworkClient* client)
 {
 	ServerPlayer* player = (ServerPlayer*)m_Sessions[client->m_SessionName].m_World->GetPlayer(client->m_Id);
+
+	std::cout << client->m_Id << "\n";
 
 	glm::vec3 newPosition(packet["Data"]["X"], packet["Data"]["Y"], packet["Data"]["Z"]);
 

@@ -37,8 +37,6 @@ public:
 
 	//void SetWindow(GLFWwindow* window);
 
-	Camera& GetCamera();
-
 	~IPlayer();
 
 private:
@@ -60,7 +58,6 @@ public:
 	//Crosshair m_Crosshair;
 
 	//InputHandler m_Input;
-	Camera m_Camera;
 
 	//ChunkBlock* m_HighlightedBlock = nullptr;
 	//Chunk* m_HighlightedBlockChunk = nullptr;

@@ -114,8 +114,8 @@ void IPlayer::OnUpdate()
 	//	m_ShouldJumpNextUpdate = true;
 
 	// Get the block that is currently highlighted or looked at
-	Raycast raycast(m_Camera.m_Position, m_Camera.m_Front);
-	raycast.m_MaxDistance = 7.0f;
+	//Raycast raycast(m_Camera.m_Position, m_Camera.m_Front);
+	//raycast.m_MaxDistance = 7.0f;
 
 	//while (raycast.Step(0.1f))
 	//{
@@ -174,11 +174,6 @@ void IPlayer::OnFixedUpdate()
 void IPlayer::OnTickUpdate()
 {
 
-}
-
-void IPlayer::UpdateCameraPosition()
-{
-	m_Camera.m_Position = glm::vec3(m_Position.x, m_Position.y + m_EyeOffset, m_Position.z);
 }
 
 //void Player::HandleMovement()
@@ -493,11 +488,6 @@ void IPlayer::HandleBlockPlacing()
 //	m_Window = window;
 //	m_Input.SetWindow(window);
 //}
-
-Camera& IPlayer::GetCamera()
-{
-	return m_Camera;
-}
 
 IPlayer::~IPlayer()
 {

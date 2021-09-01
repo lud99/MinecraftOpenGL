@@ -26,7 +26,7 @@ public:
 	void Broadcast(json& packet, const std::string& sessionName, int clientToExclude = -1);
 
 	ENetPacket* PullPackets();
-	virtual void HandlePacket(json& packet, NetworkClient* client) = 0;
+	virtual void HandlePacket(json& packet, NetworkClient* client, ENetPeer* peer) = 0;
 
 	void SetupThread();
 

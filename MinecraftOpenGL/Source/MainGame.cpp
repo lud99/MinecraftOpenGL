@@ -52,6 +52,13 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	InputHandler::UpdateKeyState(key, action, mods);
 }
 
+void WindowResizeCallback(GLFWwindow* window, int width, int height)
+{
+	ClientWorld* world = NetworkThread::Get().GetThisWorld();
+	if (!world) return;
+	if (!world->m_LocalPlayer) return;
+}
+
 void test()
 {
 	std::cout << "sizeof ChunkBlock: " << sizeof(ChunkBlock) << "\n";
@@ -89,6 +96,7 @@ int main()
 	glfwSetCursorPosCallback(window, MouseCallback);
 	glfwSetMouseButtonCallback(window, MouseButtonCallback);
 	glfwSetKeyCallback(window, KeyCallback);
+	glfwSetWindowSizeCallback(window, WindowResizeCallback);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwWindowHint(GLFW_SAMPLES, 4);
@@ -120,13 +128,10 @@ int main()
 		json msg;
 		msg["Type"] = "JoinWorld";
 		msg["Data"]["SessionName"] = "Minecraft";
-		NetworkThread::Get().SendJson(msg, NetworkThread::Get().m_ThisClient);
+		NetworkThread::Get().m_Me->SendJson(msg);
 	}
 
 	InputHandler::Init(window);
-
-	Mesh<TextureVertex>* door = ModelParser::Parse("Resources/Models/door.obj");
-	Shader sh = ShaderLoader::CreateShader("Resources/Shaders/Collider.vert", "Resources/Shaders/Collider.frag");
 
 	double previousTime = glfwGetTime();
 	double prevTime = glfwGetTime();
@@ -151,9 +156,12 @@ int main()
 		if (InputHandler::IsKeyPressed(GLFW_KEY_ESCAPE))
 			glfwSetWindowShouldClose(window, true);
 
+		if (InputHandler::IsKeyPressed(GLFW_KEY_F1))
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
 		ClientWorld* localWorld = nullptr;
 		NetworkThread& net = NetworkThread::Get();
-		if (net.m_ThisClient && net.m_ThisClient->m_HasJoinedSession)
+		if (net.m_Me && net.m_Me->m_HasJoinedSession)
 			localWorld = NetworkThread::Get().GetThisWorld();
 
 		// Calcuate FPS
@@ -163,14 +171,14 @@ int main()
 		if (currentTime - prevFixedTimestempTime >= Time::FixedTimestep)
 		{
 			if (localWorld) localWorld->CommonOnFixedUpdate();
-			//std::cout << currentTime - prevFixedTimestempTime << "\n";
+
 			prevFixedTimestempTime = currentTime;
 		}
 
 		if (currentTime - prevTickTime >= Time::TickRate)
 		{
 			if (localWorld) localWorld->CommonOnTickUpdate();
-			//std::cout << currentTime - prevFixedTimestempTime << "\n";
+
 			prevTickTime = currentTime;
 		}
 
@@ -185,6 +193,7 @@ int main()
 				glm::vec3 pos = localWorld->m_LocalPlayer->m_Position;
 
 				title.append(" | " + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ", " + std::to_string(pos.z));
+				title.append(" | " + std::to_string(net.m_Me->m_Id));
 
 				glfwSetWindowTitle(window, title.c_str());
 			}
@@ -198,23 +207,12 @@ int main()
 
 		prevTime = Time::ElapsedTime;
 
-		//net.PullPackets();
-
 		if (localWorld)
 		{
 			localWorld->CommonOnUpdate();
 
 			localWorld->Render();
 		}
-
-		glm::mat4 mod(1.0);
-		mod = glm::translate(mod, glm::vec3(0.0f, 55.0f, 0.0f));
-
-		/*sh.Bind();
-		sh.SetUniform("u_ProjectionMatrix", WorldRenderer::Get().m_ProjectionMatrix);
-		sh.SetUniform("u_ViewMatrix", WorldRenderer::Get().m_ViewMatrix);
-		sh.SetUniform("u_ModelMatrix", mod);
-		door->Render();*/
 
 		GLenum err;
 		while ((err = glGetError()) != GL_NO_ERROR)

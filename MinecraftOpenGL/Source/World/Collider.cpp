@@ -36,9 +36,10 @@ void Collider::RenderHitbox()
 
 	m_Shader.Bind();
 
-	m_Shader.SetUniform("u_ProjectionMatrix", WorldRenderer::Get().m_ProjectionMatrix);
-	m_Shader.SetUniform("u_ViewMatrix", WorldRenderer::Get().m_ViewMatrix);
-	m_Shader.SetUniform("u_ModelMatrix", glm::translate(glm::mat4(1.0), m_Position));
+	// TODO: fix
+	//m_Shader.SetUniform("u_ProjectionMatrix", WorldRenderer::Get().m_ProjectionMatrix);
+	//m_Shader.SetUniform("u_ViewMatrix", WorldRenderer::Get().m_ViewMatrix);
+	//m_Shader.SetUniform("u_ModelMatrix", glm::translate(glm::mat4(1.0), m_Position));
 
 	m_Mesh.Render();
 

@@ -26,6 +26,8 @@ public:
 
 	void MouseCallback(GLFWwindow* window, double xpos, double ypos);
 
+	static Camera& GetCamera();
+
 	~ClientPlayer();
 
 private:
@@ -39,6 +41,11 @@ public:
 	glm::vec3 m_LookingAtPosition = glm::vec3(0.0f); 
 	glm::vec3 m_LastLookingAtPosition = glm::vec3(0.0f);
 	Crosshair m_Crosshair;
+
+	Mesh<TextureVertex>* m_PlayerModel;
+
+	// If this player is the real player that should do logic
+	bool m_IsMe = false;
 
 private:
 	ChunkBlock* m_HighlightedBlock = nullptr;
@@ -67,5 +74,7 @@ private:
 	float m_MouseYaw = 0, m_MousePitch = 0;
 
 	bool m_ShouldJumpNextUpdate = false;
+
+	static Camera m_Camera;
 };
 

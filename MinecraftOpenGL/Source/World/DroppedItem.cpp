@@ -6,6 +6,8 @@
 #include <Common/Graphics/BasicVertices.h>
 #include <Graphics/Textures/TextureAtlas.h>
 
+#include "Player/ClientPlayer.h"
+
 DroppedItem::DroppedItem()
 {
 	BlockType& blockType = BlockTypes::Blocks[m_BlockId];
@@ -43,8 +45,8 @@ void DroppedItem::Render()
 	modelMatrix = glm::rotate(modelMatrix, glm::radians(m_Rotation), glm::vec3(0, 1, 0));
 	modelMatrix = glm::scale(modelMatrix, glm::vec3(0.25f));
 
-	m_Shader.SetUniform("u_ProjectionMatrix", WorldRenderer::Get().m_ProjectionMatrix);
-	m_Shader.SetUniform("u_ViewMatrix", WorldRenderer::Get().m_ViewMatrix);
+	m_Shader.SetUniform("u_ProjectionMatrix", ClientPlayer::GetCamera().m_ProjectionMatrix);
+	m_Shader.SetUniform("u_ViewMatrix", ClientPlayer::GetCamera().m_ViewMatrix);
 	m_Shader.SetUniform("u_ModelMatrix", modelMatrix);
 
 	m_Shader.SetUniform("u_Texture", 0);

@@ -13,11 +13,15 @@ public:
 
 	bool Connect(const std::string& adress, int port);
 
-	virtual void HandlePacket(json& packet, NetworkClient* me) override;
+	virtual void HandlePacket(json& packet, NetworkClient* me, ENetPeer* peer) override;
 
-	void OnJoinWorld(json& packet, NetworkClient* me);
-	void OnPlayerPosition(json& packet, NetworkClient* me);
-	void OnChunkData(json& packet, NetworkClient* me);
+	void OnJoinWorld(json& packet, NetworkClient* me, ENetPeer* peer);
+	void OnNewPlayerJoined(json& packet, NetworkClient* me, ENetPeer* peer);
+	void OnPlayerPosition(json& packet, NetworkClient* me, ENetPeer* peer);
+	void OnChunkData(json& packet, NetworkClient* me, ENetPeer* peer);
+
+	ClientPlayer* CreatePlayer(NetworkClient* client);
+	NetworkSession& JoinSession(NetworkClient* client, const std::string& sessionName, int clientId = -1);
 
 	NetworkSession* GetThisSession();
 	ClientWorld* GetThisWorld();
@@ -27,7 +31,7 @@ private:
 	ClientNetworkThread();
 
 public:
-	NetworkClient* m_ThisClient = nullptr;
+	NetworkClient* m_Me = nullptr;
 };
 
 typedef ClientNetworkThread NetworkThread;
