@@ -68,11 +68,13 @@ private:
 
 	// Mouse variables
 	// TODO: seperate class
+public:
 	bool m_FirstMouse = true;
 	float m_LastMouseX = 400, m_LastMouseY = 300;
 	float m_MouseSensitivity = 0.1f;
 	float m_MouseYaw = 0, m_MousePitch = 0;
 
+private:
 	bool m_ShouldJumpNextUpdate = false;
 
 	static Camera m_Camera;

@@ -35,13 +35,16 @@
 float Time::ElapsedTime;
 float Time::DeltaTime;
 
-bool lockedMouse = true;
+bool lockedMouse = false;
 
 void MouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
 	ClientWorld* world = NetworkThread::Get().GetThisWorld();
 	if (!world) return;
 	if (!world->m_LocalPlayer) return;
+
+	if (!lockedMouse) 
+		world->m_LocalPlayer->m_FirstMouse = true;
 
 	// Don't to mouse movements if the window isn't focused
 	int focused = glfwGetWindowAttrib(window, GLFW_FOCUSED);
@@ -125,7 +128,7 @@ int main()
 	glfwSetWindowSizeCallback(window, WindowResizeCallback);
 	glfwSetWindowFocusCallback(window, WindowFocusCallback);
 
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glfwSwapInterval(1); // Vsync
 
