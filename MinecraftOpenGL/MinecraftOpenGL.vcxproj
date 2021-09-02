@@ -91,14 +91,14 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\Optick_1.3.1\include;$(ProjectDir)Source\Common;$(ProjectDir)Source\Graphics;$(SolutionDir)Dependencies\glfw-3.3.2.Win32\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\irrKlang-32bit-1.6.0\include;$(SolutionDir)Dependencies\enet-1.3.17\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\Optick_1.3.1\include;$(ProjectDir)Source\Common;$(ProjectDir)Source\Graphics;$(SolutionDir)Dependencies\glfw-3.3.2.Win32\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\irrKlang-32bit-1.6.0\include;$(SolutionDir)Dependencies\enet-1.3.17\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Optick_1.3.1\lib\x64\debug;$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\Win32;$(SolutionDir)Dependencies\glfw-3.3.2.Win32\lib-vc2017;$(SolutionDir)Dependencies\irrKlang-32bit-1.6.0\lib\Win32-visualStudio;$(SolutionDir)Dependencies\enet-1.3.17\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OptickCore.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;irrKlang.lib;enet.lib;ws2_32.lib;winmm.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Optick_1.3.1\lib\x64\debug;$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\Win32;$(SolutionDir)Dependencies\glfw-3.3.2.Win32\lib-vc2017;$(SolutionDir)Dependencies\irrKlang-32bit-1.6.0\lib\Win32-visualStudio;$(SolutionDir)Dependencies\enet-1.3.17\lib;%(AdditionalLibraryDirectories);$(SolutionDir)Dependencies\freetype\dll\win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype.lib;OptickCore.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;irrKlang.lib;enet.lib;ws2_32.lib;winmm.lib</AdditionalDependencies>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
   </ItemDefinitionGroup>
@@ -108,14 +108,14 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\Optick_1.3.1\include;$(ProjectDir)Source\Common;$(ProjectDir)Source\Graphics;$(SolutionDir)Dependencies\glfw-3.3.2.Win64\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\irrKlang-64bit-1.6.0\include;$(SolutionDir)Dependencies\enet-1.3.17\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\Optick_1.3.1\include;$(ProjectDir)Source\Common;$(ProjectDir)Source\Graphics;$(SolutionDir)Dependencies\glfw-3.3.2.Win64\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\irrKlang-64bit-1.6.0\include;$(SolutionDir)Dependencies\enet-1.3.17\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Optick_1.3.1\lib\x64\debug;$(SolutionDir)Dependencies\irrKlang-64bit-1.6.0\bin\winx64-visualStudio;$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\x64;$(SolutionDir)Dependencies\glfw-3.3.2.Win64\lib-vc2017;$(SolutionDir)Dependencies\irrKlang-64bit-1.6.0\lib\Winx64-visualStudio;$(SolutionDir)Dependencies\enet-1.3.17\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OptickCore.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;irrKlang.lib;enet64.lib;ws2_32.lib;winmm.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\freetype\dll\win64;$(SolutionDir)Dependencies\Optick_1.3.1\lib\x64\debug;$(SolutionDir)Dependencies\irrKlang-64bit-1.6.0\bin\winx64-visualStudio;$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\x64;$(SolutionDir)Dependencies\glfw-3.3.2.Win64\lib-vc2017;$(SolutionDir)Dependencies\irrKlang-64bit-1.6.0\lib\Winx64-visualStudio;$(SolutionDir)Dependencies\enet-1.3.17\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype.lib;OptickCore.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;irrKlang.lib;enet64.lib;ws2_32.lib;winmm.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -126,7 +126,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\Optick_1.3.1\include;$(ProjectDir)Source\Common;$(ProjectDir)Source\Graphics;$(SolutionDir)Dependencies\glfw-3.3.2.Win32\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\irrKlang-32bit-1.6.0\include;$(SolutionDir)Dependencies\enet-1.3.17\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\Optick_1.3.1\include;$(ProjectDir)Source\Common;$(ProjectDir)Source\Graphics;$(SolutionDir)Dependencies\glfw-3.3.2.Win32\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\irrKlang-32bit-1.6.0\include;$(SolutionDir)Dependencies\enet-1.3.17\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -135,8 +135,8 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Optick_1.3.1\lib\x64\debug;$(SolutionDir)Dependencies\Optick_1.3.1\lib\x64\debug;$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\Win32;$(SolutionDir)Dependencies\glfw-3.3.2.Win32\lib-vc2017;$(SolutionDir)Dependencies\irrKlang-32bit-1.6.0\lib\Win32-visualStudio;$(SolutionDir)Dependencies\enet-1.3.17\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OptickCore.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;irrKlang.lib;enet.lib;ws2_32.lib;winmm.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Optick_1.3.1\lib\x64\debug;$(SolutionDir)Dependencies\Optick_1.3.1\lib\x64\debug;$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\Win32;$(SolutionDir)Dependencies\glfw-3.3.2.Win32\lib-vc2017;$(SolutionDir)Dependencies\irrKlang-32bit-1.6.0\lib\Win32-visualStudio;$(SolutionDir)Dependencies\enet-1.3.17\lib;%(AdditionalLibraryDirectories);$(SolutionDir)Dependencies\freetype\dll\win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype.lib;OptickCore.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;irrKlang.lib;enet.lib;ws2_32.lib;winmm.lib</AdditionalDependencies>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
   </ItemDefinitionGroup>
@@ -148,7 +148,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\Optick_1.3.1\include;$(ProjectDir)Source\Common;$(ProjectDir)Source\Graphics;$(SolutionDir)Dependencies\glfw-3.3.2.Win64\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\irrKlang-64bit-1.6.0\include;$(SolutionDir)Dependencies\enet-1.3.17\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\Optick_1.3.1\include;$(ProjectDir)Source\Common;$(ProjectDir)Source\Graphics;$(SolutionDir)Dependencies\glfw-3.3.2.Win64\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\irrKlang-64bit-1.6.0\include;$(SolutionDir)Dependencies\enet-1.3.17\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -157,8 +157,8 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\Optick_1.3.1\lib\x64\debug;$(SolutionDir)Dependencies\Optick_1.3.1\lib\x64\debug;$(SolutionDir)Dependencies\irrKlang-64bit-1.6.0\bin\winx64-visualStudio;$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\x64;$(SolutionDir)Dependencies\glfw-3.3.2.Win64\lib-vc2017;$(SolutionDir)Dependencies\irrKlang-64bit-1.6.0\lib\Winx64-visualStudio;$(SolutionDir)Dependencies\enet-1.3.17\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OptickCore.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;irrKlang.lib;enet64.lib;ws2_32.lib;winmm.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\freetype\dll\win64;$(SolutionDir)Dependencies\Optick_1.3.1\lib\x64\debug;$(SolutionDir)Dependencies\Optick_1.3.1\lib\x64\debug;$(SolutionDir)Dependencies\irrKlang-64bit-1.6.0\bin\winx64-visualStudio;$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\x64;$(SolutionDir)Dependencies\glfw-3.3.2.Win64\lib-vc2017;$(SolutionDir)Dependencies\irrKlang-64bit-1.6.0\lib\Winx64-visualStudio;$(SolutionDir)Dependencies\enet-1.3.17\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype.lib;OptickCore.lib;glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;irrKlang.lib;enet64.lib;ws2_32.lib;winmm.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -172,11 +172,13 @@
     <ClCompile Include="Source\Common\Common\Player\IPlayer.cpp" />
     <ClCompile Include="Source\Common\Common\ThreadPool.cpp" />
     <ClCompile Include="Source\Common\Common\World\IWorld.cpp" />
+    <ClCompile Include="Source\Graphics\Graphics\Font.cpp" />
     <ClCompile Include="Source\Graphics\Graphics\ModelParser.cpp" />
     <ClCompile Include="Source\Graphics\Graphics\Shader.cpp" />
     <ClCompile Include="Source\Graphics\Graphics\Textures\Cubemap.cpp" />
     <ClCompile Include="Source\Graphics\Graphics\Textures\Texture2D.cpp" />
     <ClCompile Include="Source\Graphics\Graphics\Textures\TextureAtlas.cpp" />
+    <ClCompile Include="Source\LogRenderer.cpp" />
     <ClCompile Include="Source\Network\ClientNetworkThread.cpp" />
     <ClCompile Include="Source\Common\Common\Time.h" />
     <ClCompile Include="Source\Common\Common\Utils\Raycast.cpp" />
@@ -204,6 +206,7 @@
     <ClInclude Include="Source\Common\Common\Graphics\BasicVertices.h" />
     <ClInclude Include="Source\Common\Common\Graphics\Vertex.h" />
     <ClInclude Include="Source\Common\Common\json.hpp" />
+    <ClInclude Include="Source\Log.h" />
     <ClInclude Include="Source\Common\Common\Net\INetworkThread.h" />
     <ClInclude Include="Source\Common\Common\Net\NetworkClient.h" />
     <ClInclude Include="Source\Common\Common\Net\NetworkConstants.h" />
@@ -212,6 +215,8 @@
     <ClInclude Include="Source\Common\Common\Player\Camera.h" />
     <ClInclude Include="Source\Common\Common\Player\IPlayer.h" />
     <ClInclude Include="Source\Common\Common\ThreadPool.h" />
+    <ClInclude Include="Source\Graphics\Graphics\Font.h" />
+    <ClInclude Include="Source\LogRenderer.h" />
     <ClInclude Include="Source\Window.h" />
     <ClInclude Include="Source\World\ClientWorld.h" />
     <ClInclude Include="Source\Graphics\Graphics\Mesh.hpp" />

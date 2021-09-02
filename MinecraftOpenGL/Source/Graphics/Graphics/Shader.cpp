@@ -73,6 +73,14 @@ void Shader::SetUniform(const std::string& name, int value)
 	glUniform1i(GetUniformLocation(name.c_str()), value);
 }
 
+void Shader::Delete()
+{
+	if (m_id != 0)
+		glDeleteProgram(m_id);
+
+	m_id = 0;
+}
+
 Shader::~Shader()
 {
 }
@@ -115,6 +123,30 @@ Shader ShaderLoader::CreateShader(const std::string& vertexPath, const std::stri
 
 	return Shader(program);
 }
+
+Shader ShaderLoader::CreateShaderFromSource(const std::string& vertexSource, const std::string& fragmentSource)
+{
+	unsigned int program = glCreateProgram();
+
+	if (program == 0)
+	{
+		abort();
+	}
+
+	unsigned int vertex = CompileShader(GL_VERTEX_SHADER, vertexSource);
+	unsigned int fragment = CompileShader(GL_FRAGMENT_SHADER, fragmentSource);
+
+	glAttachShader(program, vertex);
+	glAttachShader(program, fragment);
+	glLinkProgram(program);
+	glValidateProgram(program);
+
+	glDeleteShader(vertex);
+	glDeleteShader(fragment);
+
+	return Shader(program);
+}
+
 
 unsigned int ShaderLoader::CompileShader(unsigned int type, const std::string& source)
 {

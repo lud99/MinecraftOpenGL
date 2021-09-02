@@ -4,6 +4,7 @@
 #include <optick.h>
 
 #include "../Window.h"
+#include "../LogRenderer.h"
 #include "Player/ClientPlayer.h"
 #include <Common/Net/NetworkClient.h>
 #include "ClientWorld.h"
@@ -32,6 +33,9 @@ void WorldRenderer::Init()
 
 	m_Skybox = new Skybox();
 	m_Skybox->Init();
+
+	m_Font.Load("Resources/Fonts/arial.ttf");
+	LogRenderer::Get().Init();
 }
 
 void WorldRenderer::Render()
@@ -139,6 +143,9 @@ void WorldRenderer::Render()
 	}
 
 	m_Skybox->Render();
+
+	// Render text
+	LogRenderer::Get().Render();
 
 	auto stop = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);

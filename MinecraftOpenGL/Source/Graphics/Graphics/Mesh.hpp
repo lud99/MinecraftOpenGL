@@ -22,6 +22,8 @@ public:
 
 	void CreateVao();
 
+	void CreateEmptyBuffer();
+
 	void Update();
 	void UpdateVertices(const std::vector<VertexT>&);
 	void SetVertexAttributes();
@@ -51,6 +53,9 @@ public:
 
 public:
 	Texture2D* m_Texture = nullptr;
+
+	bool m_UseDynamicBuffer = false;
+	unsigned int m_DynamicBufferSize = 0;
 
 protected:
 	std::vector<VertexT> m_Vertices;
@@ -84,6 +89,21 @@ void Mesh<VertexT>::CreateVao()
 	glGenVertexArrays(1, &m_Vao);
 }
 
+
+template <typename VertexT>
+void Mesh<VertexT>::CreateEmptyBuffer()
+{
+	// Allocate buffer
+	if (!m_UseDynamicBuffer)
+		return;
+
+	if (m_Vbo == 0)
+		glGenBuffers(1, &m_Vbo);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_Vbo);
+	glBufferData(GL_ARRAY_BUFFER, m_DynamicBufferSize, nullptr, GL_DYNAMIC_DRAW);
+}
+
 template <typename VertexT>
 void Mesh<VertexT>::Update()
 {
@@ -114,7 +134,11 @@ void Mesh<VertexT>::UpdateVertices(const std::vector<VertexT>& vertices)
 		glGenBuffers(1, &m_Ebo);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_Vbo);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(VertexT), &vertices[0], GL_STATIC_DRAW);
+
+	if (m_UseDynamicBuffer)
+		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(VertexT), &vertices[0]);
+	else
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(VertexT), &vertices[0], GL_STATIC_DRAW);
 
 	if (!m_Indices.empty())
 	{

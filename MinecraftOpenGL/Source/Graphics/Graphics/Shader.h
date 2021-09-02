@@ -17,6 +17,8 @@ public:
 	void Bind();
 	void Unbind();
 
+	void Delete();
+
 	void SetUniform(const std::string& name, glm::vec2 vector);
 	void SetUniform(const std::string& name, glm::ivec2 vector);
 	void SetUniform(const std::string& name, glm::vec3 vector);
@@ -40,4 +42,5 @@ namespace ShaderLoader
 	unsigned int CompileShader(unsigned int type, const std::string& source);
 
 	Shader CreateShader(const std::string& vertexPath, const std::string& fragmentPath);
+	Shader CreateShaderFromSource(const std::string& vertexSource, const std::string& fragmentSource);
 };

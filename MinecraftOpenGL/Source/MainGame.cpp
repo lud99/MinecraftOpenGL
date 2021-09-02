@@ -21,6 +21,8 @@
 #include <Common/Time.h>
 #include <Graphics/ModelParser.h>
 
+#include "LogRenderer.h"
+
 #include <enet/enet.h>
 
 #include <Common/json.hpp>
@@ -158,6 +160,9 @@ int main()
 
 		if (InputHandler::IsKeyPressed(GLFW_KEY_F1))
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+		if (InputHandler::IsKeyPressed(GLFW_KEY_K))
+			LogRenderer::Get().AddEntry("K key was pressed!");
 
 		ClientWorld* localWorld = nullptr;
 		NetworkThread& net = NetworkThread::Get();
