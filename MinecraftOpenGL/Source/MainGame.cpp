@@ -35,18 +35,28 @@
 float Time::ElapsedTime;
 float Time::DeltaTime;
 
+bool lockedMouse = true;
+
 void MouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
 	ClientWorld* world = NetworkThread::Get().GetThisWorld();
 	if (!world) return;
 	if (!world->m_LocalPlayer) return;
 
-	world->m_LocalPlayer->MouseCallback(window, xpos, ypos);
+	// Don't to mouse movements if the window isn't focused
+	int focused = glfwGetWindowAttrib(window, GLFW_FOCUSED);
+	if (focused && lockedMouse)
+		world->m_LocalPlayer->MouseCallback(window, xpos, ypos);
 }
 
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
 	InputHandler::UpdateMouseButtonState(button, action, mods);
+
+	if (!lockedMouse)
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+	lockedMouse = true;
 }
 
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -59,6 +69,20 @@ void WindowResizeCallback(GLFWwindow* window, int width, int height)
 	ClientWorld* world = NetworkThread::Get().GetThisWorld();
 	if (!world) return;
 	if (!world->m_LocalPlayer) return;
+}
+
+void WindowFocusCallback(GLFWwindow* window, int focused)
+{
+	if (focused)
+	{
+		
+		//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	}
+	else
+	{
+		lockedMouse = false;
+		//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
 }
 
 void test()
@@ -99,6 +123,7 @@ int main()
 	glfwSetMouseButtonCallback(window, MouseButtonCallback);
 	glfwSetKeyCallback(window, KeyCallback);
 	glfwSetWindowSizeCallback(window, WindowResizeCallback);
+	glfwSetWindowFocusCallback(window, WindowFocusCallback);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwWindowHint(GLFW_SAMPLES, 4);
@@ -159,7 +184,10 @@ int main()
 			glfwSetWindowShouldClose(window, true);
 
 		if (InputHandler::IsKeyPressed(GLFW_KEY_F1))
+		{
+			lockedMouse = false;
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
 
 		if (InputHandler::IsKeyPressed(GLFW_KEY_K))
 			LogRenderer::Get().AddEntry("K key was pressed!");

@@ -1,22 +1,6 @@
-﻿  LogRenderer.cpp
-  MainGame.cpp
-  WorldRenderer.cpp
-D:\Spel\Programming\C++\MinecraftOpenGL\Dependencies\glm\glm\exponential.hpp(21,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\LogRenderer.cpp)
-D:\Spel\Programming\C++\MinecraftOpenGL\Dependencies\glm\glm\detail\func_geometric.inl(1,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\LogRenderer.cpp)
-D:\Spel\Programming\C++\MinecraftOpenGL\Dependencies\glm\glm\geometric.hpp(116,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\LogRenderer.cpp)
-D:\Spel\Programming\C++\MinecraftOpenGL\Dependencies\glm\glm\detail\func_matrix.inl(1,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\LogRenderer.cpp)
-D:\Spel\Programming\C++\MinecraftOpenGL\Dependencies\glm\glm\matrix.hpp(161,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\LogRenderer.cpp)
-D:\Spel\Programming\C++\MinecraftOpenGL\Dependencies\glm\glm\detail\type_mat4x4.inl(1,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\LogRenderer.cpp)
-D:\Spel\Programming\C++\MinecraftOpenGL\Dependencies\glm\glm\detail\type_mat4x4.hpp(188,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\LogRenderer.cpp)
-D:\Spel\Programming\C++\MinecraftOpenGL\Dependencies\glm\glm\ext\matrix_double4x4.hpp(5,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\LogRenderer.cpp)
-D:\Spel\Programming\C++\MinecraftOpenGL\Dependencies\glm\glm\mat4x4.hpp(5,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\LogRenderer.cpp)
-D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\Graphics\Graphics\Shader.h(4,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\LogRenderer.cpp)
-D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\Graphics\Graphics\Font.h(7,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\LogRenderer.cpp)
-D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\LogRenderer.h(3,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\LogRenderer.cpp)
-D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\LogRenderer.cpp(1,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
-D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\LogRenderer.cpp(27,112): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition (compiling source file Source\MainGame.cpp)
-D:\Spel\Programming\C++\MinecraftOpenGL\Dependencies\glfw-3.3.2.Win64\include\GLFW\glfw3.h(123): message : see previous definition of 'APIENTRY' (compiling source file Source\MainGame.cpp)
-D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\MainGame.cpp(210,34): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\MainGame.cpp(211,39): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+﻿  MainGame.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
+D:\Spel\Programming\C++\MinecraftOpenGL\Dependencies\glfw-3.3.2.Win64\include\GLFW\glfw3.h(123): message : see previous definition of 'APIENTRY'
+D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\MainGame.cpp(238,34): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\MainGame.cpp(239,39): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   MinecraftOpenGL.vcxproj -> D:\Spel\Programming\C++\MinecraftOpenGL\build\MinecraftOpenGL\x64\Debug\MinecraftOpenGL.exe

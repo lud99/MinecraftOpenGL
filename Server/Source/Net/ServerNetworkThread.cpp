@@ -141,5 +141,5 @@ void ServerNetworkThread::OnClientPositionUpdate(json& packet, NetworkClient* cl
 	json packetToBroadcast;
 	packetToBroadcast = packet;
 	packetToBroadcast["Data"]["ClientId"] = client->m_Id;
-	Broadcast(packetToBroadcast, client->m_SessionName);
+	Broadcast(packetToBroadcast, client->m_SessionName, client->m_Id /* Exclude */);
 }
