@@ -67,11 +67,15 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	InputHandler::UpdateKeyState(key, action, mods);
 }
 
-void WindowResizeCallback(GLFWwindow* window, int width, int height)
+// Whenever the window size is changed (by OS or user resize) this has to be called to resize the gl drawing context
+void WindowFramebufferResizeCallback(GLFWwindow* window, int width, int height)
 {
 	ClientWorld* world = NetworkThread::Get().GetThisWorld();
 	if (!world) return;
 	if (!world->m_LocalPlayer) return;
+
+	world->m_LocalPlayer->GetCamera().UpdateProjectionMatrix(width, height);
+	glViewport(0, 0, width, height);
 }
 
 void WindowFocusCallback(GLFWwindow* window, int focused)
@@ -125,7 +129,7 @@ int main()
 	glfwSetCursorPosCallback(window, MouseCallback);
 	glfwSetMouseButtonCallback(window, MouseButtonCallback);
 	glfwSetKeyCallback(window, KeyCallback);
-	glfwSetWindowSizeCallback(window, WindowResizeCallback);
+	glfwSetFramebufferSizeCallback(window, WindowFramebufferResizeCallback);
 	glfwSetWindowFocusCallback(window, WindowFocusCallback);
 
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);

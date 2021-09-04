@@ -42,20 +42,16 @@ void WorldRenderer::Render()
 {
 	OPTICK_EVENT();
 	
-	auto start = std::chrono::high_resolution_clock::now();
-
 	m_ChunkShader.Bind();
 
 	if (!m_World->m_LocalPlayer)
-		return;
+	{
+		// Only draw the skybox
+		m_Skybox->Render();
+	}
 
 	Camera& camera = m_World->m_LocalPlayer->GetCamera();
-
-	// Update the matricies
-	int windowWidth, windowHeight;
-	glfwGetWindowSize(InputHandler::GetWindow(), &windowWidth, &windowHeight);
-
-	camera.UpdateMatrices(windowWidth, windowHeight);
+	camera.UpdateViewMatrix();
 
 	glm::mat4 mvp = camera.m_ProjectionMatrix * camera.m_ViewMatrix;
 	m_ChunkShader.SetUniform("u_MVP", mvp);
@@ -146,10 +142,6 @@ void WorldRenderer::Render()
 
 	// Render text
 	LogRenderer::Get().Render();
-
-	auto stop = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-	//std::cout << "Render took " << duration.count() << " ms\n";
 }
 
 WorldRenderer::~WorldRenderer()
