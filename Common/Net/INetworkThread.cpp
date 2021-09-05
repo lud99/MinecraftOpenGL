@@ -10,6 +10,8 @@
 #include <Common/ThreadPool.h>
 #include <Common/Player/IPlayer.h>
 
+#include <Common/DebugConsole.h>
+
 INetworkThread::INetworkThread()
 {
 }
@@ -57,10 +59,12 @@ void INetworkThread::SendJson(json& message, NetworkClient* client)
 {
 	std::string s = message["Type"];
 #ifdef SERVER_BUILD
-	std::cout << "Sending message " + s +" to client " + std::to_string(client->m_Id) + std::string("... ");
+	Console::Log("Sent Packets", message["Type"]) << client->m_Id;
+	//std::cout << "Sending message " + s +" to client " + std::to_string(client->m_Id) + std::string("... ");
 #else
-	std::cout << "Sending message " + s + std::string("... ");
+	Console::Log("Sent Packets", message["Type"]) << message["Data"];
 #endif
+
 	std::string stringified = message.dump();
 
 	SendString(stringified, client);
@@ -72,7 +76,7 @@ void INetworkThread::SendString(const std::string& data, NetworkClient* client)
 //	m_QueueLock.lock();
 	ENetPacket* packet = enet_packet_create(data.c_str(), data.length() + 1, ENET_PACKET_FLAG_RELIABLE);
 	enet_peer_send(client->m_Peer, 0, packet);
-	std::cout << "Sent\n";
+	
 	//std::cout << "Sending message " << data << "\n";
 	//m_SendQueue.emplace_back(data, conn);
 	//m_QueueLock.unlock();
@@ -82,7 +86,7 @@ void INetworkThread::Broadcast(json& packet, const std::string& sessionName, int
 {
 	if (m_Sessions.count(sessionName) == 0)
 	{
-		std::cout << "Broadcasting to session " + sessionName + " that doesn't exist\n";
+		Console::Log("Errors") << "Tried broadcasting to session " + sessionName + " that doesn't exist";
 		return;
 	}
 
@@ -120,8 +124,6 @@ ENetPacket* INetworkThread::PullPackets()
 		case ENET_EVENT_TYPE_RECEIVE:
 		{
 			json packet = json::parse((const char*)event.packet->data);
-
-			std::cout << "Recieved packet " << packet["Type"] << "\n";
 
 			// For the server, create a NetworkClient and attatch it to the enet peer, for easy access
 #ifdef SERVER_BUILD

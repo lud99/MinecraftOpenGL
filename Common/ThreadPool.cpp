@@ -10,6 +10,7 @@
 #include <Common/Chunk/ChunkBlock.h>
 #include <Common/Chunk/ChunkBuilder.h>
 #include <Common/Player/IPlayer.h>
+#include <Common/DebugConsole.h>
 
 #ifndef SERVER_BUILD
 #include "../../World/Chunk/ChunkMesh.h"
@@ -205,7 +206,7 @@ void ThreadPool::DoWork()
 				break;
 			}
 
-			std::cout << "Doing action: " << actionName << ", queue length: " << sum << "\n";
+			Console::Log("Threads", "Actions") << actionName << ", queue length: " << sum;
 		};
 
 		// Perform the requested action

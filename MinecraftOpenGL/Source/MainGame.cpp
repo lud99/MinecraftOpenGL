@@ -21,7 +21,11 @@
 #include <Common/Time.h>
 #include <Graphics/ModelParser.h>
 
-#include "LogRenderer.h"
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
+#include <Common/DebugConsole.h>
 
 #include <enet/enet.h>
 
@@ -88,7 +92,7 @@ void WindowFocusCallback(GLFWwindow* window, int focused)
 	else
 	{
 		lockedMouse = false;
-		//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
 }
 
@@ -173,18 +177,30 @@ int main()
 	double prevTickTime = glfwGetTime();
 	int frameCount = 0;
 
+	// Initialize imgui
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGui::StyleColorsDark();
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init("#version 330");
+
+
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
 		OPTICK_FRAME("MainThread");
-
-		/* Render here */
-		glClearColor(1, 1, 1, 1);
+		
+		// Clear screen
+		glClearColor(1, 1, 1, 1); // White
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Poll keys
-		/* Poll for and process events */
+		// Poll keys and window events
 		glfwPollEvents();
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
 
 		// Close the window if escape is pressed
 		if (InputHandler::IsKeyPressed(GLFW_KEY_ESCAPE))
@@ -195,9 +211,6 @@ int main()
 			lockedMouse = false;
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
-
-		if (InputHandler::IsKeyPressed(GLFW_KEY_K))
-			LogRenderer::Get().AddEntry("K key was pressed!");
 
 		ClientWorld* localWorld = nullptr;
 		NetworkThread& net = NetworkThread::Get();
@@ -254,6 +267,11 @@ int main()
 			localWorld->Render();
 		}
 
+		Console::Render();
+
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 		GLenum err;
 		while ((err = glGetError()) != GL_NO_ERROR)
 		{
@@ -268,6 +286,10 @@ int main()
 	}
 
 	OPTICK_SHUTDOWN();
+
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 
 	NetworkThread::Get().m_ShouldExit = true;
 

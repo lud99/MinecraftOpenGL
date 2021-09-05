@@ -10,6 +10,8 @@
 
 #include <Common/Net/NetworkConstants.h>
 
+#include <Common/DebugConsole.h>
+
 ClientNetworkThread& ClientNetworkThread::Get()
 {
 	static ClientNetworkThread instance;
@@ -79,6 +81,8 @@ void ClientNetworkThread::HandlePacket(json& packet, NetworkClient* me /* unused
 {
 	OPTICK_EVENT();
 
+	Console::Log("Recieved Packets", packet["Type"]) << packet["Data"];
+
 	if (packet["Type"] == "JoinWorld")
 	{
 		OnJoinWorld(packet, m_Me, peer);
@@ -97,7 +101,7 @@ void ClientNetworkThread::HandlePacket(json& packet, NetworkClient* me /* unused
 	}
 	else
 	{
-		std::cout << "Other packet: " << packet["Type"] << "\n";
+		Console::Log("Recieved Packets", "Unhandled Packet") << packet["Data"];
 	}
 }
 
@@ -196,8 +200,8 @@ ClientPlayer* ClientNetworkThread::CreatePlayer(NetworkClient* client)
 	player->m_World = session.m_World;
 	session.m_World->AddPlayer((IPlayer*)player);
 
-	std::cout << "Client (" << client->m_Id << ") joined world " << client->m_SessionName << ". ";
-	std::cout << session.m_World->GetPlayers().size() << " players are connected\n";
+	Console::Log("World", "Players") << "Client (" << client->m_Id << ") joined world " << client->m_SessionName << ". "
+		<< (int)session.m_World->GetPlayers().size() << " players are connected";
 
 	return player;
 }

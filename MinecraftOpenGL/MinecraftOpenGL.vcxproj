@@ -91,7 +91,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\Optick_1.3.1\include;$(ProjectDir)Source\Common;$(ProjectDir)Source\Graphics;$(SolutionDir)Dependencies\glfw-3.3.2.Win32\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\irrKlang-32bit-1.6.0\include;$(SolutionDir)Dependencies\enet-1.3.17\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source\imgui;$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\Optick_1.3.1\include;$(ProjectDir)Source\Common;$(ProjectDir)Source\Graphics;$(SolutionDir)Dependencies\glfw-3.3.2.Win32\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\irrKlang-32bit-1.6.0\include;$(SolutionDir)Dependencies\enet-1.3.17\include;%(AdditionalIncludeDirectories);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -108,7 +108,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\Optick_1.3.1\include;$(ProjectDir)Source\Common;$(ProjectDir)Source\Graphics;$(SolutionDir)Dependencies\glfw-3.3.2.Win64\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\irrKlang-64bit-1.6.0\include;$(SolutionDir)Dependencies\enet-1.3.17\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source\imgui;$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\Optick_1.3.1\include;$(ProjectDir)Source\Common;$(ProjectDir)Source\Graphics;$(SolutionDir)Dependencies\glfw-3.3.2.Win64\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\irrKlang-64bit-1.6.0\include;$(SolutionDir)Dependencies\enet-1.3.17\include;%(AdditionalIncludeDirectories);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -126,7 +126,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\Optick_1.3.1\include;$(ProjectDir)Source\Common;$(ProjectDir)Source\Graphics;$(SolutionDir)Dependencies\glfw-3.3.2.Win32\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\irrKlang-32bit-1.6.0\include;$(SolutionDir)Dependencies\enet-1.3.17\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source\imgui;$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\Optick_1.3.1\include;$(ProjectDir)Source\Common;$(ProjectDir)Source\Graphics;$(SolutionDir)Dependencies\glfw-3.3.2.Win32\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\irrKlang-32bit-1.6.0\include;$(SolutionDir)Dependencies\enet-1.3.17\include;%(AdditionalIncludeDirectories);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -148,7 +148,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\Optick_1.3.1\include;$(ProjectDir)Source\Common;$(ProjectDir)Source\Graphics;$(SolutionDir)Dependencies\glfw-3.3.2.Win64\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\irrKlang-64bit-1.6.0\include;$(SolutionDir)Dependencies\enet-1.3.17\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Source\imgui;$(SolutionDir)Dependencies\freetype\include;$(SolutionDir)Dependencies\Optick_1.3.1\include;$(ProjectDir)Source\Common;$(ProjectDir)Source\Graphics;$(SolutionDir)Dependencies\glfw-3.3.2.Win64\include;$(SolutionDir)Dependencies\glew-2.1.0\include;$(SolutionDir)Dependencies\glm;$(SolutionDir)Dependencies\stb;$(SolutionDir)Dependencies\irrKlang-64bit-1.6.0\include;$(SolutionDir)Dependencies\enet-1.3.17\include;%(AdditionalIncludeDirectories);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -162,6 +162,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Common\Common\DebugConsole.cpp" />
     <ClCompile Include="Source\Common\Common\Blocks\Blocks.cpp" />
     <ClCompile Include="Source\Common\Common\Graphics\Vertex.cpp" />
     <ClCompile Include="Source\Common\Common\Net\INetworkThread.cpp" />
@@ -178,7 +179,13 @@
     <ClCompile Include="Source\Graphics\Graphics\Textures\Cubemap.cpp" />
     <ClCompile Include="Source\Graphics\Graphics\Textures\Texture2D.cpp" />
     <ClCompile Include="Source\Graphics\Graphics\Textures\TextureAtlas.cpp" />
-    <ClCompile Include="Source\LogRenderer.cpp" />
+    <ClCompile Include="Source\imgui\imgui.cpp" />
+    <ClCompile Include="Source\imgui\imgui_demo.cpp" />
+    <ClCompile Include="Source\imgui\imgui_draw.cpp" />
+    <ClCompile Include="Source\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="Source\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="Source\imgui\imgui_tables.cpp" />
+    <ClCompile Include="Source\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Source\Network\ClientNetworkThread.cpp" />
     <ClCompile Include="Source\Common\Common\Time.h" />
     <ClCompile Include="Source\Common\Common\Utils\Raycast.cpp" />
@@ -206,7 +213,16 @@
     <ClInclude Include="Source\Common\Common\Graphics\BasicVertices.h" />
     <ClInclude Include="Source\Common\Common\Graphics\Vertex.h" />
     <ClInclude Include="Source\Common\Common\json.hpp" />
-    <ClInclude Include="Source\Log.h" />
+    <ClInclude Include="Source\imgui\imconfig.h" />
+    <ClInclude Include="Source\imgui\imgui.h" />
+    <ClInclude Include="Source\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="Source\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="Source\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="Source\imgui\imgui_internal.h" />
+    <ClInclude Include="Source\imgui\imstb_rectpack.h" />
+    <ClInclude Include="Source\imgui\imstb_textedit.h" />
+    <ClInclude Include="Source\imgui\imstb_truetype.h" />
+    <ClInclude Include="Source\Common\Common\DebugConsole.h" />
     <ClInclude Include="Source\Common\Common\Net\INetworkThread.h" />
     <ClInclude Include="Source\Common\Common\Net\NetworkClient.h" />
     <ClInclude Include="Source\Common\Common\Net\NetworkConstants.h" />
@@ -216,7 +232,6 @@
     <ClInclude Include="Source\Common\Common\Player\IPlayer.h" />
     <ClInclude Include="Source\Common\Common\ThreadPool.h" />
     <ClInclude Include="Source\Graphics\Graphics\Font.h" />
-    <ClInclude Include="Source\LogRenderer.h" />
     <ClInclude Include="Source\Window.h" />
     <ClInclude Include="Source\World\ClientWorld.h" />
     <ClInclude Include="Source\Graphics\Graphics\Mesh.hpp" />

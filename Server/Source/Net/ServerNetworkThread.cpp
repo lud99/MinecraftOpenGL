@@ -4,6 +4,7 @@
 
 #include <Common/Chunk/Chunk.h>
 #include <Common/Chunk/ChunkBlock.h>
+#include <Common/DebugConsole.h>
 
 #include <Common/Net/NetworkConstants.h>
 
@@ -49,6 +50,8 @@ ServerNetworkThread::ServerNetworkThread()
 
 void ServerNetworkThread::HandlePacket(json& packet, NetworkClient* client, ENetPeer* peer)
 {
+	Console::Log("Recieved Packets", packet["Type"]) << packet["Data"];
+
 	if (packet["Type"] == "JoinWorld")
 	{
 		OnClientJoinWorld(packet, client);
@@ -59,7 +62,7 @@ void ServerNetworkThread::HandlePacket(json& packet, NetworkClient* client, ENet
 	}
 	else 
 	{
-		std::cout << "Other packet: " + packet["Type"] + std::string("\n");
+		Console::Log("Recieved Packets", "Unhandled Packet") << packet["Data"];
 	}
 }
 
@@ -130,8 +133,6 @@ void ServerNetworkThread::OnClientJoinWorld(json& packet, NetworkClient* client)
 void ServerNetworkThread::OnClientPositionUpdate(json& packet, NetworkClient* client)
 {
 	ServerPlayer* player = (ServerPlayer*)m_Sessions[client->m_SessionName].m_World->GetPlayer(client->m_Id);
-
-	std::cout << client->m_Id << "\n";
 
 	glm::vec3 newPosition(packet["Data"]["X"], packet["Data"]["Y"], packet["Data"]["Z"]);
 

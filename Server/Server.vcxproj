@@ -24,6 +24,7 @@
     <ClCompile Include="Source\Common\Common\Chunk\Chunk.cpp" />
     <ClCompile Include="Source\Common\Common\Chunk\ChunkBlock.cpp" />
     <ClCompile Include="Source\Common\Common\Chunk\ChunkBuilder.cpp" />
+    <ClCompile Include="Source\Common\Common\DebugConsole.cpp" />
     <ClCompile Include="Source\Common\Common\Graphics\Vertex.cpp" />
     <ClCompile Include="Source\Common\Common\Net\INetworkThread.cpp" />
     <ClCompile Include="Source\Common\Common\Net\NetworkClient.cpp" />
@@ -49,6 +50,7 @@
     <ClInclude Include="Source\Common\Common\Chunk\Chunk.h" />
     <ClInclude Include="Source\Common\Common\Chunk\ChunkBlock.h" />
     <ClInclude Include="Source\Common\Common\Chunk\ChunkBuilder.h" />
+    <ClInclude Include="Source\Common\Common\DebugConsole.h" />
     <ClInclude Include="Source\Common\Common\Graphics\BasicVertices.h" />
     <ClInclude Include="Source\Common\Common\Graphics\Vertex.h" />
     <ClInclude Include="Source\Common\Common\json.hpp" />
