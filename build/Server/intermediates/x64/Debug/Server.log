@@ -1,2 +1,12 @@
-﻿  DebugConsole.cpp
+﻿  Chunk.cpp
+  ChunkBlock.cpp
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\xlocnum(12,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\Common\Common\Chunk\Chunk.cpp)
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\ios(11,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\Common\Common\Chunk\Chunk.cpp)
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\ostream(11,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\Common\Common\Chunk\Chunk.cpp)
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\istream(11,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\Common\Common\Chunk\Chunk.cpp)
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\sstream(11,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\Common\Common\Chunk\Chunk.cpp)
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\chrono(14,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\Common\Common\Chunk\Chunk.cpp)
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\mutex(16,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\Common\Common\Chunk\Chunk.cpp)
+D:\Spel\Programming\C++\MinecraftOpenGL\Server\Source\Common\Common\Chunk\Chunk.h(9,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop) (compiling source file Source\Common\Common\Chunk\Chunk.cpp)
+D:\Spel\Programming\C++\MinecraftOpenGL\Server\Source\Common\Common\Chunk\Chunk.cpp(1,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
   Server.vcxproj -> D:\Spel\Programming\C++\MinecraftOpenGL\build\Server\x64\Debug\Server.exe

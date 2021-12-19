@@ -13,11 +13,20 @@
 #include <Common/Noise/FastNoise.h>
 #include <Common/Graphics/BasicVertices.h>
 #include <Graphics/Textures/TextureAtlas.h>
+#include <Graphics/ModelParser.h>
 
 ChunkMesh::ChunkMesh()
 {
 	m_OpaqueMesh.m_Texture = TextureAtlas::Get().Texture;
 	m_WaterMesh.m_Texture = TextureAtlas::Get().Texture;
+
+	if (!m_HaveLoadedModels)
+	{
+		ModelParser::Parse("Resources/Models/Door/door-bottom.obj", m_BlockModels[BlockIds::DoorBottom]);
+		ModelParser::Parse("Resources/Models/Door/door-top.obj", m_BlockModels[BlockIds::DoorTop]);
+		
+		m_HaveLoadedModels = true;
+	}
 }
 
 void ChunkMesh::RebuildMesh()
@@ -30,6 +39,7 @@ void ChunkMesh::RebuildMesh()
 
 	m_TempOpaqueMesh.Clear();
 	m_TempWaterMesh.Clear();
+	m_TempModelsMesh.clear();
 
 	for (int x = 0; x < Chunk::Width; x++)
 	{
@@ -39,8 +49,10 @@ void ChunkMesh::RebuildMesh()
 			{
 				ChunkBlock* block = m_Chunk->GetBlockAt(glm::ivec3(x, y, z));
 
-				// Add all the faces on the cube
-				block->AddBlockFaces(m_Chunk);
+				//if (block->GetBlockType()->isModel)
+					//AddModel(block);
+				//else
+					block->AddBlockFaces(m_Chunk);
 			}
 		}
 	}
@@ -59,13 +71,19 @@ void ChunkMesh::RebuildMesh()
 	m_WaterMesh.SetVertices(m_TempWaterMesh.GetVertices());
 	m_WaterMesh.SetIndices(m_TempWaterMesh.GetIndices());
 
+	m_ModelsMesh.clear();
+	for (auto& entry : m_TempModelsMesh)
+	{
+		m_ModelsMesh[entry.first].SetVertices(entry.second.GetVertices());
+		m_ModelsMesh[entry.first].m_Texture = entry.second.m_Texture;
+	}
+
 	m_TempOpaqueMesh.Clear();
 	m_TempWaterMesh.Clear();
+	m_TempModelsMesh.clear();
 
 	// Set the adjacent chunks
 	m_Chunk->m_AdjacentChunksWhenLastRebuilt = m_Chunk->GetAdjacentChunks();
-
-	//std::cout << "Chunk mesh rebuilt. " << m_Position.x << ", " << m_Position.y << "\n";
 
 	m_Chunk->m_IsRebuilding = false;
 	m_Chunk->SetDirty(false);
@@ -128,14 +146,37 @@ void ChunkMesh::AddBlockFace(ChunkBlock* block, BlockFace& face)
 	}
 }
 
+void ChunkMesh::AddModel(ChunkBlock* block)
+{
+	// Set the texture to the mesh, from the loaded model
+	m_TempModelsMesh[block->m_BlockId].m_Texture = m_BlockModels[block->m_BlockId].m_Texture;
+
+	std::vector<TextureVertex>& meshVerts = m_TempModelsMesh[block->m_BlockId].GetVertices();
+	std::vector<TextureVertex>& modelVerts = m_BlockModels[block->m_BlockId].GetVertices();
+
+	// Reserve the size needed
+	meshVerts.reserve(meshVerts.size() + modelVerts.size());
+	for (size_t i = 0; i < modelVerts.size(); i++)
+	{
+		TextureVertex vertex;
+		vertex.position = modelVerts[i].position + (glm::vec3)block->GetWorldPosition(m_Chunk) + glm::vec3(1.0f, 0.5f, 0.5f);
+		vertex.textureCoord = modelVerts[i].textureCoord;
+
+		meshVerts.push_back(vertex);
+	}
+}
+
 void ChunkMesh::Render()
 {
+	abort();
 	m_OpaqueMesh.Render();
 	m_WaterMesh.Render();
 }
-
 
 ChunkMesh::~ChunkMesh()
 {
 
 }
+
+ModelsMeshMap ChunkMesh::m_BlockModels;
+bool ChunkMesh::m_HaveLoadedModels = false;

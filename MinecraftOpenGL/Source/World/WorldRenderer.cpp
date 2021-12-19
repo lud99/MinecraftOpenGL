@@ -27,7 +27,7 @@ WorldRenderer& WorldRenderer::Get()
 void WorldRenderer::Init()
 {
 	m_ChunkShader = ShaderLoader::CreateShader("Resources/Shaders/Chunk.vert", "Resources/Shaders/Chunk.frag");
-	m_PlayerModelShader = ShaderLoader::CreateShader("Resources/Shaders/Collider.vert", "Resources/Shaders/Collider.frag");
+	m_ChunkBlockModelsShader = ShaderLoader::CreateShader("Resources/Shaders/Model.vert", "Resources/Shaders/Model.frag");
 	//m_Fog.Init();
 
 	m_Skybox = new Skybox();
@@ -102,6 +102,35 @@ void WorldRenderer::Render()
 		}
 	}
 
+	m_ChunkBlockModelsShader.Bind();
+	for (auto const& entry : chunks)
+	{
+		if (!entry.second->m_ChunkMesh) continue;
+
+		ClientPlayer* player = m_World->m_LocalPlayer;
+		glm::vec2 front(player->GetCamera().m_Front2D.x, player->GetCamera().m_Front2D.z);
+
+		glm::vec2 chunkPosition = entry.second->GetWorldPosition();
+		glm::vec2 pPos(player->m_Position.x, player->m_Position.z);
+
+		float dot = glm::dot(chunkPosition - pPos, front);
+
+		// Chunk is in front of camera
+		//if (dot > 0)
+		{
+			m_ChunkBlockModelsShader.SetUniform("u_MVP", mvp);
+
+			/*m_ChunkBlockModelsShader.SetUniform("u_ChunkPosition", entry.second->GetWorldPosition());
+			m_ChunkBlockModelsShader.SetUniform("u_Dirty", entry.second->IsDirty() || entry.second->m_IsRebuilding);
+			m_ChunkBlockModelsShader.SetUniform("u_ShouldBeRemoved", entry.second->m_ShouldBeRemoved);*/
+
+			for (auto& modelEntry : entry.second->m_ChunkMesh->m_ModelsMesh)
+			{
+				modelEntry.second.Render();
+			}
+		}
+	}
+
 	//if (World::m_LookingAtCollider.m_Enabled) 
 		//World::m_LookingAtCollider.RenderHitbox();
 
@@ -117,24 +146,24 @@ void WorldRenderer::Render()
 		m_World->m_LocalPlayer->m_Crosshair.Render();
 
 	// Render all players
-	m_PlayerModelShader.Bind();
+	m_ChunkBlockModelsShader.Bind();
 
-	for (auto& entry : m_World->GetPlayers())
-	{
-		ClientPlayer* player = (ClientPlayer*)entry.second;
-		if (!player) continue;
-		if (player->m_IsMe) continue; // Don't render the local player
+	//for (auto& entry : m_World->GetPlayers())
+	//{
+	//	ClientPlayer* player = (ClientPlayer*)entry.second;
+	//	if (!player) continue;
+	//	// if (player->m_IsMe) continue; // Don't render the local player
 
-		// Set the player position as a uniform
-		glm::mat4 modelMatrix(1.0f);
-		modelMatrix = glm::translate(modelMatrix, player->m_Position);
+	//	// Set the player position as a uniform
+	//	glm::mat4 modelMatrix(1.0f);
+	//	modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 60, 0)/*player->m_Position*/);
 
-		m_PlayerModelShader.SetUniform("u_ProjectionMatrix", camera.m_ProjectionMatrix);
-		m_PlayerModelShader.SetUniform("u_ViewMatrix", camera.m_ViewMatrix);
-		m_PlayerModelShader.SetUniform("u_ModelMatrix", modelMatrix);
+	//	m_ChunkBlockModelsShader.SetUniform("u_ProjectionMatrix", camera.m_ProjectionMatrix);
+	//	m_ChunkBlockModelsShader.SetUniform("u_ViewMatrix", camera.m_ViewMatrix);
+	//	m_ChunkBlockModelsShader.SetUniform("u_ModelMatrix", modelMatrix);
 
-		player->m_PlayerModel->Render();
-	}
+	//	//player->m_PlayerModel.Render();
+	//}
 
 	m_Skybox->Render();
 }

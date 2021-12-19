@@ -1,2 +1,12 @@
-﻿  DebugConsole.cpp
+﻿  ChunkMesh.cpp
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\xlocnum(12,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\ios(11,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\ostream(11,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\istream(11,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\sstream(11,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\chrono(14,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29910\include\mutex(16,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
+D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\Graphics\Graphics\Mesh.hpp(7,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
+D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\World\Chunk\ChunkMesh.h(9,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
+D:\Spel\Programming\C++\MinecraftOpenGL\MinecraftOpenGL\Source\World\Chunk\ChunkMesh.cpp(1,1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
   MinecraftOpenGL.vcxproj -> D:\Spel\Programming\C++\MinecraftOpenGL\build\MinecraftOpenGL\x64\Debug\MinecraftOpenGL.exe

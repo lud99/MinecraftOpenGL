@@ -42,7 +42,7 @@ public:
 	glm::vec3 m_LastLookingAtPosition = glm::vec3(0.0f);
 	Crosshair m_Crosshair;
 
-	Mesh<TextureVertex>* m_PlayerModel;
+	Mesh<TextureVertex> m_PlayerModel;
 
 	// If this player is the real player that should do logic
 	bool m_IsMe = false;

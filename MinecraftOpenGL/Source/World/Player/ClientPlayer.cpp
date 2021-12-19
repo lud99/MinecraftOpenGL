@@ -34,7 +34,7 @@ void ClientPlayer::OnInit()
 	if (m_IsMe) 
 		m_Crosshair.Init();
 
-	m_PlayerModel = ModelParser::Parse("Resources/Models/door.obj");
+	ModelParser::Parse("Resources/Models/Door/door-top.obj", m_PlayerModel);
 }
 
 void ClientPlayer::OnUpdate()
@@ -75,6 +75,8 @@ void ClientPlayer::OnUpdate()
 		m_CurrentHotbarSlot = 12;
 	if (InputHandler::IsKeyPressed(GLFW_KEY_KP_3))
 		m_CurrentHotbarSlot = 13;
+	if (InputHandler::IsKeyPressed(GLFW_KEY_KP_4))
+		m_CurrentHotbarSlot = 14;
 
 	// Block breaking
 	if (InputHandler::IsMouseButtonHeld(GLFW_MOUSE_BUTTON_LEFT))

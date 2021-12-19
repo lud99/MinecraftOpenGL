@@ -30,6 +30,7 @@ struct BlockType
 	bool isTransparent = false; // For example leaves. Has some parts which are fully see-through
 	bool isOpaque = true; // Solid blocks. Neither transparent or translucent
 	bool isModel = false; // For blocks that need custom vertices
+	std::string modelPath = "";
 
 	float friction = 0.25f;
 

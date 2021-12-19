@@ -46,13 +46,21 @@ void ChunkBuilder::ProcessQueue()
 
 		switch (action.type)
 		{
-		case ChunkAction::ActionType::Rebuild:
+		case ChunkAction::ActionType::Rebuild: {
 #ifndef SERVER_BUILD
 			action.chunk->m_ChunkMesh->m_OpaqueMesh.Update();
 			action.chunk->m_ChunkMesh->m_WaterMesh.Update();
+			ModelsMeshMap& modelsMeshes = action.chunk->m_ChunkMesh->m_ModelsMesh;
+			for (auto& entry : modelsMeshes)
+			{
+				entry.second.Update();
+			}
+
+			//action.chunk->m_ChunkMesh->m_ModelsMesh.Update();
 #endif
 
 			break;
+		}
 		case ChunkAction::ActionType::CreateGenerateAndBuild:
 #ifndef SERVER_BUILD
 			action.chunk->m_ChunkMesh->m_OpaqueMesh.Update();

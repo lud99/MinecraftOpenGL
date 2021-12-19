@@ -43,6 +43,9 @@ bool lockedMouse = false;
 
 void MouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
+	if (ImGui::GetIO().WantCaptureMouse)
+		return;
+
 	ClientWorld* world = NetworkThread::Get().GetThisWorld();
 	if (!world) return;
 	if (!world->m_LocalPlayer) return;
@@ -58,6 +61,9 @@ void MouseCallback(GLFWwindow* window, double xpos, double ypos)
 
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
+	if (ImGui::GetIO().WantCaptureMouse)
+		return;
+
 	InputHandler::UpdateMouseButtonState(button, action, mods);
 
 	if (!lockedMouse)
@@ -68,6 +74,9 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	if (ImGui::GetIO().WantCaptureKeyboard)
+		return;
+
 	InputHandler::UpdateKeyState(key, action, mods);
 }
 
@@ -185,7 +194,6 @@ int main()
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 330");
 
-
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
@@ -208,8 +216,18 @@ int main()
 
 		if (InputHandler::IsKeyPressed(GLFW_KEY_F1))
 		{
-			lockedMouse = false;
-			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			Console::m_Enabled = !Console::m_Enabled;
+
+			if (Console::m_Enabled)
+			{
+				lockedMouse = false;
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			}
+			else 
+			{
+				lockedMouse = true;
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			}
 		}
 
 		ClientWorld* localWorld = nullptr;
@@ -282,7 +300,6 @@ int main()
 		glfwSwapBuffers(window);
 
 		InputHandler::Clear();
-
 	}
 
 	OPTICK_SHUTDOWN();

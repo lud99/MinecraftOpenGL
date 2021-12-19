@@ -25,12 +25,10 @@ private:
 
 public:
 	Shader m_ChunkShader;
+	Shader m_ChunkBlockModelsShader;
 
 	ClientWorld* m_World = nullptr;
 	Skybox* m_Skybox = nullptr;
 
 	Font m_Font;
-
-private:
-	Shader m_PlayerModelShader;
 };

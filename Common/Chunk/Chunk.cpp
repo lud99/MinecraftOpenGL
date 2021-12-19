@@ -403,14 +403,7 @@ void Chunk::CreateAndGenerateTerrain(ChunkAction::Priority priority, ChunkAction
 
 void Chunk::GetDataNet()
 {
-	/*NetworkThread& net = net.Instance();
 
-	json msg;
-	msg["Type"] = "GetChunk";
-	msg["Data"]["Position"]["X"] = m_Position.x;
-	msg["Data"]["Position"]["Z"] = m_Position.y;*/
-
-	//net.SendJson(msg);
 }
 
 void Chunk::GetDataNetThreaded(ChunkAction::Priority priority, ChunkAction* nextAction)

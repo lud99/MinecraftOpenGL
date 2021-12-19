@@ -34,6 +34,8 @@ public:
 
 	static std::mutex m_Mutex;
 
+	static bool m_Enabled;
+
 private:
 
 	// The key is the logging category 

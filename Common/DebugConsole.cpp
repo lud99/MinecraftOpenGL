@@ -74,6 +74,8 @@ ConsoleEntry& Console::Log(std::string category, std::string title)
 
 void Console::Render()
 {
+	if (!m_Enabled) return;
+
 	std::lock_guard<std::mutex> lock(m_Mutex);
 
 	// Display the logs with ImGui
@@ -109,6 +111,7 @@ void Console::Render()
 
 						ImGui::Text(logs[i].stringData.c_str());
 					}
+					depth--;
 				}
 			}
 
@@ -156,4 +159,5 @@ void Console::Render()
 }
 
 std::mutex Console::m_Mutex;
+bool Console::m_Enabled = false;
 std::map<std::string, ConsoleEntry> Console::m_LogEntries;
