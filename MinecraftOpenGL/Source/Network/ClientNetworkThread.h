@@ -19,6 +19,7 @@ public:
 	void OnNewPlayerJoined(json& packet, NetworkClient* me, ENetPeer* peer);
 	void OnPlayerPosition(json& packet, NetworkClient* me, ENetPeer* peer);
 	void OnChunkData(json& packet, NetworkClient* me, ENetPeer* peer);
+	void OnChunkDataChanged(json& packet, NetworkClient* me, ENetPeer* peer);
 
 	ClientPlayer* CreatePlayer(NetworkClient* client);
 	NetworkSession& JoinSession(NetworkClient* client, const std::string& sessionName, int clientId = -1);

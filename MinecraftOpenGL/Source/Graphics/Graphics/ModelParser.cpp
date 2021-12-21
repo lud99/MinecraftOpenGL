@@ -108,8 +108,12 @@ void ModelParser::Parse(const std::string& dir, const std::string& filename, Mes
 					break;
 				}
 			}
+
+			mtl.close();
 		}
 	}
 
 	Console::Log("Resources") << "Loaded model " << dir + "/" + filename;
+
+	file.close();
 }

@@ -93,6 +93,7 @@ public:
 	AdjacentChunks m_AdjacentChunksWhenLastRebuilt;
 
 	ChunkBlock* m_Blocks;
+	std::vector<ChunkBlock> m_ChangedBlocks;
 	BlockEntitiesMap m_BlockEntities;
 	std::vector<DroppedItem*> m_DroppedItems;
 

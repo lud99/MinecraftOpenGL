@@ -8,6 +8,7 @@
 #include "WorldRenderer.h"
 #include "Player/ClientPlayer.h"
 #include <Common/Chunk/Chunk.h>
+#include <Common/Chunk/ChunkBlock.h>
 //#include "Chunk/ChunkIO.h"
 #include <Common/Utils/Utils.h>
 #include <Common/Blocks/Blocks.h>
@@ -97,6 +98,33 @@ void ClientWorld::HandleCreatingNewChunks()
 		if (chunk->m_IsInitialized && chunk->m_ChunkMesh && chunk->IsDirty() && !chunk->m_IsRebuilding)
 		{
 			chunk->m_ChunkMesh->RebuildMeshThreaded(ChunkAction::Priority::Normal);
+
+			if (chunk->m_ChangedBlocks.empty())
+				continue;
+
+			// Otherwise send the block changes to the other clients
+			json packet;
+			packet["Type"] = "ChunkDataChanged";
+			packet["Data"]["Position"]["X"] = chunk->GetPosition().x;
+			packet["Data"]["Position"]["Z"] = chunk->GetPosition().y;
+
+			packet["Data"]["Blocks"] = json::array();
+
+			for (int i = 0; i < chunk->m_ChangedBlocks.size(); i++)
+			{
+				json block;
+				block["X"] = chunk->m_ChangedBlocks[i].GetLocalPosition().x;
+				block["Y"] = chunk->m_ChangedBlocks[i].GetLocalPosition().y;
+				block["Z"] = chunk->m_ChangedBlocks[i].GetLocalPosition().z;
+				block["BlockId"] = chunk->m_ChangedBlocks[i].m_BlockId;
+
+				packet["Data"]["Blocks"].push_back(block);
+			}
+
+
+			m_LocalPlayer->m_NetClient->SendJson(packet);
+
+			chunk->m_ChangedBlocks.clear();
 
 			//m_ChunkBuilder.AddToQueue(ChunkAction(ChunkAction::ActionType::RebuildAdjacentChunks, chunk, ChunkAction::Priority::Low));
 

@@ -34,29 +34,30 @@ ConsoleEntry& operator<<(ConsoleEntry& left, const json& right)
 {
 	//std::lock_guard<std::mutex> log(m_Mutex);
 
-	std::string str = right.dump();
+	/*std::string str = right.dump();
 	if (str.length() > Console::MaxLength)
 		left.stringData += str.substr(0, Console::MaxLength) + "...";
 	else
-		left.stringData += str;
+		left.stringData += str;*/
 
 	return left;
 }
 
+// todo Sometimes crashes. thread safety issue?
 ConsoleEntry& operator<<(ConsoleEntry& left, const int right)
 {
-	//std::lock_guard<std::mutex> log(m_Mutex);
+	std::lock_guard<std::mutex> log(Console::m_Mutex);
 
-	left.stringData += std::to_string(right);
+	//left.stringData += std::to_string(right);
 
 	return left;
 }
 
 ConsoleEntry& operator<<(ConsoleEntry& left, const float right)
 {
-	//std::lock_guard<std::mutex> log(m_Mutex);
+	std::lock_guard<std::mutex> log(Console::m_Mutex);
 
-	left.stringData += std::to_string(right);
+	//left.stringData += std::to_string(right);
 
 	return left;
 }

@@ -64,6 +64,10 @@ void ServerNetworkThread::HandlePacket(json& packet, NetworkClient* client, ENet
 	{
 		OnClientPositionUpdate(packet, client);
 	}
+	else if (packet["Type"] == "ChunkDataChanged")
+	{
+		OnChunkDataChanged(packet, client);
+	}
 	else 
 	{
 		Console::Log("Recieved Packets", "Unhandled Packet") << packet["Data"];
@@ -150,6 +154,32 @@ void ServerNetworkThread::OnClientPositionUpdate(json& packet, NetworkClient* cl
 	glm::vec3 newPosition(packet["Data"]["X"], packet["Data"]["Y"], packet["Data"]["Z"]);
 
 	player->m_Position = newPosition;
+
+	// Broadcast the position update to the other players
+	json packetToBroadcast;
+	packetToBroadcast = packet;
+	packetToBroadcast["Data"]["ClientId"] = client->m_Id;
+	Broadcast(packetToBroadcast, client->m_SessionName, client->m_Id /* Exclude */);
+}
+
+void ServerNetworkThread::OnChunkDataChanged(json& packet, NetworkClient* client)
+{
+	ServerPlayer* player = (ServerPlayer*)m_Sessions[client->m_SessionName].m_World->GetPlayer(client->m_Id);
+
+	glm::vec2 chunkPos(packet["Data"]["Position"]["X"], packet["Data"]["Position"]["Z"]);
+
+	ServerWorld* world = (ServerWorld*)m_Sessions[client->m_SessionName].m_World;
+
+	Chunk* chunk = world->GetChunkAt(chunkPos);
+
+	json changedBlocks = packet["Data"]["Blocks"];
+	for (auto& block : changedBlocks)
+	{
+		glm::vec3 pos(block["X"], block["Y"], block["Z"]);
+		int blockId = block["BlockId"];
+
+		chunk->GetBlockAt(pos)->m_BlockId = blockId;
+	}
 
 	// Broadcast the position update to the other players
 	json packetToBroadcast;

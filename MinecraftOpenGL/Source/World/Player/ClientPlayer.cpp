@@ -418,6 +418,8 @@ void ClientPlayer::HandleBlockBreaking()
 		if (doDefault) block->Break();
 
 		delete block;
+
+		m_HighlightedBlockChunk->m_ChangedBlocks.push_back(*m_HighlightedBlock);
 	}
 
 	m_PrevBreakingBlock = m_HighlightedBlock;
@@ -478,6 +480,7 @@ void ClientPlayer::HandleBlockPlacing()
 
 		// A block has been reached, so do the block placing
 		ChunkBlock* blockToReplace = m_World->GetBlockAt(raycast.GetPreviousPosition());
+		//m_HighlightedBlockChunk = m_World->GetChunkAt((glm::ivec3)raycast.GetPreviousPosition());
 
 		if (blockToReplace)
 		{
@@ -499,6 +502,8 @@ void ClientPlayer::HandleBlockPlacing()
 				blockToReplace->m_BlockId = m_Hotbar[m_CurrentHotbarSlot];
 				m_HighlightedBlockChunk->SetDirty(true);
 			}
+
+			m_HighlightedBlockChunk->m_ChangedBlocks.push_back(*blockToReplace);
 		}
 
 		raycast.Stop();

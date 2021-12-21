@@ -99,6 +99,10 @@ void ClientNetworkThread::HandlePacket(json& packet, NetworkClient* me /* unused
 	{
 		OnChunkData(packet, m_Me, peer);
 	}
+	else if (packet["Type"] == "ChunkDataChanged")
+	{
+		OnChunkDataChanged(packet, m_Me, peer);
+	}
 	else
 	{
 		Console::Log("Recieved Packets", "Unhandled Packet") << packet["Data"];
@@ -178,10 +182,6 @@ void ClientNetworkThread::OnChunkData(json& packet, NetworkClient* conn, ENetPee
 	glm::ivec2 pos(packet["Data"]["Position"]["X"], packet["Data"]["Position"]["Z"]);
 
 	ClientWorld* world = GetThisWorld();
-	if (!world) {
-		std::cout << "Recieved Chunk data before joining world!!\n";
-		return;
-	}
 	assert(world);
 
 	Chunk* chunk = world->GetChunkAt(pos);
@@ -196,6 +196,28 @@ void ClientNetworkThread::OnChunkData(json& packet, NetworkClient* conn, ENetPee
 	action.stringData = packet["Data"]["Blocks"];
 
 	ChunkBuilder::Get().AddToQueue(action);
+}
+
+void ClientNetworkThread::OnChunkDataChanged(json& packet, NetworkClient* me, ENetPeer* peer)
+{
+	OPTICK_EVENT();
+
+	ClientWorld* world = GetThisWorld();
+	assert(world);
+
+	glm::vec2 chunkPos(packet["Data"]["Position"]["X"], packet["Data"]["Position"]["Z"]);
+
+	Chunk* chunk = world->GetChunkAt(chunkPos);
+
+	json changedBlocks = packet["Data"]["Blocks"];
+	for (auto& block : changedBlocks)
+	{
+		glm::vec3 pos(block["X"], block["Y"], block["Z"]);
+		int blockId = block["BlockId"];
+
+		chunk->GetBlockAt(pos)->m_BlockId = blockId;
+		chunk->SetDirty(true);
+	}
 }
 
 ClientPlayer* ClientNetworkThread::CreatePlayer(NetworkClient* client)

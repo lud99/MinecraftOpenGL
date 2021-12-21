@@ -32,7 +32,7 @@ void Texture2D::Load(const std::string& filepath)
 	unsigned char* data = stbi_load(filepath.c_str(), &m_Width, &m_Height, &m_NrChannels, 0);
 	if (data)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data); // todo crashes sometimes. dont know why
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else

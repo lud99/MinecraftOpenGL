@@ -168,7 +168,8 @@ int main()
 	bool isConnected = NetworkThread::Get().Connect("127.0.0.1", 7777);
 	if (!isConnected)
 	{
-		std::cout << "err!!\n";
+		std::cout << "Could not connect to 127.0.0.1:7777\n";
+
 	}
 	else
 	{

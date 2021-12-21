@@ -17,7 +17,7 @@ public:
 	void OnClientJoinWorld(json& packet, NetworkClient* client);
 	void OnClientConfirmJoinWorld(json& packet, NetworkClient* client);
 	void OnClientPositionUpdate(json& packet, NetworkClient* client);
-	//void OnChunkData(json& packet, NetworkConnection* conn);
+	void OnChunkDataChanged(json& packet, NetworkClient* client);
 
 private:
 	ServerNetworkThread();
