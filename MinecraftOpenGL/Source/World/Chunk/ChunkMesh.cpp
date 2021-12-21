@@ -22,8 +22,8 @@ ChunkMesh::ChunkMesh()
 
 	if (!m_HaveLoadedModels)
 	{
-		ModelParser::Parse("Resources/Models/Door/door-bottom.obj", m_BlockModels[BlockIds::DoorBottom]);
-		ModelParser::Parse("Resources/Models/Door/door-top.obj", m_BlockModels[BlockIds::DoorTop]);
+		ModelParser::Parse("Resources/Models/Door", "door-bottom.obj", m_BlockModels[BlockIds::DoorBottom]);
+		ModelParser::Parse("Resources/Models/Door", "door-top.obj", m_BlockModels[BlockIds::DoorTop]);
 		
 		m_HaveLoadedModels = true;
 	}

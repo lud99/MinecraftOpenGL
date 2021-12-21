@@ -34,7 +34,8 @@ void ClientPlayer::OnInit()
 	if (m_IsMe) 
 		m_Crosshair.Init();
 
-	ModelParser::Parse("Resources/Models/Door/door-top.obj", m_PlayerModel);
+	ModelParser::Parse("Resources/Models/Villager", "villager.obj", m_PlayerModel);
+	m_PlayerModel.Update();
 }
 
 void ClientPlayer::OnUpdate()

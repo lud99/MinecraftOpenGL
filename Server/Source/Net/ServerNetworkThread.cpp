@@ -56,6 +56,10 @@ void ServerNetworkThread::HandlePacket(json& packet, NetworkClient* client, ENet
 	{
 		OnClientJoinWorld(packet, client);
 	}
+	else if (packet["Type"] == "ConfirmJoinWorld")
+	{
+		OnClientConfirmJoinWorld(packet, client);
+	}
 	else if (packet["Type"] == "PlayerPosition")
 	{
 		OnClientPositionUpdate(packet, client);
@@ -128,6 +132,15 @@ void ServerNetworkThread::OnClientJoinWorld(json& packet, NetworkClient* client)
 	broadcastPacket["Type"] = "NewPlayer";
 	broadcastPacket["Data"]["ClientId"] = client->m_Id;
 	Broadcast(broadcastPacket, sessionName, client->m_Id /* Exclude */);
+}
+
+void ServerNetworkThread::OnClientConfirmJoinWorld(json& packet, NetworkClient* client)
+{
+	ServerPlayer* player = (ServerPlayer*)m_Sessions[client->m_SessionName].m_World->GetPlayer(client->m_Id);
+
+	player->m_ConfirmedJoiningWorld = true;
+
+	Console::Log("World") << "Player " << client->m_Id << " has confirmed joining of world " << client->m_SessionName;
 }
 
 void ServerNetworkThread::OnClientPositionUpdate(json& packet, NetworkClient* client)

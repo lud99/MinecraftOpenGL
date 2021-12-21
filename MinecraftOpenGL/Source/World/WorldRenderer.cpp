@@ -148,22 +148,20 @@ void WorldRenderer::Render()
 	// Render all players
 	m_ChunkBlockModelsShader.Bind();
 
-	//for (auto& entry : m_World->GetPlayers())
-	//{
-	//	ClientPlayer* player = (ClientPlayer*)entry.second;
-	//	if (!player) continue;
-	//	// if (player->m_IsMe) continue; // Don't render the local player
+	for (auto& entry : m_World->GetPlayers())
+	{
+		ClientPlayer* player = (ClientPlayer*)entry.second;
+		if (!player) continue;
+		if (player->m_IsMe) continue; // Don't render the local player
 
-	//	// Set the player position as a uniform
-	//	glm::mat4 modelMatrix(1.0f);
-	//	modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 60, 0)/*player->m_Position*/);
+		// Set the player position as a uniform
+		glm::mat4 modelMatrix(1.0f);
+		modelMatrix = glm::translate(modelMatrix, player->m_Position);
 
-	//	m_ChunkBlockModelsShader.SetUniform("u_ProjectionMatrix", camera.m_ProjectionMatrix);
-	//	m_ChunkBlockModelsShader.SetUniform("u_ViewMatrix", camera.m_ViewMatrix);
-	//	m_ChunkBlockModelsShader.SetUniform("u_ModelMatrix", modelMatrix);
+		m_ChunkBlockModelsShader.SetUniform("u_MVP", mvp * modelMatrix);
 
-	//	//player->m_PlayerModel.Render();
-	//}
+		player->m_PlayerModel.Render();
+	}
 
 	m_Skybox->Render();
 }

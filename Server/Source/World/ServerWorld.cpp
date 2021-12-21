@@ -57,6 +57,7 @@ void ServerWorld::HandleCreatingNewChunks()
 
 		if (!player) continue;
 		if (!player->m_NetClient->m_HasJoinedSession) continue;
+		if (!player->m_ConfirmedJoiningWorld) continue;
 
 		glm::ivec3 position = glm::floor(player->m_Position);
 

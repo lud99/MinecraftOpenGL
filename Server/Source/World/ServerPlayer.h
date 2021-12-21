@@ -27,6 +27,8 @@ public:
 	/*glm::vec3 m_LookingAtPosition = glm::vec3(0.0f); 
 	glm::vec3 m_LastLookingAtPosition = glm::vec3(0.0f);*/
 
+	bool m_ConfirmedJoiningWorld = false;
+
 private:
 	Camera m_Camera;
 

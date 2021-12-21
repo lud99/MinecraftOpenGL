@@ -31,19 +31,19 @@ static std::vector<std::string> split(const std::string& txt, char ch)
 	return strs;
 }
 
-void ModelParser::Parse(const std::string& filepath, Mesh<TextureVertex>& model)
+void ModelParser::Parse(const std::string& dir, const std::string& filename, Mesh<TextureVertex>& model)
 {
 	std::vector<glm::vec3> vertexPositions;
 	std::vector<glm::vec2> textureCoordinates;
 	std::vector<uint16_t> indices;
 
-	std::ifstream file(filepath);
+	std::ifstream file(dir + "/" + filename);
 
 	std::string line;
 	while (std::getline(file, line))
 	{
-		int strpos = line.find(" ");
-		std::string firstWord = line.substr(0, strpos);
+		std::vector<std::string> args = split(line, ' ');
+		std::string firstWord = args[0];
 
 		// A vertex
 		if (firstWord == "v")
@@ -91,9 +91,25 @@ void ModelParser::Parse(const std::string& filepath, Mesh<TextureVertex>& model)
 				model.AddVertex(vertex);
 			}
 		}
+		// File with texture. Only use the first one
+		if (firstWord == "mtllib" && !model.m_Texture)
+		{
+			std::ifstream mtl(dir + "/" + args[1]);
+
+			std::string mtlLine;
+
+			while (std::getline(mtl, mtlLine))
+			{
+				std::vector<std::string> argsMtl = split(mtlLine, ' ');
+				
+				if (argsMtl[0] == "map_Kd")
+				{
+					model.m_Texture = new Texture2D(dir + "/" + argsMtl[1]);
+					break;
+				}
+			}
+		}
 	}
 
-	Console::Log("Resources") << "Loaded model " << filepath;
-
-	model.m_Texture = new Texture2D("Resources/Models/Door/top.png");
+	Console::Log("Resources") << "Loaded model " << dir + "/" + filename;
 }

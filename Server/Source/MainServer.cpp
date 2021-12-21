@@ -16,6 +16,8 @@
 
 int main(int argc, char** argv)
 {
+	Console::m_Enabled = true;
+
 	// Start the server
 	NetworkThread& net = NetworkThread::Get();
 	bool serverIsRunning = net.StartServer(7777);

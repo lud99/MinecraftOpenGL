@@ -131,6 +131,13 @@ void ClientNetworkThread::OnJoinWorld(json& packet, NetworkClient* me, ENetPeer*
 
 		CreatePlayer(newClient);
 	}
+
+	// Send a confirmation packet
+	json confirmPacket;
+	confirmPacket["Type"] = "ConfirmJoinWorld";
+	confirmPacket["Data"]["SessionName"] = packet["Data"]["SessionName"];
+	me->SendJson(confirmPacket);
+
 }
 
 void ClientNetworkThread::OnNewPlayerJoined(json& packet, NetworkClient* me, ENetPeer* peer)
@@ -171,6 +178,10 @@ void ClientNetworkThread::OnChunkData(json& packet, NetworkClient* conn, ENetPee
 	glm::ivec2 pos(packet["Data"]["Position"]["X"], packet["Data"]["Position"]["Z"]);
 
 	ClientWorld* world = GetThisWorld();
+	if (!world) {
+		std::cout << "Recieved Chunk data before joining world!!\n";
+		return;
+	}
 	assert(world);
 
 	Chunk* chunk = world->GetChunkAt(pos);
