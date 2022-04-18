@@ -140,7 +140,7 @@ void Player::OnUpdate()
 				m_HighlightedBlockChunk = highlightedChunk;
 
 				World::m_LookingAtCollider.m_Enabled = true;
-				World::m_LookingAtCollider.m_Position = (glm::vec3)flooredRayPos + 0.5f;
+				//World::m_LookingAtCollider.m_Position = (glm::vec3)flooredRayPos + 0.5f;
 
 				m_LookingAtPosition = raycast.m_CurrentPosition;
 			}
@@ -311,6 +311,81 @@ void Player::HandleCollision()
 			// Check if the player will be inside the top block after the velocity (aka the velocity is larger than the distance to the block above)
 			if (std::abs(m_Velocity.y) > distanceToBlock)
 				m_Velocity.y = distanceToBlock;
+		}
+	}
+
+	float playerSize = 0.2f;
+	// Check for collision with to the right front
+	if (m_Velocity.x > 0)
+	{
+		glm::vec3 blockPosition = glm::floor(m_Position + glm::vec3(ChunkBlock::Size - playerSize, 0.0f, 0.0f));
+
+		ChunkBlock* block = World::GetBlockAt(blockPosition);
+		Chunk* chunk = World::GetChunkAt(Utils::WorldPositionToChunkPosition(blockPosition));
+
+		// Only check collision with solid blocks
+		if (block && block->m_BlockId != BlockIds::Air)
+		{
+			// Calculate the distance between the body and block
+			float distanceToBlock = fabs(blockPosition.x + -(m_Position.x + playerSize));
+
+			if (std::abs(m_Velocity.x) > distanceToBlock)
+				m_Velocity.x = distanceToBlock;
+		}
+	}
+	else if (m_Velocity.x < 0)
+	{
+		// A margin so that when the block pos is floored, it always rounds to the block cloest and never 2 blocks away (shouldn't be needed, but for safety)
+		float smallMargin = 0.1f;
+		glm::vec3 blockPosition = glm::floor(m_Position - glm::vec3(ChunkBlock::Size - smallMargin, 0.0f, 0.0f));
+
+		ChunkBlock* block = World::GetBlockAt(blockPosition);
+		Chunk* chunk = World::GetChunkAt(Utils::WorldPositionToChunkPosition(blockPosition));
+
+		// Only check collision with solid blocks
+		if (block && block->m_BlockId != BlockIds::Air)
+		{
+			// Calculate the distance between the body and block
+			float distanceToBlock = fabs((blockPosition.x + ChunkBlock::Size + playerSize) - m_Position.x);
+
+			if (std::abs(m_Velocity.x) > distanceToBlock)
+				m_Velocity.x = -distanceToBlock;
+		}
+	}
+	if (m_Velocity.z > 0)
+	{
+		glm::vec3 blockPosition = glm::floor(m_Position + glm::vec3(0.0f, 0.0f, ChunkBlock::Size - playerSize));
+
+		ChunkBlock* block = World::GetBlockAt(blockPosition);
+		Chunk* chunk = World::GetChunkAt(Utils::WorldPositionToChunkPosition(blockPosition));
+
+		// Only check collision with solid blocks
+		if (block && block->m_BlockId != BlockIds::Air)
+		{
+			// Calculate the distance between the body and block
+			float distanceToBlock = fabs(blockPosition.z + - (m_Position.z + playerSize));
+
+			if (std::abs(m_Velocity.z) > distanceToBlock)
+				m_Velocity.z = distanceToBlock;
+		}
+	}
+	else if (m_Velocity.z < 0)
+	{
+		// A margin so that when the block pos is floored, it always rounds to the block cloest and never 2 blocks away (shouldn't be needed, but for safety)
+		float smallMargin = 0.1f;
+		glm::vec3 blockPosition = glm::floor(m_Position - glm::vec3(0.0f, 0.0f, ChunkBlock::Size - smallMargin));
+
+		ChunkBlock* block = World::GetBlockAt(blockPosition);
+		Chunk* chunk = World::GetChunkAt(Utils::WorldPositionToChunkPosition(blockPosition));
+
+		// Only check collision with solid blocks
+		if (block && block->m_BlockId != BlockIds::Air)
+		{
+			// Calculate the distance between the body and block
+			float distanceToBlock = fabs((blockPosition.z + ChunkBlock::Size + playerSize) - m_Position.z);
+
+			if (std::abs(m_Velocity.z) > distanceToBlock)
+				m_Velocity.z = -distanceToBlock;
 		}
 	}
 

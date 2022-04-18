@@ -74,7 +74,7 @@ int main()
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwWindowHint(GLFW_SAMPLES, 4);
-	glfwSwapInterval(0); // Vsync
+	glfwSwapInterval(1); // Vsync
 
 	//glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
