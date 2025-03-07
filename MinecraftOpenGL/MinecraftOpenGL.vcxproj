@@ -186,6 +186,7 @@
     <ClCompile Include="Source\World\Chunk\Chunk.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Utils\Utils.cpp" />
+    <ClCompile Include="Source\World\ShadowMap.cpp" />
     <ClCompile Include="Source\World\Skybox.cpp" />
     <ClCompile Include="Source\World\World.cpp" />
     <ClCompile Include="Source\World\WorldRenderer.cpp" />
@@ -220,6 +221,7 @@
     <ClInclude Include="Source\Graphics\Textures\TextureIds.h" />
     <ClInclude Include="Source\Graphics\Textures\TextureAtlas.h" />
     <ClInclude Include="Source\Utils\Utils.h" />
+    <ClInclude Include="Source\World\ShadowMap.h" />
     <ClInclude Include="Source\World\Skybox.h" />
     <ClInclude Include="Source\World\World.h" />
     <ClInclude Include="Source\Graphics\Textures\Texture2D.h" />

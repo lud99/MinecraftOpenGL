@@ -8,18 +8,51 @@
 #include "Chunk/Chunk.h"
 #include "DroppedItem.h"
 
+static Shader quadShader;
 WorldRenderer::WorldRenderer()
 {
 	m_ChunkShader = ShaderLoader::CreateShader("Resources/Shaders/Chunk.vert", "Resources/Shaders/Chunk.frag");
+	m_DepthShader = ShaderLoader::CreateShader("Resources/Shaders/SimpleChunkDepth.vert", "Resources/Shaders/SimpleChunkDepth.frag");
+	quadShader = ShaderLoader::CreateShader("Resources/Shaders/FullscreenQuad.vert", "Resources/Shaders/FullscreenQuad.frag");
 	//m_Fog.Init();
 
 	m_Skybox = new Skybox();
 	m_Skybox->Init();
+
+	m_Shadowmap.Create();
 }
 
 WorldRenderer::WorldRenderer(GLFWwindow* window)
 {
 	m_Window = window;
+}
+
+void WorldRenderer::RenderChunksToShadowmap()
+{
+	auto vp = m_Shadowmap.BindAndGetTransformation();
+	m_DepthShader.Bind();
+	m_DepthShader.SetUniform("u_VP", vp);
+
+	ChunkMap& chunks = World::GetChunks();
+	for (auto const& entry : chunks)
+	{
+		m_DepthShader.SetUniform("u_ChunkPosition", entry.second->GetWorldPosition());
+		entry.second->m_OpaqueMesh.Render();
+	}
+	/*for (auto const& entry : chunks)
+	{
+		m_DepthShader.SetUniform("u_ChunkPosition", entry.second->GetWorldPosition());
+		entry.second->m_WaterMesh.Render();
+	}*/
+
+
+	m_Shadowmap.Unbind();
+
+	glViewport(0, 0, 1920, 1080);
+
+	quadShader.Bind();
+	glBindVertexArray(m_Shadowmap.m_QuadVAO); 
+	glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
 void WorldRenderer::Render()
@@ -29,71 +62,73 @@ void WorldRenderer::Render()
 	// Update the view matrix
 	UpdateViewMatrix();
 
-	m_ChunkShader.Bind();
+	RenderChunksToShadowmap();
 
-	glm::mat4 mvp = m_ProjectionMatrix * m_ViewMatrix;
-	m_ChunkShader.SetUniform("u_MVP", mvp);
-	m_ChunkShader.SetUniform("u_LightPosition", glm::vec3(0.0f, 60.0f, 0.0f));
-	m_ChunkShader.SetUniform("u_CameraPosition", World::GetPlayer().GetCamera().m_Position);
+	//m_ChunkShader.Bind();
 
-	ChunkMap& chunks = World::GetChunks();
-	for (auto const& entry : chunks)
-	{
-		Player& player = World::GetPlayer();
-		glm::vec2 front(player.GetCamera().m_Front2D.x, player.GetCamera().m_Front2D.z);
+	//glm::mat4 mvp = m_ProjectionMatrix * m_ViewMatrix;
+	//m_ChunkShader.SetUniform("u_MVP", mvp);
+	//m_ChunkShader.SetUniform("u_LightPosition", glm::vec3(0.0f, 128.0f, 128.0f));
+	//m_ChunkShader.SetUniform("u_CameraPosition", World::GetPlayer().GetCamera().m_Position);
 
-		glm::vec2 chunkPosition = entry.second->GetWorldPosition();
-		glm::vec2 pPos(player.m_Position.x, player.m_Position.z);
+	//ChunkMap& chunks = World::GetChunks();
+	//for (auto const& entry : chunks)
+	//{
+	//	Player& player = World::GetPlayer();
+	//	glm::vec2 front(player.GetCamera().m_Front2D.x, player.GetCamera().m_Front2D.z);
 
-		float dot = glm::dot(chunkPosition - pPos, front);
+	//	glm::vec2 chunkPosition = entry.second->GetWorldPosition();
+	//	glm::vec2 pPos(player.m_Position.x, player.m_Position.z);
 
-		// Chunk is in front of camera
-		//if (dot > 0)
-		{
-			m_ChunkShader.SetUniform("u_ChunkPosition", entry.second->GetWorldPosition());
-			m_ChunkShader.SetUniform("u_Dirty", entry.second->IsDirty());
-			m_ChunkShader.SetUniform("u_ShouldBeRemoved", entry.second->m_ShouldBeRemoved);
+	//	float dot = glm::dot(chunkPosition - pPos, front);
 
-			entry.second->m_OpaqueMesh.Render();
-			//entry.second->m_WaterMesh.Render();
-		}
-	}
+	//	// Chunk is in front of camera
+	//	//if (dot > 0)
+	//	{
+	//		m_ChunkShader.SetUniform("u_ChunkPosition", entry.second->GetWorldPosition());
+	//		m_ChunkShader.SetUniform("u_Dirty", entry.second->IsDirty());
+	//		m_ChunkShader.SetUniform("u_ShouldBeRemoved", entry.second->m_ShouldBeRemoved);
 
-	for (auto const& entry : chunks) 
-	{
-		Player& player = World::GetPlayer();
-		glm::vec2 front(player.GetCamera().m_Front2D.x, player.GetCamera().m_Front2D.z);
+	//		entry.second->m_OpaqueMesh.Render();
+	//		//entry.second->m_WaterMesh.Render();
+	//	}
+	//}
 
-		glm::vec2 chunkPosition = entry.second->GetWorldPosition();
-		glm::vec2 pPos(player.m_Position.x, player.m_Position.z);
+	//for (auto const& entry : chunks)
+	//{
+	//	Player& player = World::GetPlayer();
+	//	glm::vec2 front(player.GetCamera().m_Front2D.x, player.GetCamera().m_Front2D.z);
 
-		float dot = glm::dot(chunkPosition - pPos, front);
+	//	glm::vec2 chunkPosition = entry.second->GetWorldPosition();
+	//	glm::vec2 pPos(player.m_Position.x, player.m_Position.z);
 
-		// Chunk is in front of camera
-		//if (dot > 0)
-		{
-			m_ChunkShader.SetUniform("u_ChunkPosition", entry.second->GetWorldPosition());
-			m_ChunkShader.SetUniform("u_Dirty", entry.second->IsDirty() || entry.second->m_IsRebuilding);
-			m_ChunkShader.SetUniform("u_ShouldBeRemoved", entry.second->m_ShouldBeRemoved);
+	//	float dot = glm::dot(chunkPosition - pPos, front);
 
-			entry.second->m_WaterMesh.Render();
-		}
-	}
+	//	// Chunk is in front of camera
+	//	//if (dot > 0)
+	//	{
+	//		m_ChunkShader.SetUniform("u_ChunkPosition", entry.second->GetWorldPosition());
+	//		m_ChunkShader.SetUniform("u_Dirty", entry.second->IsDirty() || entry.second->m_IsRebuilding);
+	//		m_ChunkShader.SetUniform("u_ShouldBeRemoved", entry.second->m_ShouldBeRemoved);
 
-	if (World::m_LookingAtCollider.m_Enabled) 
-		World::m_LookingAtCollider.RenderHitbox();
+	//		entry.second->m_WaterMesh.Render();
+	//	}
+	//}
 
-	for (auto const& entry : chunks)
-	{
-		for (unsigned int i = 0; i < entry.second->m_DroppedItems.size(); i++)
-			entry.second->m_DroppedItems[i]->Render();
-	}
+	//if (World::m_LookingAtCollider.m_Enabled) 
+	//	World::m_LookingAtCollider.RenderHitbox();
+
+	//for (auto const& entry : chunks)
+	//{
+	//	for (unsigned int i = 0; i < entry.second->m_DroppedItems.size(); i++)
+	//		entry.second->m_DroppedItems[i]->Render();
+	//}
 
 	//m_Fog.Render(this);
 
-	World::GetPlayer().m_Crosshair.Render(this);
+	//World::GetPlayer().m_Crosshair.Render(this);
 
-	m_Skybox->Render(this);
+	//m_Skybox->Render(this);
 
 	auto stop = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);

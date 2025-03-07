@@ -37,22 +37,24 @@ void main()
 
 	// Light calculations
 
-	vec3 lightColor = vec3(1.0, 0.6, 0.6);
-	float ambientStrength = 0.3;
+	vec3 lightColor = vec3(1.0, 1.0, 1.0);
+	float ambientStrength = 0.5;
     vec3 ambient = ambientStrength * lightColor;
 
 	// If model matrix is not identity: https://learnopengl.com/Lighting/Basic-Lighting
 	// Normal = mat3(transpose(inverse(model))) * passNormal;
 
 	vec3 normalizedNormal = normalize(passNormal);
-	vec3 lightDir = normalize(u_LightPosition - passWorldPos);
+	vec3 sunDir = vec3(0.0, -1.0, -1.0);
+	vec3 lightDir = normalize(-sunDir);
+	// for light caster: normalize(u_LightPosition - passWorldPos);
 
 
 	float diff = max(dot(normalizedNormal, lightDir), 0.0);
 	vec3 diffuse = diff * lightColor;
 
 	// specular
-	float specularStrength = 0.5;
+	float specularStrength = 0.2;
 	vec3 viewDir = normalize(u_CameraPosition - passWorldPos);
 	vec3 reflectDir = reflect(-lightDir, normalizedNormal);  
 

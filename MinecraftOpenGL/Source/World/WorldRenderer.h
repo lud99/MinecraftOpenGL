@@ -5,6 +5,8 @@
 
 #include <Graphics/Shader.h>
 
+#include "ShadowMap.h"
+
 class Skybox;
 struct GLFWwindow;
 
@@ -14,6 +16,7 @@ public:
 	WorldRenderer();
 	WorldRenderer(GLFWwindow* window);
 
+	void RenderChunksToShadowmap();
 	void Render();
 
 	void UpdateViewMatrix();
@@ -27,6 +30,8 @@ public:
 	glm::mat4 m_ViewMatrix = glm::mat4(1.0);
 
 	Shader m_ChunkShader;
+	Shader m_DepthShader;
 
 	Skybox* m_Skybox;
+	ShadowMap m_Shadowmap;
 };

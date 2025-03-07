@@ -110,6 +110,7 @@ void Chunk::GenerateTerrain()
 	noise.SetNoiseType(FastNoise::Perlin);
 
 #define oldbiome 1
+#define TREES
 
 	for (int x = 0; x < Chunk::Width; x++)
 	{
@@ -251,7 +252,7 @@ void Chunk::GenerateTerrain()
 					if (y <= waterLevel && sandChance)
 						block->m_BlockId = BlockIds::Sand;
 					else
-						block->m_BlockId = BlockIds::Ice;
+						block->m_BlockId = BlockIds::Grass;
 				}
 			}
 

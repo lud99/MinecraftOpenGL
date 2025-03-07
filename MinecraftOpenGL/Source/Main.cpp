@@ -162,7 +162,7 @@ int main()
 		sh.SetUniform("u_ProjectionMatrix", World::m_Renderer->m_ProjectionMatrix);
 		sh.SetUniform("u_ViewMatrix", World::m_Renderer->m_ViewMatrix);
 		sh.SetUniform("u_ModelMatrix", mod);
-		door->Render();
+		//door->Render();
 
 		GLenum err;
 		while ((err = glGetError()) != GL_NO_ERROR)
