@@ -94,12 +94,12 @@ public:
 
 	uint8_t m_HeightMap[Width][Depth];
 
-	Mesh<PackedVertex> m_OpaqueMesh;
-	Mesh<PackedVertex> m_WaterMesh;
+	Mesh<BlockVertex> m_OpaqueMesh;
+	Mesh<BlockVertex> m_WaterMesh;
 	Mesh<TextureVertex> m_ModelsMesh;
 
-	Mesh<PackedVertex> m_TempOpaqueMesh;
-	Mesh<PackedVertex> m_TempWaterMesh;
+	Mesh<BlockVertex> m_TempOpaqueMesh;
+	Mesh<BlockVertex> m_TempWaterMesh;
 
 	std::mutex m_MeshMutex;
 

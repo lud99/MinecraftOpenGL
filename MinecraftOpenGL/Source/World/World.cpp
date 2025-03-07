@@ -335,5 +335,7 @@ ChunkBuilder World::m_ChunkBuilder;
 irrklang::ISoundEngine* World::SoundEngine;
 
 unsigned int World::m_ChunkCount = 0;
+float World::Gravity = -0.6f;
+
 
 int Settings::RenderDistance = 2;

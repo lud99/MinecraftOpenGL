@@ -12,13 +12,13 @@ unsigned int BlockVertex::Pack()
 {
 	unsigned int packedData = 0;
 
-	packedData = (packedData << 5) | position.x;
+	/*packedData = (packedData << 5) | position.x;
 	packedData = (packedData << 9) | position.y;
 	packedData = (packedData << 5) | position.z;
 
 	packedData = (packedData << 2) | index;
 	packedData = (packedData << 6) | texture;
-	packedData = (packedData << 4) | lightLevel;
+	packedData = (packedData << 4) | lightLevel;*/
 
 	return packedData;
 }

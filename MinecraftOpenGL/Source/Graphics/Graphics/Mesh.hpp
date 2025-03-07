@@ -149,6 +149,31 @@ inline void Mesh<BasicVertex>::SetVertexAttributes()
 }
 
 template <>
+inline void Mesh<BlockVertex>::SetVertexAttributes()
+{
+	// Position
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3 /* x, y, z */, GL_FLOAT, GL_FALSE, sizeof(BlockVertex), (void*)offsetof(BlockVertex, position));
+
+	// index
+	glEnableVertexAttribArray(1);
+	glVertexAttribIPointer(1, 1, GL_UNSIGNED_INT, sizeof(BlockVertex), (void*)offsetof(BlockVertex, index));
+
+	// texture
+	glEnableVertexAttribArray(2);
+	glVertexAttribIPointer(2, 1, GL_UNSIGNED_INT, sizeof(BlockVertex), (void*)offsetof(BlockVertex, texture));
+
+	// Light level
+	glEnableVertexAttribArray(3);
+	glVertexAttribIPointer(3, 1, GL_UNSIGNED_INT, sizeof(BlockVertex), (void*)offsetof(BlockVertex, lightLevel));
+
+	// Normal
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 3 /* x, y, z */, GL_FLOAT, GL_FALSE, sizeof(BlockVertex), (void*)offsetof(BlockVertex, normal));
+
+}
+
+template <>
 inline void Mesh<TextureVertex>::SetVertexAttributes()
 {
 	// Position

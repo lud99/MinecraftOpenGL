@@ -33,6 +33,8 @@ void WorldRenderer::Render()
 
 	glm::mat4 mvp = m_ProjectionMatrix * m_ViewMatrix;
 	m_ChunkShader.SetUniform("u_MVP", mvp);
+	m_ChunkShader.SetUniform("u_LightPosition", glm::vec3(0.0f, 60.0f, 0.0f));
+	m_ChunkShader.SetUniform("u_CameraPosition", World::GetPlayer().GetCamera().m_Position);
 
 	ChunkMap& chunks = World::GetChunks();
 	for (auto const& entry : chunks)

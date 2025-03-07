@@ -112,6 +112,7 @@
       <PreprocessorDefinitions>GLEW_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\x64;$(SolutionDir)Dependencies\glfw-3.3.2.Win64\lib-vc2017;$(SolutionDir)Dependencies\irrKlang-64bit-1.6.0\lib\Winx64-visualStudio;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

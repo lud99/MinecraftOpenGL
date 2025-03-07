@@ -1,8 +1,15 @@
 #version 410 core
 
-layout(location = 0) in uint packedData;
+layout(location = 0) in vec3 localPosition;
+layout(location = 1) in int index;
+layout(location = 2) in int textureIndex;
+layout(location = 3) in int lightLevel;
+layout(location = 4) in vec3 normal;
+
 
 out vec4 gl_Position;
+out vec3 passWorldPos;
+out vec3 passNormal;
 out vec2 passTextureCoord;
 out float passLightLevel;
 out float chunk;
@@ -32,19 +39,13 @@ vec2 CalculateTextureCoordinates(uint textureIndex, uint index)
 }
 
 void main() {
-	uint x = (packedData >> 26)&((1 << 5) - 1);
-	uint y = (packedData >> 17)&((1 << 9) - 1);
-	uint z = (packedData >> 12)&((1 << 5) - 1);
-
-	uint index = (packedData >> 10)&((1 << 2) - 1);
-	uint textureIndex = (packedData >> 4)&((1 << 6) - 1);
-	uint lightLevel = (packedData >> 0)&((1 << 4) - 1);
-
-	vec3 position = vec3(x, y, z) + vec3(u_ChunkPosition.x, 0, u_ChunkPosition.y) + 0.0;
+	vec3 position = localPosition + vec3(u_ChunkPosition.x, 0, u_ChunkPosition.y) + 0.0;
 
 	gl_Position = u_MVP * vec4(position, 1.0);
+	passWorldPos = position;
 
 	passTextureCoord = CalculateTextureCoordinates(textureIndex, index);
 	passLightLevel = float(lightLevel) / 15;
+	passNormal = normal;
 	chunk = float(u_ChunkPosition.x * u_ChunkPosition.y);
 }

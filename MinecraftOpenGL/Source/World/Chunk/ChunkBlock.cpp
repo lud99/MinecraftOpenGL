@@ -137,8 +137,8 @@ void ChunkBlock::AddBlockFace(Chunk* chunk, BlockFace& face)
 	glm::vec3 worldPosition = GetWorldPosition(chunk);
 	BlockType* blockType = GetBlockType();
 
-	Mesh<PackedVertex>& opaqueMesh = chunk->m_TempOpaqueMesh;
-	Mesh<PackedVertex>& waterMesh = chunk->m_TempWaterMesh;
+	Mesh<BlockVertex>& opaqueMesh = chunk->m_TempOpaqueMesh;
+	Mesh<BlockVertex>& waterMesh = chunk->m_TempWaterMesh;
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -165,10 +165,13 @@ void ChunkBlock::AddBlockFace(Chunk* chunk, BlockFace& face)
 		vertex.texture = face.textureId;
 		vertex.lightLevel = lightLevel;
 
+
+		vertex.normal = glm::normalize(glm::cross(face.positions[1] - face.positions[0], face.positions[2] - face.positions[0]));
+
 		if (blockType->isOpaque)
-			chunk->m_TempOpaqueMesh.AddVertex(vertex.CreatePackedVertex());
+			chunk->m_TempOpaqueMesh.AddVertex(vertex);
 		else
-			chunk->m_TempWaterMesh.AddVertex(vertex.CreatePackedVertex());
+			chunk->m_TempWaterMesh.AddVertex(vertex);
 	}
 
 	for (int i = 0; i < 6; i++)

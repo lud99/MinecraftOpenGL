@@ -37,10 +37,11 @@ struct TextureVertex
 
 struct BlockVertex : public PackedVertexData
 {
-	glm::u8vec3 position;
-	uint8_t index;
-	uint8_t texture;
-	uint8_t lightLevel;
+	glm::vec3 position;
+	uint32_t index;
+	uint32_t texture;
+	uint32_t lightLevel;
+	glm::vec3 normal;
 
 	unsigned int Pack() override;
 	BlockVertex Unpack(unsigned int packedData);
