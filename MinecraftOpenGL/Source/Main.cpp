@@ -93,7 +93,7 @@ int main()
 
 	InputHandler::Init(window);
 
-	World::Init(window);
+	//World::Init(window);
 
 	Mesh<TextureVertex>* door = ModelParser::Parse("Resources/Models/door.obj");
 	Shader sh = ShaderLoader::CreateShader("Resources/Shaders/Collider.vert", "Resources/Shaders/Collider.frag");
@@ -124,7 +124,7 @@ int main()
 
 		if (currentTime - prevFixedTimestempTime >= Time::FixedTimestep)
 		{
-			World::FixedUpdate();
+			//World::FixedUpdate();
 			//std::cout << currentTime - prevFixedTimestempTime << "\n";
 			prevFixedTimestempTime = currentTime;
 		}
@@ -134,10 +134,13 @@ int main()
 		{
 			std::string title = "MinecraftOpenGL | FPS: ";
 
-			glm::vec3 pos = World::GetPlayer().m_Position;
+		// Set the title (for fps and debugging info)
+		std::string title = "MinecraftOpenGL | FPS: ";
+		//glm::vec3 playerPosition = World::GetPlayer().m_Position;
 
-			title.append(std::to_string(frameCount));
-			title.append(" | " + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ", " + std::to_string(pos.z));
+		title.append(fps);
+		//title.append(" | Player: " + Utils::VectorToString(playerPosition));
+		//title.append(" | Chunk: " + Utils::VectorToString(Utils::WorldPositionToChunkPosition(playerPosition)));
 
 			glfwSetWindowTitle(window, title.c_str());
 
@@ -151,18 +154,18 @@ int main()
 		prevTime = Time::ElapsedTime;
 
 		// Update everything in the world
-		World::Update();
+		PhysicsMain::Update();
 
-		World::Render();
+		//World::Render();
 
-		glm::mat4 mod(1.0);
-		mod = glm::translate(mod, glm::vec3(0.0f, 55.0f, 0.0f));
+		//glm::mat4 mod(1.0);
+		//mod = glm::translate(mod, glm::vec3(0.0f, 55.0f, 0.0f));
 
-		sh.Bind();
-		sh.SetUniform("u_ProjectionMatrix", World::m_Renderer->m_ProjectionMatrix);
-		sh.SetUniform("u_ViewMatrix", World::m_Renderer->m_ViewMatrix);
-		sh.SetUniform("u_ModelMatrix", mod);
-		door->Render();
+		//sh.Bind();
+		//sh.SetUniform("u_ProjectionMatrix", World::m_Renderer->m_ProjectionMatrix);
+		//sh.SetUniform("u_ViewMatrix", World::m_Renderer->m_ViewMatrix);
+		//sh.SetUniform("u_ModelMatrix", mod);
+		//door->Render();
 
 		GLenum err;
 		while ((err = glGetError()) != GL_NO_ERROR)
