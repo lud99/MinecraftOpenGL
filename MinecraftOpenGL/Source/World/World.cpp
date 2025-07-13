@@ -22,7 +22,7 @@ void World::Init(GLFWwindow* window)
 
 	m_Window = window;
 
-	SoundEngine = irrklang::createIrrKlangDevice();
+	//SoundEngine = irrklang::createIrrKlangDevice();
 
 	m_TextureAtlas.Load();
 	BlockTypes::CreateBlocks();
@@ -332,7 +332,7 @@ TextureAtlas World::m_TextureAtlas;
 Collider World::m_LookingAtCollider;
 WorldRenderer* World::m_Renderer;
 ChunkBuilder World::m_ChunkBuilder;
-irrklang::ISoundEngine* World::SoundEngine;
+//irrklang::ISoundEngine* World::SoundEngine;
 
 unsigned int World::m_ChunkCount = 0;
 

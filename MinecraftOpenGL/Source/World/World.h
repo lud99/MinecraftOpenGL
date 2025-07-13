@@ -74,7 +74,7 @@ namespace World
 	extern WorldRenderer* m_Renderer;
 	extern ChunkBuilder m_ChunkBuilder;
 
-	extern irrklang::ISoundEngine* SoundEngine;
+	//extern irrklang::ISoundEngine* SoundEngine;
 	extern float Gravity; // -0.6f
 
 	namespace {

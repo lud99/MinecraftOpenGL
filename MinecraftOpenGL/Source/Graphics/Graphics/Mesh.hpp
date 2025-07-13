@@ -84,6 +84,24 @@ void Mesh<VertexT>::CreateVao()
 	glGenVertexArrays(1, &m_Vao);
 }
 
+
+template <>
+inline void Mesh<PhysicsVertex>::SetVertexAttributes()
+{
+	// Position
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3 /* x, y, z */, GL_FLOAT, GL_FALSE, sizeof(PhysicsVertex), 0 /* Offset */);
+
+	// Texture
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 4 /* rgba */, GL_FLOAT, GL_FALSE, sizeof(PhysicsVertex), (void*)offsetof(PhysicsVertex, color) /* Offset */);
+
+
+	// Normal
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 3 /* x, y, z */, GL_FLOAT, GL_FALSE, sizeof(PhysicsVertex), (void*)offsetof(PhysicsVertex, normal) /* Offset */);
+}
+
 template <typename VertexT>
 void Mesh<VertexT>::Update()
 {
@@ -159,6 +177,7 @@ inline void Mesh<TextureVertex>::SetVertexAttributes()
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2 /* x, y */, GL_FLOAT, GL_FALSE, sizeof(TextureVertex), (void*) offsetof(TextureVertex, textureCoord) /* Offset */);
 }
+
 
 template <>
 inline void Mesh<DroppedItemVertex>::SetVertexAttributes()

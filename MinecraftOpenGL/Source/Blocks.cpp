@@ -190,7 +190,7 @@ bool Blocks::NoteBlock::OnBlockLeftClick()
 
 	float spd = powf(2, (m_ChunkBlock->m_BlockData - maxNote / 2.0f) / 12.0f);
 
-	irrklang::ISound* snd = World::SoundEngine->play2D("Resources/Audio/harp.wav", false, false, true);
+	/*irrklang::ISound* snd = World::SoundEngine->play2D("Resources/Audio/harp.wav", false, false, true);
 	if (snd)
 	{
 		snd->setPlaybackSpeed(spd);
@@ -200,7 +200,7 @@ bool Blocks::NoteBlock::OnBlockLeftClick()
 	{
 		snd->drop();
 		snd = 0;
-	}
+	}*/
 
 	return false;
 }
@@ -216,7 +216,7 @@ bool Blocks::NoteBlock::OnBlockRightClick()
 
 	float spd = powf(2, (m_ChunkBlock->m_BlockData - maxNote / 2.0f) / 12.0f);
 
-	irrklang::ISound* snd = World::SoundEngine->play2D("Resources/Audio/harp.wav", false, false, true);
+	/*irrklang::ISound* snd = World::SoundEngine->play2D("Resources/Audio/harp.wav", false, false, true);
 	if (snd)
 	{
 		snd->setPlaybackSpeed(spd);
@@ -226,7 +226,7 @@ bool Blocks::NoteBlock::OnBlockRightClick()
 	{
 		snd->drop();
 		snd = 0;
-	}
+	}*/
 
 	return false;
 }

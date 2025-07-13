@@ -18,13 +18,15 @@
 #include "World/Chunk/Chunk.h"
 #include "Time.h"
 #include <Graphics/ModelParser.h>
+#include "PhysicsMain.hpp"
 
 float Time::ElapsedTime;
 float Time::DeltaTime;
 
 void MouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
-	World::GetPlayer().MouseCallback(window, xpos, ypos);
+	PhysicsMain::MouseCallback(window, xpos, ypos);
+	//World::GetPlayer().MouseCallback(window, xpos, ypos);
 }
 
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
@@ -93,10 +95,12 @@ int main()
 
 	InputHandler::Init(window);
 
+	PhysicsMain::Init();
+
 	//World::Init(window);
 
-	Mesh<TextureVertex>* door = ModelParser::Parse("Resources/Models/door.obj");
-	Shader sh = ShaderLoader::CreateShader("Resources/Shaders/Collider.vert", "Resources/Shaders/Collider.frag");
+	/*Mesh<TextureVertex>* door = ModelParser::Parse("Resources/Models/door.obj");
+	Shader sh = ShaderLoader::CreateShader("Resources/Shaders/Collider.vert", "Resources/Shaders/Collider.frag");*/
 
 	double previousTime = glfwGetTime();
 	double prevTime = glfwGetTime();
@@ -135,10 +139,10 @@ int main()
 			std::string title = "MinecraftOpenGL | FPS: ";
 
 		// Set the title (for fps and debugging info)
-		std::string title = "MinecraftOpenGL | FPS: ";
+		//std::string title = "MinecraftOpenGL | FPS: ";
 		//glm::vec3 playerPosition = World::GetPlayer().m_Position;
 
-		title.append(fps);
+		//title.append(fps);
 		//title.append(" | Player: " + Utils::VectorToString(playerPosition));
 		//title.append(" | Chunk: " + Utils::VectorToString(Utils::WorldPositionToChunkPosition(playerPosition)));
 
@@ -154,7 +158,7 @@ int main()
 		prevTime = Time::ElapsedTime;
 
 		// Update everything in the world
-		PhysicsMain::Update();
+		PhysicsMain::Update(Time::DeltaTime);
 
 		//World::Render();
 

@@ -1,7 +1,14 @@
 #pragma once
 
-void Init();
+struct GLFWwindow;
 
-void Update();
+namespace PhysicsMain
+{
+	void Init();
 
-void Render();
+	void Update(double deltaTime);
+
+	void Render();
+
+	void MouseCallback(GLFWwindow* window, double xpos, double ypos);
+}

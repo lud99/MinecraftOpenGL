@@ -117,7 +117,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\glew-2.1.0\lib\Release\x64;$(SolutionDir)Dependencies\glfw-3.3.2.Win64\lib-vc2017;$(SolutionDir)Dependencies\irrKlang-64bit-1.6.0\lib\Winx64-visualStudio;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;irrKlang.lib</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -171,6 +171,7 @@
     <ClCompile Include="Source\Graphics\Graphics\Textures\Texture2D.cpp" />
     <ClCompile Include="Source\Graphics\Graphics\Textures\TextureAtlas.cpp" />
     <ClCompile Include="Source\Graphics\Graphics\Vertex.cpp" />
+    <ClCompile Include="Source\PhysicsMain.cpp" />
     <ClCompile Include="Source\Time.h" />
     <ClCompile Include="Source\Utils\Raycast.cpp" />
     <ClCompile Include="Source\World\Chunk\BlockEntity.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="Source\Graphics\Graphics\Textures\TextureAtlas.h" />
     <ClInclude Include="Source\Graphics\Graphics\Vertex.h" />
     <ClInclude Include="Source\Graphics\Textures\Cubemap.h" />
+    <ClInclude Include="Source\PhysicsMain.hpp" />
     <ClInclude Include="Source\Utils\Raycast.h" />
     <ClInclude Include="Source\World\Chunk\BlockEntity.h" />
     <ClInclude Include="Source\World\Chunk\ChunkIO.h" />
