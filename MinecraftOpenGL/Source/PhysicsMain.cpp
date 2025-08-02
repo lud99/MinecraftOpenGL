@@ -34,7 +34,7 @@ struct Particle
 
 static Particle particles[4];
 
-const double compliance = 0.0;// 100.0;
+const double compliance = 500.0;
 static double gravity = -9.82f;
 
 namespace PhysicsMain
@@ -53,7 +53,7 @@ namespace PhysicsMain
             { glm::vec3(1,  -1,  -1), glm::vec4(0.0, 0.0, 1.0, 1.0), {}}
         };
         particles[0].position = glm::vec3(1, 1, 1);// *10.0f;
-        particles[0].velocity = glm::vec3(1, 100, 1);
+        particles[0].velocity = glm::vec3(1, 10, 1);
         particles[1].position = glm::vec3(-1, -1, 1);
         particles[2].position = glm::vec3(-1, 1, -1);
         particles[2].velocity =  glm::vec3(-1, 1, -1);
