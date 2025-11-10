@@ -15,6 +15,8 @@
 #include <Graphics/Vertex.h>
 #include <Graphics/Shader.h>
 
+#include "TetrahedronLoader.hpp"
+
 
 static Mesh<PhysicsVertex> objectMesh;
 static Mesh<PhysicsVertex> groundMesh;
@@ -46,6 +48,8 @@ namespace PhysicsMain
 
     void Init()
     {
+        TetrahedronLoader::Parse("Meshes/example.1");
+
         std::vector<PhysicsVertex> vertices = {
             {  glm::vec3(1,  1,  1), glm::vec4(1.0, 0.5, 0.0, 1.0), {}},
             { glm::vec3(-1,  -1,  1), glm::vec4(1.0, 0.0, 1.0, 1.0), {}},

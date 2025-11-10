@@ -172,6 +172,7 @@
     <ClCompile Include="Source\Graphics\Graphics\Textures\TextureAtlas.cpp" />
     <ClCompile Include="Source\Graphics\Graphics\Vertex.cpp" />
     <ClCompile Include="Source\PhysicsMain.cpp" />
+    <ClCompile Include="Source\TetrahedronLoader.cpp" />
     <ClCompile Include="Source\Time.h" />
     <ClCompile Include="Source\Utils\Raycast.cpp" />
     <ClCompile Include="Source\World\Chunk\BlockEntity.cpp" />
@@ -205,6 +206,7 @@
     <ClInclude Include="Source\Graphics\Graphics\Vertex.h" />
     <ClInclude Include="Source\Graphics\Textures\Cubemap.h" />
     <ClInclude Include="Source\PhysicsMain.hpp" />
+    <ClInclude Include="Source\TetrahedronLoader.hpp" />
     <ClInclude Include="Source\Utils\Raycast.h" />
     <ClInclude Include="Source\World\Chunk\BlockEntity.h" />
     <ClInclude Include="Source\World\Chunk\ChunkIO.h" />
