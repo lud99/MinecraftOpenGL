@@ -69,14 +69,81 @@ namespace TetrahedronLoader
 
 
 		// Print the parsed data
-		std::cout << "Parsed list of edges\n";
-		for (const auto& row : data.listOfEdges) {
-			std::cout
-				<< row.startIndex << " "
-				<< row.endIndex << " "
-				<< row.indexOfTetrahedronContainingEdge << "\n";
-			//<< row.value << "\n";
+		//std::cout << "Parsed list of edges\n";
+		//for (const auto& row : data.listOfEdges) {
+		//	std::cout
+		//		<< row.startIndex << " "
+		//		<< row.endIndex << " "
+		//		<< row.indexOfTetrahedronContainingEdge << "\n";
+		//	//<< row.value << "\n";
+		//}
+	}
+
+	static void ParseFaces(const std::string& filepath, Data& data)
+	{
+		auto file = std::ifstream(filepath + ".face");
+		if (!file.good())
+		{
+			std::cout << "Error loading " << filepath << "\n";
+			return;
 		}
+
+		std::string line;
+
+		// Read header
+		std::getline(file, line);
+		std::istringstream headerStream(line);
+		double facesCount, boundaryMarker;
+		headerStream >> facesCount >> boundaryMarker;
+
+
+
+		std::cout << "Header: " << facesCount << " " << boundaryMarker << "\n";
+
+		struct Row {
+			std::string index;
+			std::vector<size_t> nodeIndices;
+			int32_t boundaryMarker;
+			int32_t boundaryMarker2;
+			int32_t indexOfTetrahedronContainingFace;
+		};
+
+		// Read remaining lines into a vector
+		Row temp{};
+		while (file >> std::ws and std::getline(file >> std::ws, line)) {
+			temp.nodeIndices.resize(3);
+
+			std::stringstream iss(line);
+			if (iss >> temp.index >> temp.nodeIndices[0] >> temp.nodeIndices[1] >> temp.nodeIndices[2] >> temp.boundaryMarker)
+			{
+				if (boundaryMarker == 1)
+				{
+					assert(iss >> temp.boundaryMarker2);
+				}
+
+				assert(iss >> temp.indexOfTetrahedronContainingFace);
+
+				// Make zero-indexed
+				for (size_t i = 0; i < 3; i++)
+				{
+					temp.nodeIndices[i] -= data.firstIndex;
+				}
+
+				data.listOfFaces.emplace_back(temp.nodeIndices, temp.indexOfTetrahedronContainingFace - data.firstIndex);
+			}
+		}
+
+
+
+		// Print the parsed data
+		/*std::cout << "Parsed list of faces\n";
+		for (const auto& row : data.listOfFaces) {
+			std::cout
+				<< row.nodesIndices[0] << " "
+				<< row.nodesIndices[1] << " "
+				<< row.nodesIndices[2] << " "
+				<< row.indexOfTetrahedronContainingFace << "\n";
+		}*/
 	}
 
 	static void ParseTetrahedraList(const std::string& filepath, Data& data)
@@ -122,14 +189,14 @@ namespace TetrahedronLoader
 		}
 
 		// Print the parsed data
-		std::cout << "Parsed list of tetrahedra\n";
-		for (const auto& row : data.listOfTetrahedra) {
-			std::cout
-				<< row[0] << " "
-				<< row[1] << " "
-				<< row[2] << " "
-				<< row[3] << "\n";
-		}
+		//std::cout << "Parsed list of tetrahedra\n";
+		//for (const auto& row : data.listOfTetrahedra) {
+		//	std::cout
+		//		<< row[0] << " "
+		//		<< row[1] << " "
+		//		<< row[2] << " "
+		//		<< row[3] << "\n";
+		//}
 	}
 
 	Data Parse(const std::string& filepath)
@@ -170,8 +237,6 @@ namespace TetrahedronLoader
 		Row temp{};
 		while (file >> std::ws and std::getline(file >> std::ws, line)) {
 
-			std::cout << line << "\n";
-
 			std::stringstream iss(line);
 			if (iss >> temp.index >> temp.x >> temp.y >> temp.z)
 			{
@@ -193,19 +258,21 @@ namespace TetrahedronLoader
 
 
 		// Print the parsed data
-		std::cout << "Parsed nodes\n";
-		std::cout << "start index: " << data.firstIndex << "\n";
-		for (const auto& row : data.nodes) {
-			std::cout
-				<< row.x << " "
-				<< row.y << " "
-				<< row.z << "\n";
-			//<< row.value << "\n";
-		}
+		//std::cout << "Parsed nodes\n";
+		//std::cout << "start index: " << data.firstIndex << "\n";
+		//for (const auto& row : data.nodes) {
+		//	std::cout
+		//		<< row.x << " "
+		//		<< row.y << " "
+		//		<< row.z << "\n";
+		//	//<< row.value << "\n";
+		//}
 
 		ParseTetrahedraList(filepath, data);
 
 		ParseEdges(filepath, data);
+
+		ParseFaces(filepath, data);
 
 		return data;
 	}

@@ -14,11 +14,18 @@ namespace TetrahedronLoader
 		int32_t indexOfTetrahedronContainingEdge = -1;
 	};
 
+	struct Face
+	{
+		std::vector<size_t> nodesIndices;
+		int32_t indexOfTetrahedronContainingFace = -1;
+	};
+
 	struct Data
 	{
 		std::vector<glm::dvec3> nodes;
 		std::vector<std::vector<size_t>> listOfTetrahedra;
 		std::vector<Edge> listOfEdges;
+		std::vector<Face> listOfFaces;
 
 		// Parsing state
 		int32_t firstIndex = 0;
