@@ -99,6 +99,12 @@
     <ClCompile Include="Source\Graphics\Graphics\ModelParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\PhysicsMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\TetrahedronLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Noise\FastNoise.h">
@@ -200,8 +206,17 @@
     <ClInclude Include="Source\Graphics\Graphics\ModelParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\PhysicsMain.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\TetrahedronLoader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Noise\NoiseGenerator.h" />
+    <None Include="Meshes\balls3.poly" />
+    <None Include="Meshes\gear.smesh" />
+    <None Include="Meshes\gear.node" />
   </ItemGroup>
 </Project>

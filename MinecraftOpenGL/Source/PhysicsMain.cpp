@@ -44,7 +44,7 @@ static std::vector<Particle> particles;
 static TetrahedronLoader::Data meshData;
 
 const double compliance = 500.0;
-static double gravity = 0.0f;// -9.82f;
+static double gravity = -9.82f;
 
 static float elapsedTime = 0;
 
@@ -65,9 +65,41 @@ namespace PhysicsMain
 		return dist(gen);
 	}
 
+	float ComputeTetrahedronVolume(const std::vector<Particle>& particles, const std::vector<size_t>& indices) {
+		const glm::vec3& x1 = particles[indices[0]].position;
+		const glm::vec3& x2 = particles[indices[1]].position;
+		const glm::vec3& x3 = particles[indices[2]].position;
+		const glm::vec3& x4 = particles[indices[3]].position;
+
+		glm::vec3 v1 = x2 - x1;
+		glm::vec3 v2 = x3 - x1;
+		glm::vec3 v3 = x4 - x1;
+
+		float volume = glm::dot(glm::cross(v1, v2), v3) / 6.0f;
+
+		return volume;
+	}
+
+	void ComputeInitialConditions()
+	{
+		initialVolumes.reserve(meshData.listOfTetrahedra.size());
+		initialLengths.reserve(meshData.listOfEdges.size());
+
+		for (const auto& tetrahedraIndices : meshData.listOfTetrahedra)
+		{
+			initialVolumes.emplace_back(ComputeTetrahedronVolume(particles, tetrahedraIndices));
+		}
+
+		for (const auto& edge : meshData.listOfEdges)
+		{
+			const double length = glm::length(particles[edge.endIndex].position - particles[edge.startIndex].position);
+			initialLengths.emplace_back(length);
+		}
+	}
+
 	void Init()
 	{
-		meshData = TetrahedronLoader::Parse("Meshes/hose.1");
+		meshData = TetrahedronLoader::Parse("Meshes/tet.1");
 
 		std::vector<PhysicsVertex> vertices; /*= {
 			{  glm::vec3(1,  1,  1), glm::vec4(1.0, 0.5, 0.0, 1.0), {}},
@@ -79,12 +111,19 @@ namespace PhysicsMain
 		vertices.reserve(meshData.nodes.size());
 		particles.reserve(meshData.nodes.size());
 
+		const auto meshScale = 3.0;
 		for (size_t i = 0; i < meshData.nodes.size(); i++)
 		{
-			vertices.emplace_back(meshData.nodes[i], glm::dvec4(RandomDouble(), RandomDouble(), RandomDouble(), 1.0));
+			vertices.emplace_back(meshData.nodes[i] * meshScale, 
+				glm::dvec4(RandomDouble(), RandomDouble(), RandomDouble(), 1.0));
 
-			particles.emplace_back(meshData.nodes[i]);
+
+
+			particles.emplace_back(meshData.nodes[i] * meshScale).velocity = 
+				(glm::dvec3(RandomDouble(), RandomDouble(), RandomDouble()) - 0.5) * 5.0;
 		}
+
+		ComputeInitialConditions();
 
 		//particles[0].position = glm::vec3(1, 1, 1);// *10.0f;
 		//particles[0].velocity = glm::vec3(1, 10, 1);
@@ -142,6 +181,14 @@ namespace PhysicsMain
 		if (InputHandler::IsKeyHeld(GLFW_KEY_D))
 			newMovementDirection += glm::normalize(glm::cross(camera.m_Front2D, camera.m_Up));
 
+		if (InputHandler::IsKeyHeld(GLFW_KEY_T))
+		{
+			particles[0].previousPosition = particles[0].position;
+			particles[0].position = glm::dvec3(0.0, 5.0, 0.0);
+
+			//particles[0].velocity = glm::dvec3(1.0);
+		}
+
 		camera.m_Position += newMovementDirection * 0.05f;
 
 		if (InputHandler::IsKeyHeld(GLFW_KEY_SPACE))
@@ -167,74 +214,47 @@ namespace PhysicsMain
 
 	}
 
-	float ComputeTetrahedronVolume(const std::vector<Particle>& particles, const std::vector<size_t>& indices) {
-		const glm::vec3& x1 = particles[indices[0]].position;
-		const glm::vec3& x2 = particles[indices[1]].position;
-		const glm::vec3& x3 = particles[indices[2]].position;
-		const glm::vec3& x4 = particles[indices[3]].position;
-
-		glm::vec3 v1 = x2 - x1;
-		glm::vec3 v2 = x3 - x1;
-		glm::vec3 v3 = x4 - x1;
-
-		float volume = glm::dot(glm::cross(v1, v2), v3) / 6.0f;
-
-		return volume;
-	}
+	
 
 	void SolveDistanceConstraint(double deltaTime)
 	{
-		std::unordered_map<uint32_t, std::tuple<uint32_t, uint32_t>> edgeToVertex =
-		{
-			{0, std::make_tuple(0, 1)},
-			{1, std::make_tuple(0, 2)},
-			{2, std::make_tuple(0, 3)},
-
-			{3, std::make_tuple(1, 2)},
-			{4, std::make_tuple(1, 3)},
-			{5, std::make_tuple(2, 3)},
-		};
-
-
-		const double edgeRestLength = std::sqrt(8);
-		const double alpha = compliance / (deltaTime * deltaTime);
-
 		// Iterate all edges
-		for (int i = 0; i < 6; i++)
+		for (const auto& edge : meshData.listOfEdges)
 		{
-			auto [id0, id1] = edgeToVertex[i];
+			const double edgeRestLength = initialLengths[edge.index];
+			const double alpha = compliance / (deltaTime * deltaTime);
 
-			auto w0 = particles[id0].inverseMass;
-			auto w1 = particles[id1].inverseMass;
+			auto w0 = particles[edge.startIndex].inverseMass;
+			auto w1 = particles[edge.endIndex].inverseMass;
 			auto w = w0 + w1;
 			if (w == 0.0)
 			{
 				continue;
 			}
 
-			const auto length = glm::length(particles[id0].position - particles[id1].position);
+			const auto length = glm::length(particles[edge.startIndex].position - particles[edge.endIndex].position);
 			if (length == 0.0)
 			{
 				continue;
 			}
 
-			glm::dvec3 gradient = normalize(particles[id0].position - particles[id1].position);
+			glm::dvec3 gradient = glm::normalize(particles[edge.startIndex].position - particles[edge.endIndex].position);
 
 			auto C = length - edgeRestLength;
 			const auto s = -C / (w + alpha); // lambda
 
 			// Compute and apply correction vector
-			particles[id0].position += gradient * s * w0;
-			particles[id1].position += -gradient * s * w1;
+			particles[edge.startIndex].position += gradient * s * w0;
+			particles[edge.endIndex].position += -gradient * s * w1;
 		}
 	}
 
 	void SolveVolumeConstraint(double deltaTime)
 	{
+		size_t tetrahedronIndex = 0;
 		for (const auto& tetrahedraIndices : meshData.listOfTetrahedra)
 		{
-
-			double restVolume = 8.0 / 3.0; // From ChatGPT..
+			double restVolume = initialVolumes[tetrahedronIndex];
 
 			const double alpha = compliance / (deltaTime * deltaTime);
 
@@ -261,23 +281,23 @@ namespace PhysicsMain
 
 			assert(wWeightedSum != 0.0);
 
-
-
 			const auto volume = ComputeTetrahedronVolume(particles, tetrahedraIndices);
 			auto C = volume - restVolume;
 			auto s = -C / (wWeightedSum + alpha);
 
 			for (int i = 0; i < 4; i++) {
-				particles[i].position += gradients[i] * s * particles[i].inverseMass;
+				particles[tetrahedraIndices[i]].position += gradients[i] * s * particles[tetrahedraIndices[i]].inverseMass;
 			}
+
+			++tetrahedronIndex;
 		}
 
 	}
 
 	void Solve(double deltaTime)
 	{
-		//SolveDistanceConstraint(deltaTime);
-		//SolveVolumeConstraint(deltaTime);
+		SolveDistanceConstraint(deltaTime);
+		SolveVolumeConstraint(deltaTime);
 	}
 
 	void Update(double deltaTime)
@@ -287,7 +307,8 @@ namespace PhysicsMain
 		elapsedTime += deltaTime;
 
 		// Solve
-		double substeps = 20.0;
+		const int constraintIterations = 20;
+		double substeps = 10.0;
 		double deltaTimeS = deltaTime / substeps;
 		for (int n = 0; n < substeps; n++)
 		{
@@ -306,8 +327,11 @@ namespace PhysicsMain
 			}
 
 			// Solve all constraints
-			Solve(deltaTimeS);
+			for (int iter = 0; iter < constraintIterations; iter++)
+			{
+				Solve(deltaTimeS);
 
+			}
 			// Post solve
 			for (int i = 0; i < particles.size(); i++) {
 				if (particles[i].inverseMass == 0.0)
@@ -319,9 +343,12 @@ namespace PhysicsMain
 
 				//vecSetDiff(this.vel, i, this.pos, i, this.prevPos, i, 1.0 / dt);
 			}
+
+			
 			//std::cout << particles[0].velocity.y << "\n";
 		}
 
+		
 		// Update vertices
 		for (int i = 0; i < particles.size(); i++)
 		{

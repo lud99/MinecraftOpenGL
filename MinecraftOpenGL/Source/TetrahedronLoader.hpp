@@ -9,6 +9,7 @@ namespace TetrahedronLoader
 {
 	struct Edge
 	{
+		size_t index = 0;
 		size_t startIndex = 0;
 		size_t endIndex = 0;
 		int32_t indexOfTetrahedronContainingEdge = -1;

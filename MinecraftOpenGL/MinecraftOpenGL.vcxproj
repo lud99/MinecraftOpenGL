@@ -233,6 +233,9 @@
     <ClInclude Include="Source\World\WorldRenderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Meshes\balls3.poly" />
+    <None Include="Meshes\gear.node" />
+    <None Include="Meshes\gear.smesh" />
     <None Include="Source\Noise\NoiseGenerator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

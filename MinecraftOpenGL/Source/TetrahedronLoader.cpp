@@ -49,7 +49,7 @@ namespace TetrahedronLoader
 		std::cout << "Header: " << tetrahedra << " " << boundaryMarker << "\n";
 
 		struct Row {
-			std::string index;
+			size_t index;
 			size_t startNode;
 			size_t endNode;
 			int32_t boundaryMarker;
@@ -61,7 +61,7 @@ namespace TetrahedronLoader
 		while (file >> std::ws and std::getline(file >> std::ws, line)) {
 			std::stringstream iss(line);
 			if (iss >> temp.index >> temp.startNode >> temp.endNode >> temp.boundaryMarker >> temp.indexOfTetrahedronContainingEdge) {
-				data.listOfEdges.emplace_back(temp.startNode - data.firstIndex, temp.endNode - data.firstIndex, temp.indexOfTetrahedronContainingEdge - data.firstIndex);
+				data.listOfEdges.emplace_back(temp.index - data.firstIndex, temp.startNode - data.firstIndex, temp.endNode - data.firstIndex, temp.indexOfTetrahedronContainingEdge - data.firstIndex);
 
 			}
 		}
