@@ -33,3 +33,4 @@
 /bin
 /build
 ignore
+/MinecraftOpenGL/Meshes/shapenet
